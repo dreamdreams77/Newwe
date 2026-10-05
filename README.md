@@ -110,6 +110,10 @@ second way past the `/dev/` gate) and a junk Receipt for Nothing that turns out 
 
 Your playstyle is derived from how far you have grown stats past the start, never picked from a menu and never saved. Tinkerer (Creativity + Puzzle Sense), Gambler (Luck + Chaos), Daredevil (Courage + Dad Energy), Scholar (Curiosity + Observation) and Keeper (Nurture + Memory) each carry one small perk that plugs into an existing system (boss fury, crafting odds, hit damage, Inspector depth, companion energy). Until one pair clearly leads you are a Drifter. Bosses can have a weakness you only get by learning it in the world: VM-1111 cannot bear a pun, and once you know that, calming cards hit harder.
 
+## The Dead Link Salesman and the Glitch Sprite
+
+Once the 404 page is open, a man stands in the link. He deals only in things that no longer work: a Glitch Sprite in a jar for a Floppy Disk and a Receipt (or just the Floppy, if you can haggle with Luck), and VM-1111's weakness for a Suspicious Snack. The Sprite is not a pet. It lives in the new Familiar equipment slot, and once per boss fight it makes the machine miss a frame (the next hit passes through). The glitch splashes CORRUPTED on you, unless you are wearing the CRT goggles. A merchant, a status effect, equipment and the fight system all meet in one choice.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.

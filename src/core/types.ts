@@ -220,7 +220,7 @@ export interface ItemDef {
   equip?: EquipDef;
 }
 
-export type SlotId = 'head' | 'body' | 'hands' | 'accessory' | 'tool' | 'badge';
+export type SlotId = 'head' | 'body' | 'hands' | 'accessory' | 'tool' | 'badge' | 'companion';
 
 /** what wearing an item does: not just numbers, but things you can now DO */
 export interface EquipDef {

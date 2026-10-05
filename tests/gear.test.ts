@@ -167,7 +167,7 @@ describe('equipment', () => {
   it('every equippable item has a slot, a sprite and a purpose', () => {
     for (const i of Object.values(ITEMS)) {
       if (!i.equip) continue;
-      expect(['head', 'body', 'hands', 'accessory', 'tool', 'badge']).toContain(i.equip.slot);
+      expect(['head', 'body', 'hands', 'accessory', 'tool', 'badge', 'companion']).toContain(i.equip.slot);
       expect(i.equip.text.length).toBeGreaterThan(10);
       expect((i.equip.perks?.length ?? 0) + Object.keys(i.equip.mods ?? {}).length).toBeGreaterThan(0);
     }
@@ -211,5 +211,26 @@ describe('playstyle identity', () => {
     expect(identity(g)?.id).toBe('gambler');
     g.state.stats.courage = 20; g.state.stats.dadEnergy = 20;
     expect(identity(g)?.id).toBe('daredevil');
+  });
+});
+
+describe('Salesman and Glitch Sprite', () => {
+  it('the Sprite is a familiar-slot item whose glitch is blocked by goggles', () => {
+    const g = newGame();
+    give(g, 'glitch_sprite');
+    expect(equip(g, 'glitch_sprite').ok).toBe(true);
+    expect(hasPerk(g, 'glitch_sprite')).toBe(true);
+    expect(applyAilment(g, 'corrupted', 60, true)).toBe(true);
+    give(g, 'crt_goggles');
+    equip(g, 'crt_goggles');
+    expect(applyAilment(g, 'corrupted', 60, true)).toBe(false);
+  });
+  it('the Salesman has a reachable, well-formed tree', async () => {
+    const { SALESMAN } = await import('../src/data/dialogue');
+    const ids = Object.keys(SALESMAN.nodes);
+    for (const n of Object.values(SALESMAN.nodes)) {
+      if (n.next) expect(ids).toContain(n.next);
+      for (const c of n.choices ?? []) { if (c.next) expect(ids).toContain(c.next); if (c.check) { expect(ids).toContain(c.check.ok); expect(ids).toContain(c.check.fail); } }
+    }
   });
 });

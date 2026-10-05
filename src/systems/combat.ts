@@ -29,6 +29,7 @@ export function startEncounter(g: Game, id: string): EncState {
   e.fury = 0;
   e.attempts++;
   e.data.negate = false;
+  e.data.glitched = false;
   g.changed();
   return e;
 }

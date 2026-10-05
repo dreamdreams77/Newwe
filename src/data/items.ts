@@ -346,6 +346,17 @@ const list: ItemDef[] = [
     uses: [{ id: 'flash', label: 'Flash it', minutes: 1, effects: [{ t: 'say', text: 'You flash the badge at nothing. Nothing straightens up.', kind: 'funny' }] }],
   },
   {
+    id: 'glitch_sprite',
+    name: 'Glitch Sprite (in a jar)',
+    icon: 'ghost',
+    description: 'A jam jar, a hole punched in the lid, and inside it a small bright smear that is never quite where you looked. It is not a pet. It would like that noted.',
+    tags: ['wearable', 'familiar', 'debug', 'chaos'],
+    weight: 0.3,
+    rarity: 'rare',
+    equip: { slot: 'companion', text: 'It rides your shoulder, flickering. Once per fight it will break the rules for you. The rules send you the bill.', mods: { chaos: 1 }, perks: ['glitch_sprite'] },
+    uses: [{ id: 'shake', label: 'Shake the jar', minutes: 1, effects: [{ t: 'say', text: 'The Sprite files a complaint in a font you cannot read. A pixel falls off it and is gone.', kind: 'funny' }] }],
+  },
+  {
     id: 'receipt',
     name: 'A Receipt for Nothing',
     icon: 'receipt',

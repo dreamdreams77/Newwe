@@ -339,4 +339,31 @@ export const MARL: DTree = {
   },
 };
 
-export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL };
+const SAL = { who: 'The Dead Link Salesman', };
+
+/** A merchant who only deals in things that no longer work. Prices are odd on purpose. */
+export const SALESMAN: DTree = {
+  id: 'salesman',
+  start: (g) => (g.has('sal_met') ? 'back' : 'greet'),
+  nodes: {
+    greet: { id: 'greet', ...SAL, text: "Ah. A click. A real one. Nobody has clicked me since the page was archived. Welcome to the stall. Everything here is guaranteed to be exactly as broken as advertised.", effects: [{ t: 'flag', key: 'sal_met' }], next: 'menu' },
+    back: { id: 'back', ...SAL, text: 'You came back! A repeat visit. I will note it in the log. I do not have a log.', next: 'menu' },
+    menu: {
+      id: 'menu', ...SAL, text: 'Browse. Nothing refundable, everything haunted.',
+      choices: [
+        { text: 'A jar with something flickering in it (Floppy + Receipt)', when: { all: [{ not: { has: 'glitch_sprite' } }, { has: 'floppy' }, { has: 'receipt' }] }, next: 'sprite_deal', once: 'sal_sprite_bought' },
+        { text: 'A jar with something flickering in it (haggle)', when: { all: [{ not: { has: 'glitch_sprite' } }, { has: 'floppy' }, { not: { has: 'receipt' } }] }, check: { def: { id: 'haggle', title: 'Haggling', stat: 'luck', dc: 11, text: 'You have the floppy. He wants a receipt. You have a face.' }, ok: 'sprite_cheap', fail: 'sprite_no' } },
+        { text: 'Sell me what the machine hates (a Suspicious Snack)', when: { all: [{ has: 'snack_711' }, { not: { know: 'vm_dad_jokes' } }] }, next: 'rumour_deal' },
+        { text: 'What is the jar, exactly?', when: { not: { has: 'glitch_sprite' } }, next: 'sprite_info' },
+        { text: 'Goodbye.', end: true },
+      ],
+    },
+    sprite_info: { id: 'sprite_info', ...SAL, text: "A Glitch Sprite. A bug that got ideas. Hold it in a fight and it will skip one hit for you. It also bleeds corruption onto you, unless you have good goggles. Floppy and a receipt. I like old things that never lead anywhere.", next: 'menu' },
+    sprite_deal: { id: 'sprite_deal', ...SAL, text: 'Sold! Do not open the lid. (Open the lid. Wear it, it is happier near people.)', effects: [{ t: 'item', id: 'glitch_sprite' }, { t: 'flag', key: 'sal_sprite_bought' }], run: (g) => { removeItem(g, 'floppy', 1); removeItem(g, 'receipt', 1); }, next: 'menu' },
+    sprite_cheap: { id: 'sprite_cheap', ...SAL, text: 'The floppy alone? ...Fine. You haggle like a dead link, relentless and pointless. Take it.', effects: [{ t: 'item', id: 'glitch_sprite' }, { t: 'flag', key: 'sal_sprite_bought' }], run: (g) => removeItem(g, 'floppy', 1), next: 'menu' },
+    sprite_no: { id: 'sprite_no', ...SAL, text: 'No. A receipt or nothing. This is a respectable stall, in a way.', next: 'menu' },
+    rumour_deal: { id: 'rumour_deal', ...SAL, text: 'A snack! The machine at the end of the dark hates one thing above all: puns. Make it groan and it will wince for you. There. Now you know. Nothing is free except being wrong.', effects: [{ t: 'know', id: 'vm_dad_jokes' }], run: (g) => removeItem(g, 'snack_711', 1), next: 'menu' },
+  },
+};
+
+export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL, salesman: SALESMAN };

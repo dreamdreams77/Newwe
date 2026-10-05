@@ -1,4 +1,5 @@
 import { Game, createInitialState } from './core/game';
+import { runEncounter } from './ui/combat';
 import { installProgression, evaluate } from './core/progression';
 import { installAutosave, loadFromStorage, saveToStorage } from './core/saveSystem';
 import { setGame, game } from './core/runtime';
@@ -70,7 +71,7 @@ export async function boot(): Promise<void> {
   setGame(g);
   installProgression(g);
   evaluate(g);
-  if (params.has('debug')) (window as unknown as { __game: unknown }).__game = { g, navigate, audio, setHeld, saveToStorage, passTime: (m: number) => passTime(g, m, { raw: true }), refresh: refreshView };
+  if (params.has('debug')) (window as unknown as { __game: unknown }).__game = { runEncounter, g, navigate, audio, setHeld, saveToStorage, passTime: (m: number) => passTime(g, m, { raw: true }), refresh: refreshView };
 
   const app = document.getElementById('app')!;
   document.body.append(h('div', { class: 'desktop-bg' }));
