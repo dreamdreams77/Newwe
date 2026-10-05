@@ -1,0 +1,5 @@
+{
+  "GIFT": { "title": "Their name", "text": "A short note that appears on the title screen and again at the very end.", "caption": "Your name" },
+  "OWNER": { "title": "the_webmasters_handle" },
+  "NOTE_001": { "text": "DO NOT EAT. It's for someone. I'll tell you who when it's time. — W" }
+}

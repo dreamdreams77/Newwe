@@ -22,6 +22,12 @@ const files = import.meta.glob('../../personal/*.json', { eager: true, import: '
 
 export const PERSONAL: Record<string, PersonalEntry> = Object.assign({}, ...Object.values(files));
 
+/**
+ * An optional dedication. Put {"GIFT": {"title": "for", "text": "a note", "caption": "from"}} in personal/*.json
+ * and it appears on the title screen and again at the very end. Empty by default, so strangers see nothing.
+ */
+export const GIFT = PERSONAL['GIFT'] ? { to: PERSONAL['GIFT'].title ?? '', note: PERSONAL['GIFT'].text ?? '', from: PERSONAL['GIFT'].caption ?? '' } : null;
+
 /** names that appear in the world; replaceable too */
 export const OWNER = {
   handle: PERSONAL['OWNER']?.title ?? 'starlight_w',

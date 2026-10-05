@@ -4,6 +4,7 @@ import { h, btn, sleep, reducedMotion } from '../ui/dom';
 import { navigate, registerZone } from '../ui/router';
 import { counterDigits } from '../systems/hits';
 import { statusLines } from '../systems/status';
+import { GIFT } from '../data/personal';
 
 /**
  * The end of the vertical slice: the page renders itself around you, and shows you what the
@@ -37,6 +38,7 @@ function render(): HTMLElement {
     '',
     'Something is running this website. It is not finished.',
     'FINAL.HTML has been written. (File → Save Files…)',
+    ...(GIFT ? ['', GIFT.note ? `"${GIFT.note}"` : '', GIFT.from ? `   — ${GIFT.from}` : ''].filter(Boolean) : []),
   ];
   const pre = h('pre', { class: 'render-pre', attrs: { 'aria-live': 'polite' } }, typed.join('\n') + (typed.length ? '\n' : ''));
   const actions = h('div', { class: 'win-actions', hidden: !finished }, btn('Return to the homepage', () => navigate('home'), 'go big', { attrs: { 'data-autofocus': '' } }), btn('Keep playing', () => navigate('home'), 'small'));

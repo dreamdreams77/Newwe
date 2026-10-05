@@ -190,3 +190,4 @@
 .fine-print p { margin: 0 0 4px; } .fine-print .nudge { color: #b01060; }
 .fp-top { font-family: var(--font-pixel); font-size: .6rem; letter-spacing: .1em; }
 .fp-answer { margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; } .fp-solved { font-weight: 700; color: var(--good); } .fp-sense { font-style: italic; color: #6a4ac0; font-size: .85rem; }
+.sp-gift { margin: 14px auto 0; max-width: 420px; padding: 10px 14px; border: 2px dashed var(--yellow); color: #fff6c0; font-family: var(--font-hand); font-size: 1.5rem; line-height: 1.2; } .sp-gift p { margin: 6px 0; }

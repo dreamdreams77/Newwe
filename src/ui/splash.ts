@@ -1,4 +1,5 @@
 import { audio } from '../audio/audioManager';
+import { GIFT } from '../data/personal';
 import { h, btn, sleep, reducedMotion } from './dom';
 
 export interface SplashChoice {
@@ -28,7 +29,8 @@ export function showSplash(host: HTMLElement, info: SplashChoice): Promise<'cont
       'div',
       { class: 'splash', role: 'dialog', ariaLabel: 'Welcome' },
       h('div', { class: 'sp-stars' }),
-      h('div', { class: 'sp-card' }, h('div', { class: 'sp-pre' }, '~*~ ~*~ ~*~'), h('h1', { class: 'rainbow-text' }, '11:11'), h('div', { class: 'sp-title' }, 'The Lost Homepage'), h('p', { class: 'sp-tag' }, 'a website nobody has updated since 2003'), h('div', { class: 'sp-bar' }, bar), status, buttons, h('p', { class: 'sp-tiny' }, 'Best viewed at 800×600 in Netscrape Navigator 4.7. Sound optional. Headphones recommended. A coffee, even more so.')),
+      h('div', { class: 'sp-card' }, h('div', { class: 'sp-pre' }, '~*~ ~*~ ~*~'), h('h1', { class: 'rainbow-text' }, '11:11'), h('div', { class: 'sp-title' }, 'The Lost Homepage'), h('p', { class: 'sp-tag' }, 'a website nobody has updated since 2003'),
+      GIFT ? h('div', { class: 'sp-gift' }, GIFT.to ? h('b', {}, `For ${GIFT.to}`) : '', GIFT.note ? h('p', {}, GIFT.note) : '', GIFT.from ? h('i', {}, `— ${GIFT.from}`) : '') : '', h('div', { class: 'sp-bar' }, bar), status, buttons, h('p', { class: 'sp-tiny' }, 'Best viewed at 800×600 in Netscrape Navigator 4.7. Sound optional. Headphones recommended. A coffee, even more so.')),
     );
     host.appendChild(el);
     (async () => {

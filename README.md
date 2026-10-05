@@ -151,6 +151,26 @@ tolerates `O/0` and `I/L/1` typos.
 `PHOTO_001`, `VOICE_001`, `NOTE_001`, `OWNER`) with no code change. See `personal/README.md`. A stranger can play the
 placeholder version; someone who knows the private context finds more.
 
+
+## Giving it as a gift
+
+The game is one static page: no accounts, no server, no tracking. Saves live in the player's own browser, so the person
+you give it to has their own game.
+
+1. **Get a link.** Pushing to `main` deploys automatically via `.github/workflows/pages.yml`. In the GitHub repo,
+   Settings → Pages → Source: *GitHub Actions* (the workflow tries to switch this on itself). The link is
+   `https://<your-user>.github.io/<repo>/`. Add `?fresh` if you want to test without touching your own save.
+   Alternatively `npm run build` and put the `dist/` folder on any web host, or open it from any static file server.
+2. **Make it theirs (optional).** Copy `personal/gift.json.example` to `personal/gift.json` and edit it: a dedication
+   (shown on the title screen and again at the end), the webmaster's handle, and the sticky-note text. Photos, voice
+   clips and private memories drop into the same file; see `personal/README.md`. Leave the folder empty and the game is
+   the fully fictional version, which a stranger can play.
+3. **Let them start cold.** The first thing they see is a fake 28.8k modem loader and an ENTER button, then a
+   homepage that is a little wrong. There is no tutorial on purpose. If they get stuck, the Handbook (Help menu, after the
+   first 11:11) and `Options → Always outline clickable things` help; Tab and Enter work everywhere.
+4. **Sound** is off until they press ENTER (browsers insist) and music is off by default. Headphones recommended.
+5. **Their progress** saves automatically. File → Save Password gives a copyable code if they ever switch devices.
+
 ## Tests
 
 ```bash
