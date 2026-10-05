@@ -1,0 +1,83 @@
+import { BALANCE } from '../config/balance';
+import type { Game } from './game';
+import type { Stage } from './types';
+import { gainEleven } from '../systems/elevenEleven';
+import { addVisitors } from '../systems/hits';
+import { updateQuests } from '../systems/quests';
+import { syncDeck } from '../systems/cards';
+import { raiseStat } from '../systems/stats';
+import { blueScreen } from '../systems/travel';
+
+/** Work out what stage the website is in. Stages only ever go up. */
+export function computeStage(g: Game): Stage {
+  const s = g.state;
+  let st: Stage = 1;
+  if (g.has('eleven_first') || s.visitors >= 150) st = 2;
+  if (g.has('lake_solved') || g.has('creature_met')) st = 3;
+  if (g.has('lamp_lit')) st = 4;
+  if (s.visitors >= BALANCE.hits.finale) st = 5;
+  return Math.max(s.stage, st) as Stage;
+}
+
+/**
+ * Idempotent world-update. Runs after every state change: starts and finishes
+ * quests, raises the stage, keeps the deck in sync with the inventory.
+ */
+export function evaluate(g: Game): void {
+  const s = g.state;
+  if (!s.flags.game_started) s.flags.game_started = true;
+  if (s.creatures.chocobo?.met && !s.flags.creature_met) s.flags.creature_met = true;
+  if (s.vitals.hp <= 0) {
+    const text = blueScreen(g);
+    g.bus.emit('toast', { text, kind: 'bad' });
+  }
+  syncDeck(g);
+  updateQuests(g);
+  const next = computeStage(g);
+  if (next !== s.stage) {
+    const from = s.stage;
+    s.stage = next;
+    g.log(`The website changed (stage ${next}).`);
+    g.bus.emit('stage', { from, to: next });
+    g.changed();
+  }
+}
+
+const THRESHOLD_TEXT: Record<number, string> = {
+  100: 'The counter flickers. 000100. Somebody noticed you noticing.',
+  250: 'The counter ticks past 250. Somewhere, a guestbook entry has been edited.',
+  500: 'The counter hits 500. The page seems a little more awake.',
+  777: 'Lucky 777. The counter rolls over like a slot machine, quietly delighted.',
+  1111: 'THE COUNTER READS 001111. The page holds still. Something is coming.',
+};
+
+export function installProgression(g: Game): () => void {
+  const offs: Array<() => void> = [];
+  offs.push(
+    g.bus.on('change', () => {
+      evaluate(g);
+    }),
+  );
+  offs.push(
+    g.bus.on('threshold', ({ at }) => {
+      g.toast(THRESHOLD_TEXT[at] ?? `The counter reaches ${at}.`, 'magic');
+      g.sfx('threshold');
+      if (at === 777) raiseStat(g, 'luck', 1);
+      if (at === 500) raiseStat(g, 'curiosity', 1);
+      if (at === 1111) g.state.flags.finale_ready = true;
+    }),
+  );
+  offs.push(
+    g.bus.on('elevenTime', ({ key }) => {
+      const first = !g.has('eleven_first');
+      if (first) {
+        g.state.flags.eleven_first = true;
+        g.toast('11:11. The visitor counter flickers. Something on the page just moved.', 'magic');
+        addVisitors(g, BALANCE.hits.firstEleven, 'the clock hit 11:11');
+      }
+      gainEleven(g, 'the clock hit 11:11', key, first ? '11:11 — the first one. It sits in your pocket like a coin that is also a feeling.' : '11:11 on the clock. A small, private miracle.');
+      g.changed();
+    }),
+  );
+  return () => offs.forEach((f) => f());
+}
