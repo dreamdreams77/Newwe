@@ -4,6 +4,7 @@ import { seeded } from '../core/random';
 import { ENCOUNTERS, type EncounterDef } from '../data/encounters';
 import { changeVital } from './stats';
 import { applyAilment } from './ailments';
+import { isIdentity } from './identity';
 
 export interface EncState {
   phase: number;
@@ -71,7 +72,7 @@ export function bossAttack(g: Game, e: EncState, def: EncounterDef): Attack {
     return { line, damage: 0, negated: true };
   }
   const [lo, hi] = BALANCE.combat.attackDamage;
-  const damage = g.rng.int(lo, hi);
+  const damage = Math.max(1, g.rng.int(lo, hi) - (isIdentity(g, 'daredevil') ? 1 : 0));
   changeVital(g, 'hp', -damage);
   g.sfx('hit');
   if (/cola/i.test(line)) applyAilment(g, 'jittery', 60); // a warm cola, directly into the face
@@ -101,7 +102,7 @@ export function lowerFury(g: Game, e: EncState, n = 1): void {
 
 export function advancePhase(g: Game, e: EncState): void {
   e.phase++;
-  e.fury = Math.max(0, e.fury - 1); // a solved phase calms the machine a little
+  e.fury = Math.max(0, e.fury - (isIdentity(g, 'tinkerer') ? 2 : 1)); // a solved phase calms the machine a little
   g.sfx('puzzle');
   g.changed();
 }

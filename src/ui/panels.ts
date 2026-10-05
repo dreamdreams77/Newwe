@@ -8,6 +8,7 @@ import { discoveredRecipes, describeInputs, undiscoveredCount } from '../systems
 import { coffeeState, dayNumber, formatClock } from '../core/timeSystem';
 import { baseStat, statValue } from '../systems/stats';
 import { activeAilments } from '../systems/ailments';
+import { identity, identityScores } from '../systems/identity';
 import { SLOTS, equippedIn, unequip } from '../systems/equipment';
 import { currentStepIndex, questStatus } from '../systems/quests';
 import { activeCreature, careAction, personalityLabel, creatureMoodText } from '../systems/creatures';
@@ -45,7 +46,12 @@ export function openStats(): WinHandle {
         ),
       );
       const fx = activeAilments(g);
+      const idn = identity(g);
       body.append(
+        h('section', { class: 'stat-group id-group' }, h('h4', {}, 'Playstyle'),
+          idn ? h('p', {}, h('b', {}, idn.label), ` — ${idn.text} `, h('small', {}, `Perk: ${idn.perk}`)) : h('p', { class: 'empty' }, 'Drifter. You have not leaned any one way yet. (Raise a pair of stats past the rest.)'),
+          h('small', {}, identityScores(g).map((x) => `${x.def.label} ${x.score}`).join(' · ')),
+        ),
         h('section', { class: 'stat-group fx-group' }, h('h4', {}, 'Status'),
           fx.length ? h('ul', { class: 'fx-list' }, fx.map((a) => h('li', { class: a.good ? 'good' : 'bad' }, h('b', {}, a.label), ` — ${a.text} `, h('small', {}, `Cure: ${a.cure}`)))) : h('p', { class: 'empty' }, 'Nothing is wrong with you. Statistically unusual.'),
         ),

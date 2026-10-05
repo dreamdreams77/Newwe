@@ -10,6 +10,7 @@ import { addItem, hasItem, inventoryList, removeItem } from '../systems/inventor
 import { addVisitors } from '../systems/hits';
 import { statValue, changeVital } from '../systems/stats';
 import { spendEleven } from '../systems/elevenEleven';
+import { isIdentity } from '../systems/identity';
 import { passTime } from '../systems/actions';
 import { blueScreen } from '../systems/travel';
 import { isSuccess, type CheckDef } from '../systems/dice';
@@ -409,8 +410,9 @@ export function runEncounter(id: string): Promise<EncounterResult> {
         log.push('The Page Not Found settles around you like a quiet coat. The next hit will pass straight through.');
       }
       if (r.furyDown) {
-        lowerFury(g, e, r.furyDown);
-        log.push('The machine groans. It is not a fan of the pun. Fury down.');
+        const weak = def.weakness && g.state.knowledge.includes(def.weakness.know) ? def.weakness.bonus : 0;
+        lowerFury(g, e, r.furyDown + weak);
+        log.push(weak ? 'The machine GROANS. You found its weak spot. Fury down, hard.' : 'The machine groans. It is not a fan of the pun. Fury down.');
       }
       if (r.peek) log.push(`You recall: ${r.peek}`);
       if (r.assist) assist(w);
@@ -420,7 +422,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
     function assist(w: { refresh(): void }) {
       const pet = activeCreature(g);
       if (!pet || !canAssist(pet)) return toast('It is too tired to help.', 'info');
-      spendCreatureEnergy(g, pet.id, BALANCE.creature.assistEnergy);
+      spendCreatureEnergy(g, pet.id, isIdentity(g, 'keeper') ? Math.ceil(BALANCE.creature.assistEnergy / 2) : BALANCE.creature.assistEnergy);
       const phase = def.phases[e.phase];
       audio.sfx('chirp');
       if (phase.kind === 'lights') {

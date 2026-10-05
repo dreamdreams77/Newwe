@@ -9,6 +9,7 @@ import { applyEffects } from './effects';
 import { hasItem, itemDef, removeItem } from './inventory';
 import { statValue } from './stats';
 import { hasPerk } from './equipment';
+import { isIdentity } from './identity';
 
 export interface CraftResult {
   kind: 'made' | 'nothing' | 'near';
@@ -75,7 +76,7 @@ function pickOutcome(g: Game, r: RecipeDef): RecipeOutcome {
   const luck = statValue(g, 'luck');
   const weighted = r.outcomes.map((o) => {
     let w = o.weight;
-    if (o.tier === 'rare' || o.tier === 'secret') w *= (1 + chaos * 0.15 + luck * 0.1) * (hasPerk(g, 'lucky_receipt') ? 1.4 : 1);
+    if (o.tier === 'rare' || o.tier === 'secret') w *= (1 + chaos * 0.15 + luck * 0.1) * (hasPerk(g, 'lucky_receipt') ? 1.4 : 1) * (isIdentity(g, 'gambler') ? 1.25 : 1);
     if (o.tier === 'disaster') w *= Math.max(0.2, 1 + chaos * 0.15 - luck * 0.12);
     if (o.tier === 'joke' || o.tier === 'junk') w *= Math.max(0.3, 1 - chaos * 0.05);
     return { ...o, weight: w };

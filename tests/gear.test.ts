@@ -201,3 +201,15 @@ describe('how they show up elsewhere', () => {
     expect(back.seenFx).toContain('fx:inspired');
   });
 });
+
+describe('playstyle identity', () => {
+  it('is derived from base stats, with a perk, and Drifter until you lean', async () => {
+    const { identity } = await import('../src/systems/identity');
+    const g = newGame();
+    expect(identity(g)).toBeNull();
+    g.state.stats.luck += 3; g.state.stats.chaos += 3;
+    expect(identity(g)?.id).toBe('gambler');
+    g.state.stats.courage = 20; g.state.stats.dadEnergy = 20;
+    expect(identity(g)?.id).toBe('daredevil');
+  });
+});

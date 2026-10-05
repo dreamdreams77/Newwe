@@ -27,6 +27,8 @@ export interface EncounterDef {
   phases: PhaseDef[];
   attackLines: string[];
   tiltText: string;
+  /** a weakness you discover: with this knowledge, calming effects hit harder */
+  weakness?: { know: string; text: string; bonus: number };
   winText: string;
 }
 
@@ -41,6 +43,7 @@ export const VM_1111: EncounterDef = {
     'The machine rattles and a coin-return flap snaps at your fingers.',
     'It dispenses a warm cola directly into your face.',
   ],
+  weakness: { know: 'vm_dad_jokes', bonus: 1, text: 'WEAKNESS: it cannot bear a pun. Calming cards bite twice as hard.' },
   tiltText: 'The machine TILTS. Everything slides. You are ejected, tumbling, back onto a plain white page that says 404.',
   winText: 'The machine considers you, in a long, humming silence. Then it lets out a very small, very polite chime.',
   phases: [
