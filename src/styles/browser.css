@@ -1,0 +1,106 @@
+/* ===== the fake browser window ===== */
+#app { min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 12px; }
+.desktop-bg { position: fixed; inset: 0; z-index: -1; background: #008080; }
+.browser {
+  width: min(1100px, 100%);
+  height: calc(100vh - 24px);
+  min-height: 560px;
+  display: flex; flex-direction: column;
+  background: var(--chrome);
+  border: 2px solid; border-color: #dfdfdf #000 #000 #dfdfdf;
+  box-shadow: 1px 1px 0 #808080 inset, 6px 6px 0 rgba(0,0,0,.35);
+  position: relative;
+}
+.titlebar {
+  display: flex; align-items: center; gap: 8px; padding: 3px 4px;
+  background: linear-gradient(90deg, var(--title-a), var(--title-b)); color: #fff; font-weight: 700; font-size: .85rem;
+  margin: 2px;
+}
+.titlebar .tb-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 1px 1px 0 #000; }
+.titlebar .tb-btns { display: flex; gap: 2px; }
+.titlebar .tb-btn { width: 20px; height: 18px; padding: 0; min-height: 0; font-size: 11px; line-height: 1; }
+
+.menubar { display: flex; gap: 0; padding: 0 4px; border-bottom: 1px solid var(--chrome-mid); background: var(--chrome); position: relative; z-index: 30; }
+.menu { position: relative; }
+.menu > button {
+  background: none; border: 1px solid transparent; padding: 2px 9px; cursor: pointer; font-size: .85rem; font-family: var(--font-body);
+}
+.menu > button:hover, .menu.open > button { border-color: var(--chrome-hi) var(--chrome-lo) var(--chrome-lo) var(--chrome-hi); }
+.menu ul {
+  display: none; position: absolute; left: 0; top: 100%; min-width: 220px; list-style: none; margin: 0; padding: 2px;
+  background: var(--chrome); border: 2px solid; border-color: var(--chrome-hi) #000 #000 var(--chrome-hi); box-shadow: 4px 4px 0 rgba(0,0,0,.3);
+}
+.menu.open ul { display: block; }
+.menu li button {
+  display: flex; width: 100%; text-align: left; background: none; border: 0; padding: 4px 22px 4px 12px; cursor: pointer; font-size: .85rem; font-family: var(--font-body);
+}
+.menu li button:hover, .menu li button:focus-visible { background: var(--title-a); color: #fff; }
+.menu li hr { border: 0; border-top: 1px solid var(--chrome-mid); border-bottom: 1px solid var(--chrome-hi); margin: 3px 0; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 4px; border-bottom: 1px solid var(--chrome-mid); }
+.toolbar .nav-btns { display: flex; gap: 2px; }
+.toolbar .nav-btns .btn { min-width: 2.2rem; padding: .1rem .4rem; min-height: 1.9rem; font-size: .8rem; }
+.addr { flex: 1 1 260px; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.addr label { font-size: .8rem; font-weight: 700; }
+.addr input {
+  flex: 1; min-width: 0; padding: 2px 6px; background: #fff; font-family: 'Courier New', monospace; font-size: .8rem; height: 1.9rem;
+  border: 2px solid; border-color: var(--chrome-lo) var(--chrome-hi) var(--chrome-hi) var(--chrome-lo);
+}
+.tools { display: flex; flex-wrap: wrap; gap: 3px; }
+.tools .btn { padding: .1rem .5rem; min-height: 1.9rem; font-size: .78rem; gap: .3rem; }
+.tools .btn img { width: 18px; height: 18px; }
+.tools .btn .badge { background: #e8222a; color: #fff; border-radius: 9px; font-size: .65rem; padding: 0 .3rem; min-width: 1.1rem; line-height: 1.1rem; }
+
+/* the HUD under the toolbar */
+.hud { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 4px 8px; background: #101030; color: #fff; border-bottom: 2px solid #000; font-size: .78rem; }
+.hud .bar-wrap { display: flex; align-items: center; gap: 6px; }
+.hud .lbl { font-family: var(--font-pixel); font-size: .6rem; color: #b8c4ff; letter-spacing: .5px; }
+.bar { position: relative; width: 96px; height: 12px; background: #000; border: 2px solid #8a94d8; border-radius: 2px; overflow: hidden; }
+.bar > i { position: absolute; inset: 0 auto 0 0; display: block; transition: width .4s steps(8); }
+.bar.hp > i { background: linear-gradient(#69ff7a, #1fa83a); }
+.bar.coffee > i { background: linear-gradient(#e8a46a, #8a4a1c); }
+.bar.low > i { background: linear-gradient(#ff7a7a, #c02020); }
+.bar.wired > i { background: linear-gradient(#ffe86a, #ff9a1a); }
+.bar .num { position: absolute; right: 3px; top: -1px; font-family: var(--font-pixel); font-size: 7px; line-height: 12px; color: #fff; text-shadow: 1px 1px 0 #000; }
+.hud .limit { display: flex; gap: 3px; align-items: center; }
+.hud .limit .pip { width: 14px; height: 14px; border: 2px solid #a45cff; background: #1a0838; transform: rotate(45deg); }
+.hud .limit .pip.on { background: radial-gradient(circle, #fff, #d9b8ff 40%, #a45cff); box-shadow: 0 0 8px #d9b8ff; }
+.hud .clock { margin-left: auto; font-family: var(--font-term); font-size: 1.25rem; color: #6fff8a; letter-spacing: 1px; }
+.hud .clock .day { color: #b8c4ff; font-size: .9rem; margin-left: .4rem; }
+.hud .state-tag { font-size: .65rem; font-family: var(--font-pixel); padding: 2px 5px; border: 1px solid; }
+.hud .state-tag.jitter { color: #ffb0b0; border-color: #ff6a6a; animation: shake .5s infinite; }
+.hud .state-tag.wired { color: #fff2a0; border-color: #ffd23a; }
+
+.viewport {
+  flex: 1; min-height: 0; overflow: auto; position: relative;
+  background-color: #0b0630; color: #fff;
+  border: 2px solid; border-color: var(--chrome-lo) var(--chrome-hi) var(--chrome-hi) var(--chrome-lo);
+  margin: 2px;
+}
+.statusbar { display: flex; gap: 4px; align-items: center; padding: 2px 6px; font-size: .78rem; border-top: 1px solid var(--chrome-mid); }
+.statusbar .cell { padding: 1px 6px; border: 1px solid; border-color: var(--chrome-lo) var(--chrome-hi) var(--chrome-hi) var(--chrome-lo); }
+.statusbar .cell.grow { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.statusbar .btn { min-height: 1.4rem; padding: 0 .5rem; font-size: .75rem; }
+.loading-bar { position: absolute; left: 0; top: 0; height: 3px; background: var(--cyan); width: 0; z-index: 20; }
+.loading-bar.go { animation: load .5s steps(6) forwards; }
+@keyframes load { from { width: 0; opacity: 1; } to { width: 100%; opacity: 0; } }
+
+/* held item banner */
+.held-banner {
+  position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%); z-index: 40; display: none; align-items: center; gap: 8px;
+  background: #000d; color: #fff; padding: 6px 12px; border: 2px solid var(--yellow); font-size: .85rem;
+}
+.held-banner.on { display: flex; }
+
+/* ===== responsive ===== */
+@media (max-width: 760px) {
+  #app { padding: 0; }
+  .browser { height: 100vh; min-height: 0; border-width: 0; box-shadow: none; }
+  .menubar { overflow-x: auto; }
+  .addr label { display: none; }
+  .tools .btn .t { display: none; }
+  .tools .btn { padding: .1rem .4rem; }
+  .bar { width: 70px; }
+  .hud { gap: 4px 10px; }
+  .titlebar .tb-btns { display: none; }
+}

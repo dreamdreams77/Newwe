@@ -173,3 +173,26 @@ export const WEBRING: RingTile[] = [
   { zone: 'vending', label: 'Vending Machine Dungeon', alt: '[broken image: a glowing rectangle of cola]', future: true, colour: '#ff4a6a' },
   { zone: 'tasmania', label: 'Tasmania', alt: '[broken image: the bottom of the world]', future: true, colour: '#b08aff' },
 ];
+
+export interface SniffFind {
+  id: string;
+  when?: Cond;
+  text: string;
+  item?: string;
+  hits?: number;
+}
+
+/** what a trusting creature digs up, per zone (each once) */
+export const SNIFFS: Record<string, SniffFind[]> = {
+  lake: [
+    { id: 'sniff_lake_token', text: 'It dives into the reeds and comes back with a Broken Vending-Machine Token and a look of immense pride.', item: 'token_broken' },
+    { id: 'sniff_lake_visitor', text: 'It pecks at the mud. A tiny waving visitor was buried there. +11 visitors.', hits: 11 },
+  ],
+  lighthouse: [
+    { id: 'sniff_light_receipt', text: 'It drags a crumpled receipt out from under the keeper’s chair. It is for Nothing. It is itemised.', item: 'receipt' },
+    { id: 'sniff_light_visitor', text: 'It stares at one particular rock until you look too. A visitor is hiding behind it. +11 visitors.', hits: 11 },
+  ],
+  home: [{ id: 'sniff_home_visitor', text: 'It stares at the hit counter until a visitor falls out of the digits. +11 visitors.', hits: 11 }],
+  construction: [{ id: 'sniff_cons_tape', text: 'It digs in the sand pit and pulls out a half-used roll of Duct Tape. Bob pretends not to notice.', item: 'duct_tape' }],
+  dungeon: [{ id: 'sniff_dungeon_snack', text: 'It sniffs out a Suspicious 7-Eleven Snack, wedged behind a server rack. It looks very pleased with itself.', item: 'snack_711' }],
+};

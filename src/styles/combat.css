@@ -1,0 +1,13 @@
+/* ===== puzzle combat ===== */
+.combat-win .win-body { background: #0b0a20; color: #e8ecff; }
+.combat-win { border-color: #ff4a6a #400 #400 #ff4a6a; }
+.enc-top { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+.enc-art { background: #05020f; border: 4px ridge #888; padding: 4px; } .enc-machine { width: 192px; height: 168px; display: block; }
+.enc-status { flex: 1; min-width: 260px; } .enc-status h2 { color: #ffd93b; font-family: var(--font-pixel); font-size: .8rem; line-height: 1.6; }
+.enc-meters { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 6px 0; } .enc-meter { display: flex; align-items: center; gap: 6px; font-family: var(--font-pixel); font-size: .55rem; color: #b8c4ff; }
+.fury-pips { display: inline-flex; gap: 3px; } .fury-pips i { width: 12px; height: 14px; background: #301020; border: 2px solid #ff4a6a; } .fury-pips i.on { background: #ff4a6a; box-shadow: 0 0 6px #ff4a6a; }
+.enc-text { font-size: .98rem; } .enc-know .know { color: #7fff8a; font-size: .88rem; margin: 3px 0; } .enc-know .unknown { color: #99a; font-size: .85rem; font-style: italic; }
+.enc-widget { margin: 10px 0; padding: 8px; background: #121238; border: 2px solid #335; }
+.enc-hand { margin: 6px 0; } .enc-hand .ch-title { color: #b8c4ff; }
+.enc-log { min-height: 5.2rem; padding: 6px 10px; background: #000; border: 2px solid #335; font-size: .85rem; color: #c9d4ff; } .enc-log p { margin: 0 0 3px; }
+.combat-win .btn { color: #000; }

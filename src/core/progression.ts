@@ -33,6 +33,7 @@ export function evaluate(g: Game): void {
   }
   syncDeck(g);
   updateQuests(g);
+  if (s.stage >= 3 || g.has('creature_met')) g.reveal('mypage');
   const next = computeStage(g);
   if (next !== s.stage) {
     const from = s.stage;

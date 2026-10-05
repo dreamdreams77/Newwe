@@ -1,0 +1,32 @@
+/* ===== once the website is a game: windows get the blue RPG menu skin ===== */
+.stage-ge3 .window {
+  background: linear-gradient(#1a3aca, #050a50); color: #fff; border: 3px solid var(--rpg-edge); border-radius: 8px;
+  box-shadow: inset 0 0 0 2px var(--rpg-glow), 0 0 0 2px #000, 0 10px 0 rgba(0,0,0,.5), 0 0 40px rgba(111, 139, 255, .35);
+  font-family: var(--font-body);
+}
+.stage-ge3 .win-title { background: linear-gradient(90deg, #000a60, #1a3aca); border-bottom: 2px solid var(--rpg-edge); margin: 0; padding: 5px 8px; font-family: var(--font-pixel); font-size: .6rem; letter-spacing: .5px; }
+.stage-ge3 .win-body { color: #fff; }
+.stage-ge3 .window h2, .stage-ge3 .window h3, .stage-ge3 .window h4 { color: #ffee9a; text-shadow: 1px 1px 0 #000; font-family: var(--font-pixel); font-size: .75rem; line-height: 1.5; }
+.stage-ge3 .window .btn { background: linear-gradient(#e8ecff, #9aa6e8); border-color: #fff #4a5ab0 #4a5ab0 #fff; color: #000; border-radius: 4px; }
+.stage-ge3 .window .btn.go { background: linear-gradient(#b8ffc0, #3ad04a); } .stage-ge3 .window .btn.warn { background: linear-gradient(#ffe0a8, #ff9a3a); } .stage-ge3 .window .btn.magic { background: linear-gradient(#e8d4ff, #a45cff); } .stage-ge3 .window .btn.hot { background: linear-gradient(#ffd0ec, #ff6fb5); }
+.stage-ge3 .inv-item, .stage-ge3 .inv-detail, .stage-ge3 .dlg-choice, .stage-ge3 .mini-card { background: rgba(0, 0, 60, .55); color: #fff; border-color: #6f8bff; }
+.stage-ge3 .inv-item.sel, .stage-ge3 .dlg-choice:hover:not(:disabled), .stage-ge3 .dlg-choice:focus-visible { background: #3a5aff; color: #fff; }
+.stage-ge3 .dlg-choice .n { color: #ffee9a; }
+.stage-ge3 .dlg-portrait { background: #000a40; border-color: var(--rpg-edge); border-radius: 6px; }
+.stage-ge3 .dlg-choice::before { content: '☞ '; opacity: 0; } .stage-ge3 .dlg-choice:hover::before, .stage-ge3 .dlg-choice:focus-visible::before { opacity: 1; }
+.stage-ge3 .det-desc, .stage-ge3 .det-story, .stage-ge3 .stat-row .sr-blurb, .stage-ge3 .sr-use, .stage-ge3 .q-blurb { color: #dfe6ff; }
+.stage-ge3 .tag { background: #1a2a90; border-color: #6f8bff; color: #fff; }
+.stage-ge3 .stat-row { border-color: #4a5ab0; } .stage-ge3 .quest { background: rgba(0,0,60,.5); color: #fff; } .stage-ge3 .quest.done { background: rgba(0,80,30,.4); } .stage-ge3 .quest.failed { background: rgba(90,0,20,.4); }
+.stage-ge3 .quest li.later { color: #8896d8; } .stage-ge3 .quest li.done { color: #99a; }
+.stage-ge3 .memory { background: rgba(0,0,60,.55); border-color: #6f8bff; color: #fff; } .stage-ge3 .mem-text.handwritten { color: #ffee9a; }
+.stage-ge3 .bench, .stage-ge3 .craft-result { background: rgba(0,0,60,.5); color: #fff; }
+.stage-ge3 .check-hand, .stage-ge3 .roll-total, .stage-ge3 .approaches { background: rgba(0,0,60,.45); color: #fff; border-color: #6f8bff; }
+.stage-ge3 .approach.sel { background: #2a4aff; } .stage-ge3 .ap-text { color: #cfd8ff; } .stage-ge3 .odds-detail { color: #cfd8ff; }
+.stage-ge3 .cmeter .cm-bar { background: #000a40; } .stage-ge3 .creature-stage { background: linear-gradient(#2a4aa0, #1a2a70); }
+.stage-ge3 .tinkerings, .stage-ge3 .logs, .stage-ge3 .mystery, .stage-ge3 .deck-count, .stage-ge3 .cards-intro { color: #dfe6ff; }
+.stage-ge3 .pw-head { color: #ffee9a; }
+.stage-ge3 .hud { border-bottom-color: var(--rpg-edge); background: linear-gradient(#10188a, #050a40); }
+.stage-ge3 .hud .lbl { color: #ffee9a; }
+.stage-ge3 .win-backdrop { background: rgba(0, 0, 50, .55); }
+.stage-ge3 .window { animation: pop-in .3s ease-out; }
+.stage-ge3 .roll-total.crit .rt-outcome { color: #ffe45a; } .stage-ge3 .roll-total.success .rt-outcome { color: #7fff8a; } .stage-ge3 .roll-total.fail .rt-outcome { color: #ffb347; } .stage-ge3 .roll-total.critFail .rt-outcome { color: #ff6a8a; }

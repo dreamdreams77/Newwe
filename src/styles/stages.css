@@ -1,0 +1,22 @@
+/* ===== the website changes as the game wakes up ===== */
+/* stage 2: something is wrong */
+.stage-ge2 .viewport::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.08) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; z-index: 5; }
+.stage-ge2 .page-sub { animation: glitch 7s infinite; }
+.stage-ge2 .rainbow-text { animation: rainbow 4s linear infinite, glitch 9s infinite; }
+/* stage 3: pixel-RPG pieces arrive */
+.stage-ge3 .page-sub, .stage-ge3 .t-box h2 { font-family: var(--font-pixel); font-size: .7rem; line-height: 1.7; letter-spacing: 0; }
+.stage-ge3 .t-box { border-style: solid; border-color: #6f8bff; background: linear-gradient(rgba(10, 30, 140, .85), rgba(5, 8, 60, .92)); border-radius: 6px; }
+.stage-ge3 .tools .btn { font-family: var(--font-pixel); font-size: .55rem; }
+/* stage 4: the page is alive */
+.stage-ge4 .viewport { animation: starhue 40s linear infinite; }
+@keyframes starhue { 0% { background-position: 0 0; } 100% { background-position: 200px 200px; } }
+.stage-ge4 .ring-tile.live, .stage-ge4 .hotspot.npc { animation: bob 1.8s steps(2) infinite; }
+.stage-ge4 .hotspot:not(.npc) { outline: 1px dotted rgba(255, 238, 0, .35); }
+.stage-ge4 .news dd.alive { color: #ffe9a8; font-style: italic; }
+/* stage 5: rendering itself */
+.stage-5 .t-box, .stage-5 .scene-box, .stage-5 .gb-entry { outline: 1px dashed rgba(0, 255, 255, .55); outline-offset: -4px; }
+.stage-5 .page { background-image: linear-gradient(rgba(0,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,.08) 1px, transparent 1px); background-size: 24px 24px; }
+.stage-5 .rainbow-text { filter: drop-shadow(0 0 8px #0ff); }
+.stage-flash .browser { animation: shake .5s; }
+.stage-flash .viewport { filter: invert(1) hue-rotate(180deg); transition: filter .1s; }
+.reduce-motion.stage-flash .viewport { filter: none; }
