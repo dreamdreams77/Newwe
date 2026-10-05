@@ -56,6 +56,36 @@ A plausible first playthrough (the e2e test plays exactly this with real clicks)
 10. A small maze (notes in it are *Boss Knowledge*), then **VM-1111, the Vending Machine of Judgment**: a lights puzzle, exact change, a keypad ("the hour that makes a wish"), and a final choice. Spend 11:11 to bend a rule or change a failed roll.
 11. The counter reaches 1,111 and the page renders itself.
 
+
+## The hidden layers (what is underneath)
+
+There are three games stacked here, and the player discovers each one themselves:
+
+1. **The surface**: an abandoned 2001 homepage. Click around.
+2. **The RPG**: dice, cards, crafting, a creature, puzzle-combat.
+3. **The machine**: the website behaves like a small computer system, and you can poke at it.
+
+Everything in layer 3 is a *view over one table*, the **World Model** (`src/data/world.ts`): named objects with a
+readable state and a list of dependencies. The Inspector, Handbook, page source, terminal, the `/dev/` gate and
+the final SYSTEM STATUS all read it; none has its own copy of the truth.
+
+| You find it by | What it is |
+|---|---|
+| View → Page Source | The HTML behind the page. At stage 2 it leaks `about:inspector` (badge: I READ THE SOURCE) |
+| `about:inspector` (or a note behind a tower brick) | **The Inspector.** Starts blind (`??? = ?`). Probe to look deeper; how deep depends on your Observation. Inspect mode turns every object on the page into a clickable readout |
+| Help → Handbook | Encyclopedia that never fills itself in. Unknown entries say UNKNOWN; recipes you haven't made are never listed |
+| Clicking things repeatedly | "Chair." … "Still a chair." … and a few pay off once (a floppy disk, a note about XOR) |
+| `/dev/` (typed, never linked) | Guarded by a **pseudo-code lock with an XOR**: exactly one of two things must be true. No coding required |
+| The developer room | `debug.cfg` (the Inspector sees further, for free), a Broken Mouse, a prototype creature, todo.txt |
+| `about:terminal` | WHOAMI, LOOK, MAP, INSPECT, HISTORY… plus commands that are never documented |
+| `about:version` | Site version history. Old versions remember things before they happen |
+| File → Save Files | HOMEPAGE.HTML, FINAL.HTML (New Game+), a playable **corrupted save**, and UNKNOWN |
+
+Design rules for this layer: real consequences (how you lit the lamp changes the guestbook, the homepage news and
+whether you still have a token for the boss), several ways through every major block (the 404 door opens with the key,
+a jimmied lock, a typed address, or a Broken Mouse), controlled bugs the game acknowledges ("That shouldn't have
+worked."), and NPC rumours that disagree and have verdicts the world can check.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.
@@ -104,9 +134,9 @@ placeholder version; someone who knows the private context finds more.
 ## Tests
 
 ```bash
-npm test                 # 47 unit tests: dice (luck vs chaos), crafting, cards, creatures, ecology, quests, saves, content integrity
+npm test                 # 62 unit tests: dice (luck vs chaos), crafting, cards, creatures, ecology, quests, saves, content integrity
 npm run build && (npx vite preview --port 4173 &) \
-  && PLAYWRIGHT_PATH=<path>/playwright/index.mjs node tests/e2e/playthrough.mjs
+  && PLAYWRIGHT_PATH=<path>/playwright/index.mjs node tests/e2e/playthrough.mjs   # also: tests/e2e/systems.mjs, tests/e2e/hidden.mjs
 ```
 
 The e2e script plays the whole slice with real clicks in a real browser, adapts to dice outcomes (so it works for any seed),
