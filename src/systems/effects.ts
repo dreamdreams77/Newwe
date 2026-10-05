@@ -8,6 +8,7 @@ import { creatureField } from './creatures';
 import { gainEleven } from './elevenEleven';
 import { addVisitors } from './hits';
 import { addItem } from './inventory';
+import { applyAilment } from './ailments';
 import { changeVital, raiseStat } from './stats';
 import { STAT_BY_ID } from '../data/statDefs';
 
@@ -82,6 +83,9 @@ export function applyEffect(g: Game, e: Effect): void {
     case 'recipe':
       if (!g.state.recipes.discovered.includes(e.id)) g.state.recipes.discovered.push(e.id);
       g.changed();
+      break;
+    case 'ailment':
+      applyAilment(g, e.id, e.minutes);
       break;
     case 'reveal':
       g.reveal(e.key);

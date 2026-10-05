@@ -1,7 +1,9 @@
 import { BALANCE } from '../config/balance';
 import type { Game } from '../core/game';
 import { Random } from '../core/random';
-import { coffeeState } from '../core/timeSystem';
+import { coffeeState, minuteOfDay } from '../core/timeSystem';
+import { ELEVEN_AM, ELEVEN_PM } from '../config/balance';
+import { applyAilment } from './ailments';
 import { passTime } from './actions';
 import type { Cond, StatId } from '../core/types';
 import { STAT_BY_ID } from '../data/statDefs';
@@ -195,6 +197,13 @@ export function commitRoll(g: Game, res: RollResult, firstRoll = true): void {
   }
   if (res.outcome === 'crit') s.counters.crits++;
   if (res.outcome === 'critFail') s.counters.fumbles++;
+  if (res.dice.some((d) => d.kind === 'golden')) {
+    const m = minuteOfDay(s.clock.minutes);
+    if ((m >= ELEVEN_AM && m <= ELEVEN_AM + 15) || (m >= ELEVEN_PM && m <= ELEVEN_PM + 15)) {
+      g.toast('The Golden Dice warned you: do not roll after 11:11. (v2.0)', 'bad');
+      applyAilment(g, 'outofsync');
+    }
+  }
   if (res.goldenFumble) {
     s.flags.golden_fumbled = true;
     changeVital(g, 'coffee', -1);

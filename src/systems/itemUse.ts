@@ -5,8 +5,8 @@ import { applyEffects } from './effects';
 import { passTime } from './actions';
 import { itemDef, removeItem, hasItem } from './inventory';
 import { changeVital } from './stats';
-import { addBuff } from '../core/timeSystem';
 import { statValue } from './stats';
+import { applyAilment } from './ailments';
 
 export type ItemHandler = (g: Game, itemId: string) => void | Promise<void>;
 const handlers = new Map<string, ItemHandler>();
@@ -35,8 +35,7 @@ handlers.set('eat_snack', (g) => {
     changeVital(g, 'coffee', 2);
     g.toast('Shockingly good. You do not ask questions. +3 HP, +2 Coffee.', 'good');
   } else {
-    addBuff(g, 'luck', 2, 180, 'Lucky snack');
-    g.toast('It tastes like a four-leaf clover. +2 Luck for a while.', 'magic');
+    applyAilment(g, 'lucky', 180);
   }
 });
 

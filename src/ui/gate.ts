@@ -2,6 +2,7 @@ import { game } from '../core/runtime';
 import { WORLD_BY_ID } from '../data/world';
 import { maskedClause, objectOk } from '../systems/worldModel';
 import { audio } from '../audio/audioManager';
+import { hasPerk } from '../systems/equipment';
 import { h, btn } from './dom';
 import { toast } from './notifications';
 import { navigate } from './router';
@@ -41,6 +42,7 @@ export function openDevGate(): void {
         ),
         h('p', { class: 'insp-key' }, 'Lines you cannot read yet show "?". The Inspector can look deeper. People leave notes under traffic cones.'),
         h('div', { class: 'win-actions' },
+          hasPerk(g, 'broken_mouse') ? btn('Click the greyed-out line (Broken Mouse)', () => { g.state.flags.dev_open = true; g.state.flags.bug_found = true; audio.sfx('eleven'); toast("That shouldn't have worked. The line was never meant to be clickable. The mouse disagreed.", 'magic'); g.changed(); win.close(); navigate('dev'); }, 'warn', { dataset: { fk: 'mousegate' } }) : '',
           btn('Try the door', () => {
             if (objectOk(g, o)) {
               g.state.flags.dev_open = true;

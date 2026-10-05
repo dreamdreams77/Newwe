@@ -235,7 +235,6 @@ await wait(300);
 await mut(() => window.__game.navigate('elevenRoom', { free: true }));
 await page.waitForSelector('.finale button:has-text("Return")', { timeout: 20000 });
 const fin = await page.$eval('.render-pre', (e) => e.textContent);
-console.log(JSON.stringify(fin.slice(-500)));
 assert(/PARENT PROCESS/.test(fin) && /homepage\.exe/.test(fin) && /ERRORS:   0/.test(fin), 'the finale shows SYSTEM STATUS');
 log('The finale: SYSTEM STATUS (processes, uptime, memory, errors: 0, parent process: not yet found)');
 await menu('File', 'Save Files');

@@ -66,11 +66,11 @@ describe('dice', () => {
     expect(wishReroll(g, ep, win)).toBeNull();
     expect(g.state.eleven.charges).toBe(1);
   });
-  it('empty coffee adds chaos', () => {
+  it('a crashed player has less Puzzle Sense', () => {
     const g = newGame();
-    const before = statValue(g, 'chaos');
+    const before = statValue(g, 'puzzleSense');
     g.state.vitals.coffee = 0;
-    expect(statValue(g, 'chaos')).toBeGreaterThan(before);
+    expect(statValue(g, 'puzzleSense')).toBe(before - 2);
   });
 });
 

@@ -3,6 +3,8 @@ import { coffeeState, dayNumber, formatClock } from '../core/timeSystem';
 import { h, replaceChildren, btn, type Child } from './dom';
 import { icon } from './sprites';
 import { counterDigits } from '../systems/hits';
+import { activeAilments, hasAilment } from '../systems/ailments';
+import { SYNC_OFFSET } from '../data/ailments';
 
 export interface MenuItem {
   label: string;
@@ -198,6 +200,8 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
       // HUD
       const v = s.vitals;
       const cs = coffeeState(game);
+      // OUT OF SYNC: the clock lies by a few minutes
+      const shown = s.clock.minutes + (hasAilment(game, 'outofsync') ? SYNC_OFFSET : 0);
       const hpPct = (v.hp / v.hpMax) * 100;
       const cpPct = (v.coffee / v.coffeeMax) * 100;
       const pips: Child[] = [];
@@ -208,8 +212,9 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
         h('div', { class: 'bar-wrap' }, h('span', { class: 'lbl' }, 'HP'), h('div', { class: 'bar hp', attrs: { role: 'meter', 'aria-valuenow': v.hp, 'aria-valuemin': 0, 'aria-valuemax': v.hpMax, 'aria-label': 'HP' } }, h('i', { style: `width:${hpPct}%` }), h('span', { class: 'num' }, `${v.hp}/${v.hpMax}`))),
         h('div', { class: 'bar-wrap' }, h('span', { class: 'lbl' }, 'COFFEE'), h('div', { class: `bar coffee ${cs === 'low' || cs === 'empty' ? 'low' : cs === 'wired' ? 'wired' : ''}`, attrs: { role: 'meter', 'aria-valuenow': v.coffee, 'aria-valuemin': 0, 'aria-valuemax': v.coffeeMax, 'aria-label': 'Coffee' } }, h('i', { style: `width:${cpPct}%` }), h('span', { class: 'num' }, `${v.coffee}/${v.coffeeMax}`))),
         showEleven ? h('div', { class: 'bar-wrap limit', title: '11:11 charges: rare wishes' }, h('span', { class: 'lbl' }, '11:11'), h('span', { class: 'limit', attrs: { role: 'img', 'aria-label': `${s.eleven.charges} of ${s.eleven.max} wishes` } }, pips)) : null,
-        cs === 'empty' ? h('span', { class: 'state-tag jitter' }, 'JITTERY') : cs === 'wired' ? h('span', { class: 'state-tag wired' }, 'WIRED') : null,
-        h('div', { class: 'clock', attrs: { 'aria-label': `Time ${formatClock(s.clock.minutes)}, day ${dayNumber(s.clock.minutes)}` } }, formatClock(s.clock.minutes), h('span', { class: 'day' }, `DAY ${dayNumber(s.clock.minutes)}`)),
+        cs === 'wired' && !hasAilment(game, 'jittery') ? h('span', { class: 'state-tag wired', title: 'Wired: sharper on mind rolls, things take less time.' }, 'WIRED') : null,
+        ...activeAilments(game).map((a) => h('span', { class: `state-tag fx ${a.good ? 'good' : 'bad'} fx-${a.id}`, title: `${a.label}: ${a.text}`, attrs: { role: 'img', 'aria-label': `${a.label}: ${a.text}` } }, a.label)),
+        h('div', { class: 'clock', attrs: { 'aria-label': `Time ${formatClock(shown)}, day ${dayNumber(s.clock.minutes)}` } }, formatClock(shown), h('span', { class: 'day' }, `DAY ${dayNumber(s.clock.minutes)}`)),
       );
       zoneCell.textContent = `Visitors: ${counterDigits(s.visitors)}`;
     },

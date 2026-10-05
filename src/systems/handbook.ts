@@ -1,6 +1,7 @@
 import type { Game } from '../core/game';
 import { CREATURE_HB } from './handbookData';
 import { ITEMS } from '../data/items';
+import { AILMENTS } from '../data/ailments';
 import { MEMORIES, memoryView } from '../data/memories';
 import { RECIPES } from '../data/recipes';
 import { ZONES } from '../data/zones';
@@ -36,6 +37,27 @@ const when = (g: Game, c: Cond | undefined) => !c || test(g, c);
  */
 export function buildHandbook(g: Game): HbCategory[] {
   const cats: HbCategory[] = [];
+
+  // status effects: only the ones you have actually had
+  cats.push({
+    id: 'status',
+    label: 'Status',
+    entries: Object.values(AILMENTS).map((a): HbEntry => {
+      const k = g.state.seenFx.includes(`fx:${a.id}`);
+      return { id: a.id, title: k ? a.label : 'UNKNOWN', known: k, lines: [L(a.text, k), L(a.detail, k), L(`Cure: ${a.cure}`, k && g.state.seenFx.includes(`cure:${a.id}`) || k && a.id === 'crashed')] };
+    }),
+  });
+
+  // gear
+  cats.push({
+    id: 'gear',
+    label: 'Gear',
+    entries: Object.values(ITEMS).filter((i) => i.equip).map((i): HbEntry => {
+      const known = g.has(`has_had_${i.id}`);
+      const worn = g.state.seenFx.includes(`gear:${i.id}`);
+      return { id: i.id, title: known ? i.name : 'UNKNOWN', known, lines: [L(`Slot: ${i.equip!.slot}`, known), L(i.equip!.text, worn), L(`Perks: ${(i.equip!.perks ?? []).join(', ') || 'none'}`, worn && g.has('inspector_on'))] };
+    }),
+  });
 
   // items
   const items = Object.values(ITEMS).map((i): HbEntry => {

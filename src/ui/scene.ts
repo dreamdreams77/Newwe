@@ -5,6 +5,8 @@ import type { HiddenSpot } from '../data/zones';
 import { ZONES } from '../data/zones';
 import { ITEMS } from '../data/items';
 import { addVisitors } from '../systems/hits';
+import { hasAilment } from '../systems/ailments';
+import { hasPerk } from '../systems/equipment';
 import { changeVital, statValue } from '../systems/stats';
 import { passTime } from '../systems/actions';
 import { h, btn } from './dom';
@@ -65,6 +67,13 @@ export function scene(opts: SceneOpts): HTMLElement {
         dataset: { fk: `hs-${hs.id}` },
         onclick: () => {
           if (inspectMode && hs.obj) return void openInspector(hs.obj);
+          const gg = game();
+          if (hasAilment(gg, 'jittery') && gg.rng.chance(0.12) && !held()) {
+            gg.sfx('error');
+            passTime(gg, 1);
+            toast('Your hand jerks. You click the wrong part of the right thing, and then the right part of nothing. (JITTERY)', 'funny');
+            return;
+          }
           const item = held();
           if (item) {
             const handled = hs.onItem?.(item);
@@ -96,7 +105,7 @@ export function spotsLeft(zoneId: string): HiddenSpot[] {
 export function spotButtons(zoneId: string): HTMLElement[] {
   const g = game();
   const zone = g.zone(zoneId);
-  const obs = statValue(g, 'observation');
+  const obs = statValue(g, 'observation') + (hasPerk(g, 'lens') ? 3 : 0);
   return spotsLeft(zoneId).map((sp) => {
     const glint = obs >= sp.obs;
     return h(
@@ -138,7 +147,7 @@ function squint(): void {
   const g = game();
   if (g.state.vitals.coffee < 1) return;
   changeVital(g, 'coffee', -1);
-  addBuff(g, 'observation', 4, 45, 'Squinting');
+  addBuff(g, 'observation', 4, hasPerk(g, 'lens') ? 120 : 45, 'Squinting');
   passTime(g, 2);
   g.sfx('click');
   toast('You squint. The page gets sharper. Hidden things start to glint.', 'info');

@@ -1,6 +1,7 @@
 import { BALANCE } from '../config/balance';
 import type { Game } from '../core/game';
-import { coffeeState } from '../core/timeSystem';
+import { ailmentMod, hasAilment } from './ailments';
+import { equipMod } from './equipment';
 import type { StatId } from '../core/types';
 
 /** The effective value of a stat right now: base + buffs + situational. */
@@ -8,9 +9,17 @@ export function statValue(g: Game, id: StatId): number {
   const s = g.state;
   let v = s.stats[id] ?? 0;
   if (id === 'bossKnowledge') v += s.knowledge.length;
+  if (hasAilment(g, 'overwritten') && id !== 'bossKnowledge' && isStrongest(g, id)) v = BALANCE.stats.start[id];
   for (const b of s.buffs) if (b.stat === id) v += b.by;
-  if (id === 'chaos' && coffeeState(g) === 'empty') v += BALANCE.coffee.emptyChaos;
+  v += ailmentMod(g, id) + equipMod(g, id);
   return Math.max(0, v);
+}
+
+/** OVERWRITTEN swaps your single strongest stat back to what it started as */
+function isStrongest(g: Game, id: StatId): boolean {
+  const entries = (Object.entries(g.state.stats) as Array<[StatId, number]>).filter(([k]) => k !== 'bossKnowledge');
+  const top = Math.max(...entries.map(([, v]) => v));
+  return entries.find(([, v]) => v === top)?.[0] === id;
 }
 
 export function baseStat(g: Game, id: StatId): number {
@@ -35,9 +44,9 @@ export function changeVital(g: Game, v: 'hp' | 'coffee', by: number): number {
   return vit[v] - before;
 }
 
-/** Is the player jittery (coffee 0)? Careful actions get disabled. */
-export function isJittery(g: Game): boolean {
-  return coffeeState(g) === 'empty';
+/** Crashed (coffee 0): careful actions are disabled. */
+export function isCrashed(g: Game): boolean {
+  return g.state.vitals.coffee <= 0;
 }
 
 export function carryCapacity(g: Game): number {

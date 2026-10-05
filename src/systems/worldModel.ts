@@ -3,6 +3,7 @@ import { WORLD, WORLD_BY_ID, type Dep, type WorldObj } from '../data/world';
 import { test } from './conditions';
 import { changeVital, statValue } from './stats';
 import { passTime } from './actions';
+import { hasPerk } from './equipment';
 
 export type Tier = 0 | 1 | 2;
 
@@ -56,7 +57,7 @@ export function probe(g: Game, objId: string): ProbeResult {
   if (!o) return { ok: false, text: 'Nothing there.' };
   const free = g.state.inspector.level >= 2;
   if (!free && g.state.vitals.coffee < 1) return { ok: false, text: 'Too jittery to focus. (Needs 1 Coffee.)' };
-  const obs = statValue(g, 'observation') + (g.state.inventory.crt_goggles ? 2 : 0) + (g.state.inspector.level >= 2 ? 2 : 0);
+  const obs = statValue(g, 'observation') + (hasPerk(g, 'probe_plus2') ? 2 : 0) + (g.state.inspector.level >= 2 ? 2 : 0);
   const open = o.deps.filter((d) => depTier(g, o, d) < 2);
   if (!open.length) return { ok: false, text: 'There is nothing left in here you do not already understand.' };
   const reachable = open.filter((d) => (d.obs ?? 3) <= obs).sort((a, b) => depTier(g, o, a) - depTier(g, o, b));

@@ -67,7 +67,8 @@ export type Effect =
   | { t: 'say'; text: string; kind?: ToastKind }
   | { t: 'creature'; id: string; field: 'trust' | 'mood' | 'energy' | 'fullness'; by: number }
   | { t: 'recipe'; id: string }
-  | { t: 'reveal'; key: string };
+  | { t: 'reveal'; key: string }
+  | { t: 'ailment'; id: string; minutes?: number };
 
 export type ToastKind = 'info' | 'good' | 'bad' | 'item' | 'magic' | 'funny';
 
@@ -169,6 +170,11 @@ export interface GameState {
   inspector: { level: number; tiers: Record<string, number>; probes: number };
   badges: string[];
   handbook: string[]; // extra unlocked handbook entries (events)
+  /** timed status effects. Some statuses are derived from the world (coffee) and are not stored. */
+  ailments: Array<{ id: string; until: number }>;
+  equipment: Record<string, string | null>;
+  /** statuses and gear the player has ever experienced (Handbook) */
+  seenFx: string[];
   createdAt: number;
 }
 
@@ -211,6 +217,18 @@ export interface ItemDef {
   /** state-aware text shown on examine, appended to description */
   story?: Array<{ when: Cond; text: string }>;
   stackable?: boolean;
+  equip?: EquipDef;
+}
+
+export type SlotId = 'head' | 'body' | 'hands' | 'accessory' | 'tool' | 'badge';
+
+/** what wearing an item does: not just numbers, but things you can now DO */
+export interface EquipDef {
+  slot: SlotId;
+  text: string;
+  mods?: Partial<Record<StatId, number>>;
+  /** named effects other systems look for (see systems/equipment.ts) */
+  perks?: string[];
 }
 
 // --------------------------------------------------------------------- cards

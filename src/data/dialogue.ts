@@ -71,7 +71,9 @@ export const BOB: DTree = {
       text: "Back again! Careful with that tape. It's load-bearing.",
       choices: [
         { text: 'Tell me another joke.', next: 'joke' },
+        { text: 'Heard anything lately?', next: 'rumor' },
         { text: 'What is behind the tape?', next: 'behind' },
+        { text: 'Got anything for somebody with real Dad Energy?', when: { all: [{ stat: 'dadEnergy', gte: 4 }, { notFlag: 'got_gloves' }] }, next: 'gloves' },
         { text: 'Bye.', end: true },
       ],
     },
@@ -80,6 +82,14 @@ export const BOB: DTree = {
       who: 'Bob (not THAT Bob)',
       portrait: 'portrait_bob',
       text: "What do you call a fake noodle? ...An impasta. I'm here all week. I'm here every week.",
+      next: 'again',
+    },
+    gloves: {
+      id: 'gloves',
+      who: 'Bob (not THAT Bob)',
+      portrait: 'portrait_bob',
+      text: "Four Dad Energy. FOUR. I haven't seen a four since the tape ran out in '02. Here: I made these. Don't ask what they were before. They were gloves. Now they are Gloves.",
+      effects: [{ t: 'item', id: 'duct_tape_gloves' }, { t: 'flag', key: 'got_gloves' }],
       next: 'again',
     },
     behind: {
@@ -288,7 +298,8 @@ export const MARL: DTree = {
       id: 'give2',
       who: 'Marl, Keeper',
       portrait: 'portrait_marl',
-      text: 'There. Warm. Look at her go. Sit a minute, kid. Mind the glass. I will tell you something about Novembers, and you will pretend it is about yoghurt.',
+      text: 'There. Warm. Look at her go. Sit a minute, kid. Mind the glass. Here. Take the coat off the hook, it is cold on the cliff and I have two. I will tell you something about Novembers, and you will pretend it is about yoghurt.',
+      effects: [{ t: 'item', id: 'keepers_coat' }, { t: 'flag', key: 'got_coat' }],
       end: true,
     },
     lit: {
@@ -299,8 +310,17 @@ export const MARL: DTree = {
       choices: [
         { text: '(Give him the yoghurt)', when: { has: 'yoghurt' }, next: 'yoghurt' },
         { text: 'Who was the man?', next: 'man' },
+        { text: '(Ask about the coat on the hook)', when: { all: [{ flag: 'lamp_how', is: 'tape' }, { notFlag: 'got_coat' }] }, next: 'coat_tape' },
         { text: 'Bye.', end: true },
       ],
+    },
+    coat_tape: {
+      id: 'coat_tape',
+      who: 'Marl, Keeper',
+      portrait: 'portrait_marl',
+      text: "That coat? Belonged to a man who also fixed things with tape. Take it. You two deserve each other.",
+      effects: [{ t: 'item', id: 'keepers_coat' }, { t: 'flag', key: 'got_coat' }],
+      next: 'lit',
     },
     man: {
       id: 'man',

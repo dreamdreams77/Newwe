@@ -52,6 +52,9 @@ export function createInitialState(seed = Date.now() >>> 0): GameState {
     inspector: { level: 0, tiers: {}, probes: 0 },
     badges: [],
     handbook: [],
+    ailments: [],
+    equipment: { head: null, body: null, hands: null, accessory: null, tool: null, badge: null },
+    seenFx: [],
     createdAt: Date.now(),
   };
 }

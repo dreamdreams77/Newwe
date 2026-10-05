@@ -42,3 +42,23 @@ body.inspecting { cursor: help; }
 .hex-chk { margin-left: 8px; font-size: 1rem; } .hex-chk.ok { color: #7fff8a; } .hex-chk.bad { color: #ff7a8a; }
 .hex-ascii { margin: 4px 0; padding: 6px; background: #000; color: #7fff8a; font-family: var(--font-term); font-size: 1.3rem; white-space: pre-wrap; border: 2px inset #2a5a2a; }
 .hex-in { width: 3ch; background: #000; color: #7fff8a; border: 1px solid #4a8a4a; font-family: var(--font-term); font-size: 1.3rem; text-align: center; }
+
+/* ===== status effects: they change how the page looks as well as how it plays ===== */
+.state-tag.fx { font-family: var(--font-pixel); font-size: .5rem; padding: 3px 5px; border: 1px solid; }
+.state-tag.fx.bad { color: #ffb0b0; border-color: #ff6a6a; } .state-tag.fx.good { color: #b8ffc0; border-color: #6aff8a; }
+.fx-list { list-style: none; padding: 0; margin: 0; } .fx-list li { padding: 3px 0; border-bottom: 1px dotted #99a; font-size: .88rem; } .fx-list li.bad b { color: var(--w-warn); } .fx-list li.good b { color: var(--w-good); } .fx-list small { color: var(--w-muted); }
+.gear-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.gear-slot { border: 2px dashed #99a; padding: 6px 8px; min-height: 84px; font-size: .82rem; } .gear-slot.on { border-style: solid; background: rgba(255,255,255,.06); }
+.gs-l { font-family: var(--font-pixel); font-size: .5rem; color: var(--w-gold); display: block; margin-bottom: 4px; } .gs-item { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; } .gs-item small, .gs-empty { color: var(--w-muted); font-size: .75rem; font-style: italic; }
+.det-equip { font-size: .82rem; color: var(--w-accent); }
+html.st-jittery .viewport { animation: jitter .18s steps(2) infinite; }
+@keyframes jitter { 50% { transform: translate(.6px, -.6px); } }
+html.st-crashed .viewport { filter: grayscale(.85) brightness(.82); }
+html.st-corrupted .viewport .rainbow-text, html.st-corrupted .viewport h2 { animation: glitch 1.2s infinite; }
+html.st-corrupted .hs-label { filter: hue-rotate(120deg); letter-spacing: .2em; }
+html.st-lost .viewport { filter: sepia(.5) blur(.4px); }
+html.st-inspired .viewport { filter: saturate(1.25) brightness(1.06); }
+html.st-lucky .odometer .dig { text-shadow: 0 0 10px #ffe45a; }
+html.st-sync .hud .clock { animation: glitch 2.5s infinite; color: #ff9aff; }
+html.st-overwritten .viewport { filter: hue-rotate(40deg) contrast(1.08); }
+html.reduce-motion .viewport { animation: none !important; }

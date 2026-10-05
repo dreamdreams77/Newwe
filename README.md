@@ -86,6 +86,26 @@ whether you still have a token for the boss), several ways through every major b
 a jimmied lock, a typed address, or a Broken Mouse), controlled bugs the game acknowledges ("That shouldn't have
 worked."), and NPC rumours that disagree and have verdicts the world can check.
 
+
+## Status effects and equipment
+
+Both are data (`src/data/ailments.ts`, `equip` blocks on items) and both change what you can DO, not only a number.
+
+**Status effects.** JITTERY (too much coffee: faster, chaotic, now and then your hand jerks and you misclick), CRASHED
+(coffee at zero: Puzzle Sense down, slower, careful options off; the first crash costs twenty minutes and something kind
+happens), CORRUPTED (the Inspector garbles one line and admits it), LOST (the maze map forgets, the web ring stops naming
+things), OUT OF SYNC (the clock lies by seven minutes), OVERWRITTEN (your strongest stat reverts to its starting value),
+INSPIRED, LUCKY. They come from things that happen: eating the yoghurt, tasting the sludge, a warm cola from the
+vending machine, rolling the Golden Dice just after 11:11 (its version history warned you), wandering the maze,
+entering the 404 without goggles. They expire on the in-game clock and show on the HUD, the Status window, the page
+itself, the terminal and the Handbook (which only lists the ones you have had).
+
+**Equipment** (Head / Body / Hands / Accessory / Tool / Website Badge, plus your Companion): CRT Monitor Goggles (immune to
+CORRUPTED, the Inspector sees deeper), Duct-Tape Gloves (from Bob, but only if your Dad Energy earns them), the Keeper's Coat
+(never LOST, coffee lasts longer), the Lighthouse Lens (hidden things glint, Squint lasts longer), the Webmaster Badge (NPCs
+admit whether their own rumours are true), the Broken Mouse (clicks things the page considers inaccessible, including a
+second way past the `/dev/` gate) and a junk Receipt for Nothing that turns out to be lucky.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.
@@ -134,9 +154,9 @@ placeholder version; someone who knows the private context finds more.
 ## Tests
 
 ```bash
-npm test                 # 62 unit tests: dice (luck vs chaos), crafting, cards, creatures, ecology, quests, saves, content integrity
+npm test                 # 76 unit tests: dice (luck vs chaos), crafting, cards, creatures, ecology, quests, saves, content integrity
 npm run build && (npx vite preview --port 4173 &) \
-  && PLAYWRIGHT_PATH=<path>/playwright/index.mjs node tests/e2e/playthrough.mjs   # also: tests/e2e/systems.mjs, tests/e2e/hidden.mjs
+  && PLAYWRIGHT_PATH=<path>/playwright/index.mjs node tests/e2e/playthrough.mjs   # also: tests/e2e/systems.mjs, tests/e2e/hidden.mjs, tests/e2e/gear.mjs
 ```
 
 The e2e script plays the whole slice with real clicks in a real browser, adapts to dice outcomes (so it works for any seed),

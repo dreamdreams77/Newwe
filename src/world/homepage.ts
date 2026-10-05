@@ -12,6 +12,7 @@ import { activeCreature, creatureMoodText } from '../systems/creatures';
 import { unreadCount } from '../systems/guestbook';
 import { audio } from '../audio/audioManager';
 import { poke } from '../systems/pokes';
+import { hasPerk } from '../systems/equipment';
 import { held, setHeld } from '../ui/held';
 import { inspectMode, openInspector } from '../ui/inspector';
 import { h, btn } from '../ui/dom';
@@ -85,7 +86,7 @@ function render(): HTMLElement {
     h('ul', {}, 
       h('li', {}, h('a', { href: '#', dataset: { fk: 'l-guestbook' }, onclick: (e: Event) => (e.preventDefault(), navigate('guestbook')) }, 'Guestbook'), unread ? h('span', { class: 'new-tag blink' }, ` NEW (${unread})`) : null),
       h('li', {}, h('a', { href: '#', dataset: { fk: 'l-construction' }, onclick: (e: Event) => (e.preventDefault(), navigate('construction')) }, 'Under Construction'), h('span', { class: 'new-tag' }, ' (always)')),
-      h('li', {}, h('a', { href: '#', class: 'broken-link', dataset: { fk: 'l-404' }, onclick: (e: Event) => { e.preventDefault(); if (held() === 'broken_mouse' && !g.has('clue_404')) { setHeld(null); g.state.flags.clue_404 = true; g.state.flags.bug_found = true; g.sfx('eleven'); toast("That shouldn't have worked. The Broken Mouse clicks a link the page insists is dead, and the link, embarrassed, comes back to life.", 'magic'); g.changed(); } navigate('e404'); } }, 'Secret Page!!'), h('span', { class: 'tiny' }, ' (broken)')),
+      h('li', {}, h('a', { href: '#', class: 'broken-link', dataset: { fk: 'l-404' }, onclick: (e: Event) => { e.preventDefault(); if ((held() === 'broken_mouse' || hasPerk(g, 'broken_mouse')) && !g.has('clue_404')) { setHeld(null); g.state.flags.clue_404 = true; g.state.flags.bug_found = true; g.sfx('eleven'); toast("That shouldn't have worked. The Broken Mouse clicks a link the page insists is dead, and the link, embarrassed, comes back to life.", 'magic'); g.changed(); } navigate('e404'); } }, 'Secret Page!!'), h('span', { class: 'tiny' }, ' (broken)')),
       s.ui.revealed.mypage ? h('li', {}, h('a', { href: '#', dataset: { fk: 'l-mypage' }, onclick: (e: Event) => (e.preventDefault(), navigate('mypage')) }, 'My Page'), h('span', { class: 'new-tag blink' }, ' NEW')) : null,
     ),
   );

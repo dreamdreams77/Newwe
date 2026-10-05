@@ -24,6 +24,9 @@ function viewFile(name: string): void {
     width: 'min(680px, 98vw)',
     render: (b, w) => {
       b.append(h('pre', { class: 'source-pre' }, f.text(g).join('\n')));
+      if (name === 'badge.gif' && !g.has('has_had_webmaster_badge')) {
+        b.append(h('div', { class: 'win-actions' }, btn('Click the badge', () => { addItem(g, 'webmaster_badge', 1); toast("That shouldn't have worked. Nobody checks if you're the webmaster.", 'magic'); g.state.flags.bug_found = true; g.changed(); w.refresh(); }, 'warn')));
+      }
       if (name === 'debug.cfg') {
         b.append(h('div', { class: 'win-actions' }, btn(g.state.inspector.level >= 2 ? 'Change debug=1 back to 0' : 'Change debug=0 to debug=1', () => {
           g.state.inspector.level = g.state.inspector.level >= 2 ? 1 : 2;

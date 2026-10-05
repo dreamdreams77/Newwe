@@ -52,6 +52,7 @@ export function migrate(raw: unknown): GameState {
     myPage: { ...base.myPage, ...s.myPage },
     counters: { ...base.counters, ...s.counters },
     inspector: { ...base.inspector, ...s.inspector },
+    equipment: { ...base.equipment, ...s.equipment },
     version: SAVE_VERSION,
   };
   return merged;

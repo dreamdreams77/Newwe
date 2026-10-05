@@ -9,6 +9,8 @@ import { raiseStat } from '../systems/stats';
 import { blueScreen } from '../systems/travel';
 import { awardBadges } from '../systems/badges';
 import { checkRumors } from '../systems/rumors';
+import { watchCoffee, applyAilment } from '../systems/ailments';
+import { passTime } from '../systems/actions';
 
 /** Work out what stage the website is in. Stages only ever go up. */
 export function computeStage(g: Game): Stage {
@@ -39,6 +41,7 @@ export function evaluate(g: Game): void {
   if (s.stage >= 2) g.reveal('handbook');
   awardBadges(g);
   checkRumors(g);
+  watchCoffee(g, passTime);
   if (s.visitors >= BALANCE.hits.finale && g.has('boss_defeated') && !g.has('finale_ready')) {
     s.flags.finale_ready = true;
     g.toast('THE COUNTER READS 001111, and the thing at the end of the dark has been judged. The page holds very still.', 'magic');
@@ -72,7 +75,10 @@ export function installProgression(g: Game): () => void {
     g.bus.on('threshold', ({ at }) => {
       g.toast(THRESHOLD_TEXT[at] ?? `The counter reaches ${at}.`, 'magic');
       g.sfx('threshold');
-      if (at === 777) raiseStat(g, 'luck', 1);
+      if (at === 777) {
+        raiseStat(g, 'luck', 1);
+        applyAilment(g, 'lucky', 240);
+      }
       if (at === 500) raiseStat(g, 'curiosity', 1);
     }),
   );

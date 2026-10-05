@@ -4,6 +4,7 @@ import { generateMaze, placeThings, exits, E, N, S, W, type Maze, type MazeThing
 import { learn } from '../systems/effects';
 import { addItem, hasItem } from '../systems/inventory';
 import { passTime } from '../systems/actions';
+import { applyAilment, cureAilment, hasAilment } from '../systems/ailments';
 import { spendEleven } from '../systems/elevenEleven';
 import { runEncounter } from '../ui/combat';
 import { activeCreature, canSniff } from '../systems/creatures';
@@ -59,6 +60,10 @@ function interact(x: number, y: number): void {
     g.state.flags[`maze_loot_${t.id}`] = true;
     messages.push(`${t.title}: ${t.text}`);
     if (t.know) learn(g, t.know);
+    if (t.kind === 'note') {
+      g.state.flags.maze_steps = 0;
+      cureAilment(g, 'lost'); // a landmark: you know where you are
+    }
     if (t.item) addItem(g, t.item, 1);
     audio.sfx(t.kind === 'note' ? 'page' : 'pickup');
     if (t.kind === 'note') toast('You read it. (Boss Knowledge +1)', 'info');
@@ -90,6 +95,11 @@ function move(dx: number, dy: number, bit: number): void {
   passTime(g, BALANCE.time.cost.maze);
   audio.sfx('step');
   messages.length = 0;
+  const steps = ((g.state.flags.maze_steps as number) || 0) + 1;
+  g.state.flags.maze_steps = steps;
+  if (steps % 16 === 0 && !hasAilment(g, 'lost')) {
+    if (applyAilment(g, 'lost', 90)) messages.push('The corridors begin to look alike. You are, for now, LOST: the map will not be trusted.');
+  }
   interact(nx, ny);
   g.changed();
   refreshView();
@@ -115,8 +125,9 @@ function drawMaze(canvas: HTMLCanvasElement): void {
   const g = game();
   const m = maze!;
   const ctx = canvas.getContext('2d')!;
-  const seen = seenSet();
+  const lost = hasAilment(g, 'lost');
   const [px, py] = pos();
+  const seen = lost ? new Set([`${px},${py}`]) : seenSet(); // when lost, the map remembers nothing
   ctx.fillStyle = '#05020f';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (const c of m.cells) {
@@ -198,7 +209,7 @@ function render(): HTMLElement {
     h('div', { class: 'dungeon-grid' },
       h('div', { class: 'maze-wrap' }, canvas),
       h('div', { class: 'maze-side' },
-        h('p', { class: 'maze-where', attrs: { 'aria-live': 'polite' } }, `You are in a corridor. Exits: ${ex.join(', ')}.`),
+        h('p', { class: 'maze-where', attrs: { 'aria-live': 'polite' } }, hasAilment(g, 'lost') ? 'You are in a corridor. You are LOST. Exits: it all looks the same.' : `You are in a corridor. Exits: ${ex.join(', ')}.`),
         dpad,
         h('p', { class: 'tiny' }, 'Arrow keys or WASD. Yellow squares are notes. Green squares are things you can take.'),
         h('div', { class: 'maze-log', attrs: { role: 'log', 'aria-live': 'polite' } }, messages.slice(-4).map((t) => h('p', {}, t))),
@@ -228,4 +239,18 @@ if (new URLSearchParams(location.search).has('debug')) {
   (window as unknown as { __maze: unknown }).__maze = () => { ensure(); return { maze, things, pos: pos() }; };
 }
 
-registerZone({ id: 'dungeon', render, onEnter: () => { ensure(); const [x, y] = pos(); markSeen(x, y); } });
+registerZone({
+  id: 'dungeon',
+  render,
+  onEnter: () => {
+    ensure();
+    const g = game();
+    const [x, y] = pos();
+    markSeen(x, y);
+    // raw 404 data does not agree with you unless you can see through it
+    if (!g.has('dungeon_corrupt_seen')) {
+      g.state.flags.dungeon_corrupt_seen = true;
+      applyAilment(g, 'corrupted', 60);
+    }
+  },
+});

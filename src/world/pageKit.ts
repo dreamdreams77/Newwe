@@ -10,6 +10,7 @@ import { toast } from '../ui/notifications';
 import { icon } from '../ui/sprites';
 import { hasItem } from '../systems/inventory';
 import type { ZoneId } from '../core/types';
+import { hasAilment } from '../systems/ailments';
 import { openTicketRide } from './ticket';
 
 /** the little odometer. At stage 2+ a digit sometimes misbehaves. */
@@ -52,7 +53,8 @@ export function ringBar(current: ZoneId): HTMLElement {
   const prev = order[(idx - 1 + order.length) % order.length];
   const next = order[(idx + 1) % order.length];
   const rand = order.filter((z) => z !== current);
-  const label = (z: ZoneId) => (z === 'home' ? 'Home' : WEBRING.find((t) => t.zone === z)?.label ?? z);
+  const lost = hasAilment(g, 'lost');
+  const label = (z: ZoneId) => (lost ? '???' : z === 'home' ? 'Home' : WEBRING.find((t) => t.zone === z)?.label ?? z);
   const hasTicket = hasItem(g, 'train_ticket');
   return h(
     'nav',

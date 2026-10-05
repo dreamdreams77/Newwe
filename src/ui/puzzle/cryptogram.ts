@@ -2,6 +2,7 @@ import { game } from '../../core/runtime';
 import { CIPHER_KEYWORD, CIPHER_PLAIN, cipherAlphabet, encipher } from '../../data/puzzles';
 import { audio } from '../../audio/audioManager';
 import { addVisitors } from '../../systems/hits';
+import { addItem } from '../../systems/inventory';
 import { earnCard } from '../../systems/cards';
 import { learn } from '../../systems/effects';
 import { statValue } from '../../systems/stats';
@@ -38,6 +39,7 @@ export function openCryptogram(): Promise<boolean> {
       g.state.flags.clue_404 = true;
       learn(g, 'page_is_address');
       earnCard(g, 'secret_404');
+      if (!g.has('has_had_lighthouse_lens')) addItem(g, 'lighthouse_lens', 1);
       addVisitors(g, BALANCE.hits.puzzle, 'decoded the postcard');
       audio.sfx('puzzle');
       toast('"THE PAGE IS NOT LOST. IT IS WAITING. 404 IS AN ADDRESS. BRING THE USELESS KEY." Somewhere a link on the homepage just stopped lying.', 'magic');

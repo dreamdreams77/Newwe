@@ -2,6 +2,7 @@ import { game } from '../core/runtime';
 import { WORLD_BY_ID } from '../data/world';
 import { errorLine, knownObjects, maskedClause, noteLine, objectState, probe } from '../systems/worldModel';
 import { audio } from '../audio/audioManager';
+import { hasAilment } from '../systems/ailments';
 import { h, btn } from './dom';
 import { toast } from './notifications';
 import { openWindow, type WinHandle } from './windows';
@@ -26,10 +27,13 @@ export function inspectorLines(objId: string): string[] {
   const g = game();
   const o = WORLD_BY_ID[objId];
   const lines: string[] = [`OBJECT: ${o.label}`, `TYPE: ${o.kind}`, `STATE: ${objectState(g, o)}`, `LOGIC: ${LOGIC[o.mode]}`, '', 'DEPENDENCIES:'];
-  for (const d of o.deps) {
+  const corrupt = hasAilment(g, 'corrupted') ? g.state.clock.minutes % o.deps.length : -1;
+  o.deps.forEach((d, i) => {
     const c = maskedClause(g, o, d);
-    lines.push(` ${c.met === null ? '[ ]' : c.met ? '[x]' : '[!]'} ${c.text}`);
-  }
+    if (i === corrupt) lines.push(` [~] ${c.text.replace(/[a-z]/gi, (ch, k) => '▓▒░'[(k + g.state.clock.minutes) % 3] ?? ch)}`);
+    else lines.push(` ${c.met === null ? '[ ]' : c.met ? '[x]' : '[!]'} ${c.text}`);
+  });
+  if (corrupt >= 0) lines.push('', 'CORRUPTED: one line is lying');
   const e = errorLine(g, o);
   if (e) lines.push('', e);
   const n = noteLine(g, o);

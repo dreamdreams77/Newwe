@@ -4,6 +4,7 @@ import type { ZoneId } from '../core/types';
 import { passTime } from './actions';
 import { ensureHand, earnCard } from './cards';
 import { addVisitors, homeReturnBump } from './hits';
+import { cureAilment } from './ailments';
 
 export interface EnterOpts {
   free?: boolean; // no time cost (fast travel, load)
@@ -26,7 +27,10 @@ export function enterZone(g: Game, zone: ZoneId, opts: EnterOpts = {}): void {
     if (hits) addVisitors(g, hits, `first visit: ${zone}`);
     if (zone === 'lake') earnCard(g, 'loc_lake');
   }
-  if (zone === 'home' && from !== 'home') homeReturnBump(g);
+  if (zone === 'home' && from !== 'home') {
+    homeReturnBump(g);
+    cureAilment(g, 'lost');
+  }
   ensureHand(g, 3);
   g.bus.emit('zone', { zone });
   g.changed();

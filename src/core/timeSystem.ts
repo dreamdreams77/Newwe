@@ -52,9 +52,8 @@ export function coffeeState(g: Game): CoffeeState {
  * Advance the in-game clock. Handles passive coffee drain, buff expiry,
  * 11:11 crossings and HP regen. Returns the number of minutes actually spent.
  */
-export function advance(g: Game, minutes: number, opts: { raw?: boolean } = {}): number {
+export function advance(g: Game, minutes: number, _opts: { raw?: boolean } = {}): number {
   let spend = Math.max(0, Math.round(minutes));
-  if (!opts.raw && coffeeState(g) === 'wired') spend = Math.max(1, Math.round(spend * BALANCE.coffee.wiredTimeMult));
   if (spend === 0) return 0;
   const s = g.state;
   const before = s.clock.minutes;
@@ -62,7 +61,8 @@ export function advance(g: Game, minutes: number, opts: { raw?: boolean } = {}):
   s.clock.minutes = after;
 
   // passive coffee drain
-  const drained = Math.floor(after / BALANCE.coffee.passiveDrainMinutes) - Math.floor(before / BALANCE.coffee.passiveDrainMinutes);
+  const drainEvery = BALANCE.coffee.passiveDrainMinutes * (g.state.equipment.body === 'keepers_coat' && g.state.inventory.keepers_coat ? 1.5 : 1);
+  const drained = Math.floor(after / drainEvery) - Math.floor(before / drainEvery);
   if (drained > 0 && s.vitals.coffee > 0) {
     s.vitals.coffee = Math.max(0, s.vitals.coffee - drained);
     if (s.vitals.coffee === 0) g.toast('Your mug is empty. Things are about to get weird.', 'funny');

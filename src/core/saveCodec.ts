@@ -95,6 +95,9 @@ export function encodeState(s: GameState): unknown[] {
     [s.inspector.level, s.inspector.tiers, s.inspector.probes],
     s.badges,
     s.handbook,
+    s.ailments.map((a) => [a.id, a.until]),
+    s.equipment,
+    s.seenFx,
   ];
 }
 
@@ -160,5 +163,8 @@ export function decodeState(a: unknown[]): GameState {
   s.inspector = { level: insp[0], tiers: insp[1], probes: insp[2] };
   s.badges = (tail[1] as string[] | undefined) ?? [];
   s.handbook = (tail[2] as string[] | undefined) ?? [];
+  s.ailments = ((tail[3] as Array<[string, number]> | undefined) ?? []).map(([id, until]) => ({ id, until }));
+  s.equipment = { ...s.equipment, ...((tail[4] as Record<string, string | null> | undefined) ?? {}) };
+  s.seenFx = (tail[5] as string[] | undefined) ?? [];
   return s;
 }

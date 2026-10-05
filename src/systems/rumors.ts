@@ -1,6 +1,7 @@
 import type { Game } from '../core/game';
 import { test } from './conditions';
 import type { Cond } from '../core/types';
+import { hasPerk } from './equipment';
 
 // NPCs do not always tell the truth, and they do not agree with each other.
 // A rumour has a verdict the world can check once you have seen enough.
@@ -59,5 +60,12 @@ export function checkRumors(g: Game): void {
 
 export function rumorText(g: Game): string {
   const r = RUMORS.find((x) => x.id === g.state.flags.rumor_last);
-  return r ? r.text : 'Nothing new. Ask me again when something happens.';
+  if (!r) return 'Nothing new. Ask me again when something happens.';
+  if (hasPerk(g, 'trust_rumors')) {
+    // the badge makes people drop their voice and say what they actually think of what they just said
+    const v = verdict(g, r);
+    const tell = v === 'true' ? ' (lowers voice) ...that one is actually true.' : v === 'false' ? ' (lowers voice) ...between us, that one is rubbish.' : ' (lowers voice) ...I honestly do not know if that is true.';
+    return r.text + tell;
+  }
+  return r.text;
 }

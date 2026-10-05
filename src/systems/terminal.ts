@@ -11,6 +11,8 @@ import { nextHint } from './hints';
 import { statusLines } from './status';
 import { DEV_FILES } from '../data/devFiles';
 import { inventoryList } from './inventory';
+import { activeAilments, hasAilment } from './ailments';
+import { SLOTS, equip, equippedIn } from './equipment';
 
 export interface TermResult {
   lines: string[];
@@ -43,13 +45,14 @@ export function runCommand(g: Game, raw: string): TermResult {
       return { lines: out };
     }
     case 'status':
-      return { lines: [`HP ${s.vitals.hp}/${s.vitals.hpMax}  COFFEE ${s.vitals.coffee}/${s.vitals.coffeeMax}  11:11 x${s.eleven.charges}`, `CLOCK ${formatClock(s.clock.minutes)}  VISITORS ${s.visitors}  STAGE ${s.stage}`, ...(g.has('finale_ready') ? ['', ...statusLines(g)] : [])] };
+      return { lines: [...(activeAilments(g).length ? ['STATUS EFFECTS: ' + activeAilments(g).map((a) => a.label).join(', ')] : ['STATUS EFFECTS: none']), `HP ${s.vitals.hp}/${s.vitals.hpMax}  COFFEE ${s.vitals.coffee}/${s.vitals.coffeeMax}  11:11 x${s.eleven.charges}`, `CLOCK ${formatClock(s.clock.minutes)}  VISITORS ${s.visitors}  STAGE ${s.stage}`, ...(g.has('finale_ready') ? ['', ...statusLines(g)] : [])] };
     case 'inventory': {
       const inv = inventoryList(g);
       return { lines: inv.length ? inv.map((i) => `  ${i.def.name}${i.stack.qty > 1 ? ' x' + i.stack.qty : ''}`) : ['  (empty. the page is mostly air.)'] };
     }
     case 'map': {
-      const has = (z: string) => g.has(`visited_${z}`);
+      const lost = hasAilment(g, 'lost');
+      const has = (z: string) => !lost && g.has(`visited_${z}`);
       const node = (z: string, name: string) => (has(z) ? `[${name}]` : '[ ? ]');
       const lines = [`            ${node('home', 'HOME')}`, '             |', `   ${node('guestbook', 'GUESTBOOK')}--+--${node('construction', 'CONSTRUCTION')}`, '             |', `      ${node('lake', 'POND')}----${node('lighthouse', 'LIGHT')}`];
       if (g.has('clue_404')) lines.push('             |', `          ${node('e404', '404')}${g.has('e404_open') ? '--' + node('dungeon', 'DUNGEON') : ''}`);
@@ -83,6 +86,16 @@ export function runCommand(g: Game, raw: string): TermResult {
       if (!g.has('dev_open')) return { lines: [`cat: ${args[0] ?? ''}: no such file`] };
       const f = DEV_FILES.find((d) => d.name === args[0]);
       return f ? { lines: f.text(g) } : { lines: ['cat: no such file. try: ' + DEV_FILES.map((d) => d.name).join(' ')] };
+    }
+    case 'gear':
+    case 'equipment':
+      return { lines: SLOTS.map((sl) => `  ${sl.label.padEnd(14)} ${equippedIn(g, sl.id)?.name ?? '-'}`) };
+    case 'wear':
+    case 'equip': {
+      const q = args.join('_');
+      const id = Object.keys(ITEMS).find((i) => ITEMS[i].equip && g.state.inventory[i] && (i === q || ITEMS[i].name.toLowerCase().replace(/[^a-z]+/g, '_').startsWith(q)));
+      if (!q || !id) return { lines: ['usage: equip <item you are carrying that can be worn>'] };
+      return { lines: [equip(g, id).text] };
     }
     case 'ping':
       return { lines: args[0] === '1111' ? ['reply from visitor 1111: expected.'] : [`ping: ${args[0] ?? ''}: nobody by that name. (yet.)`] };

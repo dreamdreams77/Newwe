@@ -3,6 +3,7 @@ import type { Game } from '../core/game';
 import { seeded } from '../core/random';
 import { ENCOUNTERS, type EncounterDef } from '../data/encounters';
 import { changeVital } from './stats';
+import { applyAilment } from './ailments';
 
 export interface EncState {
   phase: number;
@@ -73,6 +74,7 @@ export function bossAttack(g: Game, e: EncState, def: EncounterDef): Attack {
   const damage = g.rng.int(lo, hi);
   changeVital(g, 'hp', -damage);
   g.sfx('hit');
+  if (/cola/i.test(line)) applyAilment(g, 'jittery', 60); // a warm cola, directly into the face
   return { line, damage, negated: false };
 }
 

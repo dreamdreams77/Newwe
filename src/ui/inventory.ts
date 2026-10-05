@@ -7,6 +7,7 @@ import { activeCreature, feedCreature, reactionFor } from '../systems/creatures'
 import { freshness, inventoryList, totalWeight, itemDef } from '../systems/inventory';
 import { runUse, visibleUses } from '../systems/itemUse';
 import { carryCapacity } from '../systems/stats';
+import { equip, unequip } from '../systems/equipment';
 import { audio } from '../audio/audioManager';
 import { alertWindow } from './windows';
 import { h, btn, type Child } from './dom';
@@ -91,6 +92,7 @@ function render(body: HTMLElement, win: WinHandle): void {
       h('div', { class: 'det-head' }, icon(sel.icon, 64), h('div', {}, h('h3', {}, sel.name), h('div', { class: `rarity r-${sel.rarity}` }, RARITY_LABEL[sel.rarity]))),
       h('p', { class: 'det-desc' }, sel.description),
       sel.perishable && fresh ? h('p', { class: `det-fresh fresh-${fresh}` }, sel.perishable.notes[fresh]) : '',
+      sel.equip ? h('p', { class: 'det-equip' }, `Worn on: ${sel.equip.slot}. ${sel.equip.text}${sel.equip.mods ? ' (' + Object.entries(sel.equip.mods).map(([k, v]) => `${k} ${v! > 0 ? '+' : ''}${v}`).join(', ') + ')' : ''}`) : '',
       ...stories.map((t) => h('p', { class: 'det-story' }, t)),
       h('div', { class: 'det-tags' }, sel.tags.map((t) => h('span', { class: 'tag' }, t)), h('span', { class: 'tag w' }, `weight ${sel.weight}`)),
     );
@@ -104,6 +106,14 @@ function render(body: HTMLElement, win: WinHandle): void {
             win.refresh();
           }, u.id === 'eat' && sel.id === 'yoghurt' ? 'warn' : ''),
         );
+      }
+      if (sel.equip) {
+        const on = g.state.equipment[sel.equip.slot] === sel.id;
+        actions.append(btn(on ? 'Take off' : `Wear (${sel.equip.slot})`, () => {
+          if (on) unequip(g, sel.equip!.slot);
+          else toast(equip(g, sel.id).text, 'magic');
+          win.refresh();
+        }, on ? 'small' : 'small magic', { dataset: { fk: 'equip' }, title: sel.equip.text }));
       }
       actions.append(
         btn('Use on something…', () => {

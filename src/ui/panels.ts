@@ -7,6 +7,8 @@ import { BALANCE } from '../config/balance';
 import { discoveredRecipes, describeInputs, undiscoveredCount } from '../systems/crafting';
 import { coffeeState, dayNumber, formatClock } from '../core/timeSystem';
 import { baseStat, statValue } from '../systems/stats';
+import { activeAilments } from '../systems/ailments';
+import { SLOTS, equippedIn, unequip } from '../systems/equipment';
 import { currentStepIndex, questStatus } from '../systems/quests';
 import { activeCreature, careAction, personalityLabel, creatureMoodText } from '../systems/creatures';
 import { passTime } from '../systems/actions';
@@ -42,6 +44,17 @@ export function openStats(): WinHandle {
           h('div', {}, h('h3', {}, 'Visitor #73'), h('p', {}, `Day ${dayNumber(s.clock.minutes)}, ${formatClock(s.clock.minutes)}`), h('p', {}, `HP ${s.vitals.hp}/${s.vitals.hpMax} · Coffee ${s.vitals.coffee}/${s.vitals.coffeeMax}`), h('p', { class: `coffee-state cs-${cs}` }, coffeeText(cs))),
         ),
       );
+      const fx = activeAilments(g);
+      body.append(
+        h('section', { class: 'stat-group fx-group' }, h('h4', {}, 'Status'),
+          fx.length ? h('ul', { class: 'fx-list' }, fx.map((a) => h('li', { class: a.good ? 'good' : 'bad' }, h('b', {}, a.label), ` — ${a.text} `, h('small', {}, `Cure: ${a.cure}`)))) : h('p', { class: 'empty' }, 'Nothing is wrong with you. Statistically unusual.'),
+        ),
+        h('section', { class: 'stat-group gear-group' }, h('h4', {}, 'Equipment'),
+          h('div', { class: 'gear-grid' }, SLOTS.map((sl) => { const it = equippedIn(g, sl.id); return h('div', { class: `gear-slot ${it ? 'on' : ''}` }, h('span', { class: 'gs-l' }, sl.label), it ? h('div', { class: 'gs-item' }, icon(it.icon, 28), h('b', {}, it.name), h('small', {}, it.equip!.text), btn('Take off', () => { unequip(g, sl.id); }, 'small', { dataset: { fk: `unequip-${sl.id}` } })) : h('div', { class: 'gs-empty' }, sl.hint)); }),
+            (() => { const pet = g.state.creatures.chocobo; const out = !!pet?.met && g.state.activeCreature === null; return h('div', { class: `gear-slot ${pet?.met ? 'on' : ''}` }, h('span', { class: 'gs-l' }, 'Companion'), pet?.met ? h('div', { class: 'gs-item' }, icon('chocobo', 28), h('b', {}, pet.name), h('small', {}, out ? 'Resting. It cannot help, and it is a little offended.' : 'Along for the ride. Sniffs things.'), btn(out ? 'Bring it' : 'Let it rest', () => { g.state.activeCreature = out ? 'chocobo' : null; if (!out) pet.mood = Math.max(0, pet.mood - 4); g.changed(); }, 'small', { dataset: { fk: 'companion' } })) : h('div', { class: 'gs-empty' }, 'Something small, loyal and yellow.')); })(),
+          ),
+        ),
+      );
       for (const group of ['Body / Heart', 'Mind', 'Wild'] as const) {
         const sec = h('section', { class: 'stat-group' }, h('h4', {}, group));
         for (const d of STAT_DEFS.filter((x) => x.group === group)) {
@@ -72,12 +85,14 @@ export function openStats(): WinHandle {
 
 function coffeeText(cs: string): string {
   switch (cs) {
+    case 'max':
+      return 'Full to the brim: JITTERY.';
     case 'wired':
       return 'WIRED: sharper on mind-stat rolls (+1 die), everything takes a little less time.';
     case 'low':
       return 'Running low. Soon the page will start to feel unreliable.';
     case 'empty':
-      return 'JITTERY: Chaos is up, fumbles come sooner, and careful options are unavailable. Get coffee.';
+      return 'CRASHED: Puzzle Sense is down, everything takes longer, fumbles come sooner and careful options are unavailable. Get coffee.';
     default:
       return 'Steady.';
   }
