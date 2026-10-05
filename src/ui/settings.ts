@@ -93,6 +93,7 @@ export function openSavePassword(): WinHandle {
           err.textContent = '';
           try {
             const state = await importPassword(input.value);
+            state.settings = { ...g.state.settings }; // device preferences are not part of a save
             g.replace(state);
             toast('Password accepted. Welcome back.', 'good');
             win.close();

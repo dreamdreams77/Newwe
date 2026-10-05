@@ -62,7 +62,7 @@ async function lampWithItem(item: string): Promise<boolean> {
   if (item === 'postcard') {
     if (!g.has('lamp_lit')) {
       toast('The lamp is dark. The glossy ink stays glossy, a bit smug.', 'funny');
-      return false;
+      return true;
     }
     if (!g.has('postcard_uv')) {
       g.state.flags.postcard_uv = true;
@@ -72,11 +72,11 @@ async function lampWithItem(item: string): Promise<boolean> {
     }
     await openCryptogram();
     refreshView();
-    return false; // the postcard is kept
+    return true; // the postcard is kept, but you put it away
   }
   if (item === 'duct_tape' || item === 'token_broken' || item === 'token_mended') {
     await fixLamp();
-    return false;
+    return true;
   }
   toast('The lamp does not need that.', 'info');
   return false;
@@ -122,15 +122,13 @@ function render(): HTMLElement {
         id: 'marl', label: 'Marl, Keeper', x: 17, y: 56, w: 8, h: 20, kind: 'npc', hint: 'Does not like visitors. Likes yoghurt.',
         onClick: () => talkMarl(),
         onItem: (item) => {
-          if (item === 'yoghurt') { void talkMarl('yoghurt'); return true; }
-          if (item === 'key') { void talkMarl('key'); return false; }
-          if (item === 'postcard') { void talkMarl('postcard'); return false; }
+          if (item === 'yoghurt' || item === 'key' || item === 'postcard') { void talkMarl(item); return true; }
           return false;
         },
       },
-      { id: 'lamp', label: lit ? 'The lamp (on)' : 'The lamp (stuck)', x: 26, y: 2, w: 20, h: 22, onClick: fixLamp, hint: 'The lamp at the top of the tower.', onItem: (item) => { void lampWithItem(item); return false; } },
+      { id: 'lamp', label: lit ? 'The lamp (on)' : 'The lamp (stuck)', x: 26, y: 2, w: 20, h: 22, onClick: fixLamp, hint: 'The lamp at the top of the tower.', onItem: (item) => { if (!['postcard', 'duct_tape', 'token_broken', 'token_mended'].includes(item)) { toast('The lamp does not need that.', 'info'); return false; } void lampWithItem(item); return true; } },
       { id: 'tower', label: 'The tower', x: 25, y: 24, w: 14, h: 40, onClick: () => toast('A tall white tower, with red stripes that were put on very carefully by someone who cared about stripes.', 'funny') },
-      { id: 'book', label: "The keeper's puzzle book", x: 48, y: 61, w: 8, h: 6, onClick: () => openBook(false), hint: 'A paperback on the table.', onItem: (item) => { if (item === 'willow_leaf') { void openBook(true); return false; } toast('That does not make a very good bookmark.', 'funny'); return false; } },
+      { id: 'book', label: "The keeper's puzzle book", x: 48, y: 61, w: 8, h: 6, onClick: () => openBook(false), hint: 'A paperback on the table.', onItem: (item) => { if (item === 'willow_leaf') { void openBook(true); return true; } toast('That does not make a very good bookmark.', 'funny'); return false; } },
       ...(lit ? [{ id: 'photo', label: 'A photo pinned by the lamp', x: 40, y: 10, w: 6, h: 8, onClick: pinnedPhoto, hint: 'Something pinned beside the lamp.' }] : []),
       { id: 'sea', label: 'The sea', x: 62, y: 56, w: 38, h: 44, onClick: () => toast(tod === 'night' ? 'The sea is a black mirror with a lamp in it.' : 'The sea does what the sea does. Mostly it looks at you and then at the horizon.', 'funny') },
       { id: 'gull', label: 'A gull', x: 46, y: 8, w: 8, h: 6, onClick: () => toast('A gull looks at you. It has seen things. It would like to tell you, but it is a gull.', 'funny') },

@@ -14,8 +14,8 @@ export function toast(text: string, kind: ToastKind = 'info'): void {
   if (!host) return;
   const el = h('div', { class: `toast ${kind}` }, h('span', { class: 'ti', attrs: { 'aria-hidden': 'true' } }, ICON[kind]), h('span', { class: 'tt' }, text));
   host.appendChild(el);
-  while (host.children.length > 5) host.removeChild(host.firstChild!);
-  const ms = Math.min(9000, 3200 + text.length * 45);
+  while (host.children.length > 4) host.removeChild(host.firstChild!);
+  const ms = Math.min(6500, 2600 + text.length * 38);
   setTimeout(() => {
     el.classList.add('out');
     setTimeout(() => el.remove(), 350);

@@ -78,3 +78,5 @@
 .sign { color: #fff; } .sign-row input, .sign input[type=text] { width: 100%; padding: 4px; margin: 4px 0; background: #fff; color: #000; border: 2px inset #888; } .sign-presets { border: 1px dashed #99f; margin: 6px 0; } .sign-presets label { display: block; font-size: .9rem; } .signed p { margin: 0; }
 /* creature wander and misc */
 .finale-cta { border-color: var(--yellow); animation: bob 1s steps(2) infinite; text-align: center; }
+.sign-sum { cursor: pointer; font-weight: 700; color: var(--yellow); text-align: center; font-size: 1.05rem; }
+details.sign[open] .sign-sum { margin-bottom: 6px; }

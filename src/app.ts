@@ -4,6 +4,7 @@ import { installAutosave, loadFromStorage, saveToStorage } from './core/saveSyst
 import { setGame } from './core/runtime';
 import { ZONES } from './data/zones';
 import { checkRealEleven } from './systems/elevenEleven';
+import { passTime } from './systems/actions';
 import { ensureHand } from './systems/cards';
 import { syncDeck } from './systems/cards';
 import { formatClock } from './core/timeSystem';
@@ -60,7 +61,7 @@ export async function boot(): Promise<void> {
   installProgression(g);
   evaluate(g);
   installAutosave(g, 250);
-  if (params.has('debug')) (window as unknown as { __game: unknown }).__game = { g, navigate, audio, setHeld, saveToStorage };
+  if (params.has('debug')) (window as unknown as { __game: unknown }).__game = { g, navigate, audio, setHeld, saveToStorage, passTime: (m: number) => passTime(g, m, { raw: true }), refresh: refreshView };
 
   const app = document.getElementById('app')!;
   document.body.append(h('div', { class: 'desktop-bg' }));

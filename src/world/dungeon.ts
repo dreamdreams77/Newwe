@@ -218,5 +218,9 @@ function render(): HTMLElement {
   );
 }
 
+if (new URLSearchParams(location.search).has('debug')) {
+  (window as unknown as { __maze: unknown }).__maze = () => { ensure(); return { maze, things, pos: pos() }; };
+}
+
 registerZone({ id: 'dungeon', render, onEnter: () => { ensure(); const [x, y] = pos(); markSeen(x, y); } });
 void icon;

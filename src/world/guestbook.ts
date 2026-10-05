@@ -91,9 +91,9 @@ function signForm(): HTMLElement {
   const custom = h('input', { type: 'text', maxLength: 80, placeholder: '…or write your own (optional)', attrs: { 'aria-label': 'Custom message' } });
   let preset = 0;
   return h(
-    'section',
-    { class: 't-box sign' },
-    h('h2', {}, '~ Sign my Guestbook!! ~'),
+    'details',
+    { class: 't-box sign', attrs: { open: g.state.guestbook.read.length === 0 ? '' : undefined } },
+    h('summary', { class: 'sign-sum' }, '✎ Sign my Guestbook!!'),
     h('div', { class: 'sign-row' }, h('label', {}, 'Name: ', name)),
     h('fieldset', { class: 'sign-presets' }, h('legend', {}, 'Say something'), SIGN_PRESETS.map((p, i) => h('label', {}, h('input', { type: 'radio', name: 'preset', checked: i === 0, on: { change: () => (preset = i) } }), ` ${p.text}`))),
     custom,

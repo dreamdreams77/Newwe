@@ -1,5 +1,6 @@
 import { createInitialState, Game, SAVE_VERSION } from './game';
 import type { GameState } from './types';
+import { decodeState, encodeState } from './saveCodec';
 
 const KEY = 'eleven-eleven:save:v1';
 
@@ -132,20 +133,13 @@ async function pipe(bytes: Uint8Array, stream: CompressionStream | Decompression
   return new Uint8Array(out);
 }
 
-/** Strip things that are cheap to rebuild so the password stays short. */
-function slim(state: GameState): GameState {
-  const copy = JSON.parse(JSON.stringify(state)) as GameState;
-  copy.log = copy.log.slice(-12);
-  return copy;
-}
-
 export async function exportPassword(state: GameState): Promise<string> {
-  const json = new TextEncoder().encode(JSON.stringify(slim(state)));
+  const json = new TextEncoder().encode(JSON.stringify(encodeState(state)));
   const z = await pipe(json, new CompressionStream('deflate-raw'));
   const sum = checksum(z);
   const framed = new Uint8Array(z.length + 6);
   framed[0] = 0x11; // magic
-  framed[1] = SAVE_VERSION;
+  framed[1] = 2; // codec version
   framed.set(z, 2);
   framed[2 + z.length] = sum & 255;
   framed[3 + z.length] = (sum >>> 8) & 255;
@@ -165,7 +159,8 @@ export async function importPassword(code: string): Promise<GameState> {
     const want = (framed[end - 4] | (framed[end - 3] << 8) | (framed[end - 2] << 16) | (framed[end - 1] << 24)) >>> 0;
     if (checksum(body) === want) {
       const json = await pipe(body, new DecompressionStream('deflate-raw'));
-      return migrate(JSON.parse(new TextDecoder().decode(json)));
+      const parsed = JSON.parse(new TextDecoder().decode(json));
+      return Array.isArray(parsed) ? decodeState(parsed) : migrate(parsed);
     }
   }
   throw new Error('The password has a typo in it. (Checksum failed.)');

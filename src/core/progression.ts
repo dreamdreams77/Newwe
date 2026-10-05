@@ -15,7 +15,7 @@ export function computeStage(g: Game): Stage {
   if (g.has('eleven_first') || s.visitors >= 150) st = 2;
   if (g.has('lake_solved') || g.has('creature_met')) st = 3;
   if (g.has('lamp_lit')) st = 4;
-  if (s.visitors >= BALANCE.hits.finale) st = 5;
+  if (s.visitors >= BALANCE.hits.finale && g.has('boss_defeated')) st = 5;
   return Math.max(s.stage, st) as Stage;
 }
 
@@ -34,6 +34,10 @@ export function evaluate(g: Game): void {
   syncDeck(g);
   updateQuests(g);
   if (s.stage >= 3 || g.has('creature_met')) g.reveal('mypage');
+  if (s.visitors >= BALANCE.hits.finale && g.has('boss_defeated') && !g.has('finale_ready')) {
+    s.flags.finale_ready = true;
+    g.toast('THE COUNTER READS 001111, and the thing at the end of the dark has been judged. The page holds very still.', 'magic');
+  }
   const next = computeStage(g);
   if (next !== s.stage) {
     const from = s.stage;
@@ -49,7 +53,7 @@ const THRESHOLD_TEXT: Record<number, string> = {
   250: 'The counter ticks past 250. Somewhere, a guestbook entry has been edited.',
   500: 'The counter hits 500. The page seems a little more awake.',
   777: 'Lucky 777. The counter rolls over like a slot machine, quietly delighted.',
-  1111: 'THE COUNTER READS 001111. The page holds still. Something is coming.',
+  1111: 'THE COUNTER READS 001111. Something at the end of the dark has noticed. It is waiting to be dealt with.',
 };
 
 export function installProgression(g: Game): () => void {
@@ -65,7 +69,6 @@ export function installProgression(g: Game): () => void {
       g.sfx('threshold');
       if (at === 777) raiseStat(g, 'luck', 1);
       if (at === 500) raiseStat(g, 'curiosity', 1);
-      if (at === 1111) g.state.flags.finale_ready = true;
     }),
   );
   offs.push(

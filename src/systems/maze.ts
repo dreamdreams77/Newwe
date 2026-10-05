@@ -94,6 +94,8 @@ const THINGS: Array<Omit<MazeThing, 'x' | 'y'>> = [
   { id: 'm_crt2', kind: 'flavor', title: 'A poster', text: 'A faded poster of a swan boat. Underneath: "DON’T FORGET TO WIND THEM UP."' },
 ];
 
+export const MAZE_THING_IDS = THINGS.map((t) => t.id);
+
 export function placeThings(g: Game, maze: Maze): MazeThing[] {
   const rng = seeded((g.state.seed ^ 0x404) >>> 0);
   const free = maze.cells.filter((c) => !(c.x === 0 && c.y === 0) && !(c.x === maze.goal[0] && c.y === maze.goal[1]));
