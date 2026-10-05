@@ -167,7 +167,7 @@ describe('equipment', () => {
   it('every equippable item has a slot, a sprite and a purpose', () => {
     for (const i of Object.values(ITEMS)) {
       if (!i.equip) continue;
-      expect(['head', 'body', 'hands', 'accessory', 'tool', 'badge', 'companion']).toContain(i.equip.slot);
+      expect(['head', 'body', 'hands', 'accessory', 'tool', 'badge', 'companion', 'relic']).toContain(i.equip.slot);
       expect(i.equip.text.length).toBeGreaterThan(10);
       expect((i.equip.perks?.length ?? 0) + Object.keys(i.equip.mods ?? {}).length).toBeGreaterThan(0);
     }
@@ -232,5 +232,22 @@ describe('Salesman and Glitch Sprite', () => {
       if (n.next) expect(ids).toContain(n.next);
       for (const c of n.choices ?? []) { if (c.next) expect(ids).toContain(c.next); if (c.check) { expect(ids).toContain(c.check.ok); expect(ids).toContain(c.check.fail); } }
     }
+  });
+});
+
+describe('relics', () => {
+  it('each has a real upside and a real drawback, and only one is worn at a time', () => {
+    const g = newGame();
+    const luck = statValue(g, 'luck'), courage = statValue(g, 'courage');
+    give(g, 'edge_coin'); equip(g, 'edge_coin');
+    expect(statValue(g, 'luck')).toBe(luck + 3);
+    expect(statValue(g, 'courage')).toBe(Math.max(0, courage - 2));
+    give(g, 'stopped_clock'); equip(g, 'stopped_clock');
+    expect(equippedIn(g, 'relic')?.id).toBe('stopped_clock');
+    expect(statValue(g, 'luck')).toBe(luck);
+    g.state.vitals.coffee = 5;
+    expect(timeMult(g)).toBeCloseTo(0.8);
+    unequip(g, 'relic');
+    expect(timeMult(g)).toBe(1);
   });
 });

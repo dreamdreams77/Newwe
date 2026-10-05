@@ -53,7 +53,7 @@ export function createInitialState(seed = Date.now() >>> 0): GameState {
     badges: [],
     handbook: [],
     ailments: [],
-    equipment: { head: null, body: null, hands: null, accessory: null, tool: null, badge: null, companion: null },
+    equipment: { head: null, body: null, hands: null, accessory: null, tool: null, badge: null, companion: null, relic: null },
     seenFx: [],
     createdAt: Date.now(),
   };

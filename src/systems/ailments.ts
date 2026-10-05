@@ -73,6 +73,7 @@ export function timeMult(g: Game): number {
   const { coffee, coffeeMax } = g.state.vitals;
   const wired = coffee / coffeeMax >= BALANCE.coffee.wiredAbove && coffee < coffeeMax;
   if (wired) m *= BALANCE.coffee.wiredTimeMult;
+  if (hasPerk(g, 'slow_time')) m *= 0.8;
   return m;
 }
 
