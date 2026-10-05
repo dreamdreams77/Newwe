@@ -11,7 +11,6 @@ import { earnCard } from '../../systems/cards';
 import { BALANCE } from '../../config/balance';
 import { h, btn, sleep } from '../dom';
 import { toast } from '../notifications';
-import { icon } from '../sprites';
 import { openWindow } from '../windows';
 
 /**
@@ -184,6 +183,5 @@ export function openLilyChime(): Promise<boolean> {
       await sleep(400);
       await playSeq(LILY_ROUNDS[round]);
     };
-    void icon;
   });
 }

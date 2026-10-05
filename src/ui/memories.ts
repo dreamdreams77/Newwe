@@ -76,7 +76,7 @@ export function openMemories(): WinHandle {
     icon: 'brain',
     className: 'memories-win',
     width: 'min(820px, 98vw)',
-    render: (body, win) => {
+    render: (body) => {
       const have = Object.values(MEMORIES).filter((m) => g.state.memories.includes(m.id));
       if (!have.length) {
         body.append(h('p', { class: 'empty' }, 'No memories yet. Some things only come back when you have done something to deserve them.'));
@@ -109,7 +109,6 @@ export function openMemories(): WinHandle {
         grid.append(card);
       }
       body.append(grid);
-      void win;
     },
   });
 }

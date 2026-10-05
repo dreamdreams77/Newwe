@@ -45,7 +45,7 @@ export function openCryptogram(): Promise<boolean> {
       w.close();
     };
 
-    const win = openWindow({
+    openWindow({
       id: 'cipher',
       title: 'Postcard under the lamp',
       icon: 'postcard',
@@ -106,6 +106,5 @@ export function openCryptogram(): Promise<boolean> {
         sync();
       },
     });
-    void win;
   });
 }

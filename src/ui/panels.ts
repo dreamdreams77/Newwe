@@ -228,7 +228,7 @@ function rename(win: WinHandle): void {
   const c = activeCreature(g);
   if (!c) return;
   const input = h('input', { type: 'text', value: c.name, maxLength: 16, attrs: { 'aria-label': 'Name' } });
-  const w = openWindow({
+  openWindow({
     id: 'rename',
     title: 'Name it',
     modal: true,
@@ -240,7 +240,6 @@ function rename(win: WinHandle): void {
       );
     },
   });
-  void w;
   setTimeout(() => input.focus(), 30);
 }
 

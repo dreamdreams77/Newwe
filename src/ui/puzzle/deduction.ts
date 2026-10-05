@@ -43,7 +43,7 @@ export function openDeduction(): Promise<boolean> {
     let msg = '';
     let wrong = 0;
     const subject = ENTRY_BY_ID[DEDUCTION.subject];
-    const win = openWindow({
+    openWindow({
       id: 'deduction',
       title: 'Case file: who wrote this?',
       icon: 'quill',
@@ -113,6 +113,5 @@ export function openDeduction(): Promise<boolean> {
         );
       },
     });
-    void win;
   });
 }

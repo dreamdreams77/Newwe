@@ -185,7 +185,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
       replaceChildren(
         tools,
         visible.map((t) => {
-          return h('button', { type: 'button', class: 'btn', onclick: () => hd.openPanel(t.panel), dataset: { tool: t.key } }, icon(t.icon, 18), h('span', { class: 't' }, late ? t.late : t.early));
+          return h('button', { type: 'button', class: 'btn', ariaLabel: late ? t.late : t.early, onclick: () => hd.openPanel(t.panel), dataset: { tool: t.key } }, icon(t.icon, 18), h('span', { class: 't' }, late ? t.late : t.early));
         }),
       );
       // HUD

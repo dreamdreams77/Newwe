@@ -13,7 +13,6 @@ import { h, btn } from '../ui/dom';
 import { toast } from '../ui/notifications';
 import { navigate } from '../ui/router';
 import { openWindow } from '../ui/windows';
-import { icon } from '../ui/sprites';
 
 export function ridesLeft(): number {
   const g = game();
@@ -98,5 +97,3 @@ function openFinePrint(): Promise<void> {
 
 registerItemHandler('ticket_fineprint', () => openFinePrint());
 registerItemHandler('ticket_ride', () => openTicketRide());
-
-void icon;

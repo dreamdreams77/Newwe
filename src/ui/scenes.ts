@@ -228,7 +228,6 @@ export function paintLake(c: Ctx, w: number, h: number, tod: TimeOfDay, willowSt
     r(c, 26, 152, 1, 1, '#111');
     r(c, 29, 153, 3, 2, '#ff8c2e');
   }
-  void h;
 }
 
 // -------------------------------------------------------------- lighthouse
@@ -288,7 +287,6 @@ export function paintLighthouse(c: Ctx, w: number, h: number, tod: TimeOfDay, li
   r(c, 158, 20, 8, 1, '#fff');
   // rocks / visitor spot
   disc(c, 20, 80, 4, '#666');
-  void h;
 }
 
 // ------------------------------------------------------------------ dungeon
@@ -338,7 +336,6 @@ export function paintFace404(c: Ctx, w: number, h: number): void {
   r(c, 0, 0, w, h, '#fff');
   c.fillStyle = '#ccc';
   for (let i = 0; i < 20; i++) r(c, (i * 37) % w, (i * 53) % h, 2, 1, '#ddd');
-  void h;
 }
 
 export function paintMyPageSky(c: Ctx, w: number, h: number): void {

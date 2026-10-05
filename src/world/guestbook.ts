@@ -1,5 +1,5 @@
 import { game } from '../core/runtime';
-import { ENTRY_BY_ID, GUEST_ENTRIES, SIGN_PRESETS, type GuestEntry, type Seg } from '../data/guestbook';
+import { SIGN_PRESETS, type GuestEntry, type Seg } from '../data/guestbook';
 import { test } from '../systems/conditions';
 import { canTake, readEntry, signGuestbook, takeAttachment, visibleEntries } from '../systems/guestbook';
 import { addVisitors } from '../systems/hits';
@@ -131,5 +131,3 @@ function render(): HTMLElement {
 }
 
 registerZone({ id: 'guestbook', render, onLeave: () => { if (readTimer) clearTimeout(readTimer); } });
-void ENTRY_BY_ID;
-void GUEST_ENTRIES;

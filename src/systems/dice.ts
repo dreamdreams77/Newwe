@@ -89,7 +89,7 @@ export function defaultApproach(def: CheckDef): Approach {
   return { id: 'direct', label: 'Just do it', stat: def.stat };
 }
 
-export function approachStatus(g: Game, def: CheckDef, a: Approach): { ok: boolean; reason?: string } {
+export function approachStatus(g: Game, a: Approach): { ok: boolean; reason?: string } {
   if (a.careful && coffeeState(g) === 'empty') return { ok: false, reason: 'Too jittery for careful work. Coffee?' };
   if (a.minStat !== undefined && statValue(g, a.stat) < a.minStat)
     return { ok: false, reason: `Needs ${STAT_BY_ID[a.stat].label} ${a.minStat}` };
@@ -216,7 +216,7 @@ export function wishReroll(g: Game, prep: Prepared, prev: RollResult): RollResul
 }
 
 /** Fuzzy odds so the player can learn the system without a calculator. */
-export function oddsLabel(g: Game, prep: Prepared): { label: string; pct: number } {
+export function oddsLabel(prep: Prepared): { label: string; pct: number } {
   const r = new Random(0xc0ffee ^ prep.dc ^ (prep.statValue << 4));
   const d = BALANCE.dice;
   let wins = 0;

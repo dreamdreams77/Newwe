@@ -1,11 +1,9 @@
 import { game } from '../core/runtime';
-import { BALANCE } from '../config/balance';
 import { GUS, GUS_GIFT } from '../data/dialogue';
 import { timeOfDay } from '../core/timeSystem';
 import { ecoRule, ecoState, harvest, stockOf } from '../systems/ecosystem';
 import { addItem, hasItem } from '../systems/inventory';
 import { activeCreature, feedCreature, meetCreature, reactionFor, species } from '../systems/creatures';
-import { removeItem } from '../systems/inventory';
 import { passTime } from '../systems/actions';
 import { changeVital } from '../systems/stats';
 import { isSuccess, type CheckDef } from '../systems/dice';
@@ -119,9 +117,7 @@ async function harvestWillow(): Promise<void> {
   addItem(g, 'willow_leaf', 1);
   passTime(g, 3);
   const left = stockOf(g, 'lake', 'willow');
-  const rule = ecoRule('lake', 'willow')!;
   toast(left <= 0 ? 'You pick the last leaf. The willow droops. You feel you have done something.' : left <= 2 ? 'The willow is thinner now. It does not say anything. It does not have to.' : st === 'lush' ? 'You pick a long silver leaf. The willow barely notices.' : 'Another leaf.', left <= 2 ? 'bad' : 'item');
-  void rule;
   refreshView();
 }
 
@@ -267,5 +263,3 @@ function render(): HTMLElement {
 }
 
 registerZone({ id: 'lake', render });
-void BALANCE;
-void removeItem;

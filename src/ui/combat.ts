@@ -3,7 +3,7 @@ import { BALANCE } from '../config/balance';
 import { VM_CODE } from '../data/puzzles';
 import { CARDS } from '../data/cards';
 import { ITEMS } from '../data/items';
-import { advancePhase, encDef, encState, lowerFury, makeLights, raiseFury, startEncounter, toggleLights, type FuryResult } from '../systems/combat';
+import { advancePhase, encDef, lowerFury, makeLights, raiseFury, startEncounter, toggleLights, type FuryResult } from '../systems/combat';
 import { playCard, whyNotPlayable } from '../systems/cardPlay';
 import { activeCreature, canAssist, spendCreatureEnergy } from '../systems/creatures';
 import { addItem, hasItem, inventoryList, removeItem } from '../systems/inventory';

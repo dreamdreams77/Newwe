@@ -2,7 +2,7 @@ import { game } from '../core/runtime';
 import { audio } from '../audio/audioManager';
 import { h, btn } from '../ui/dom';
 import { toast } from '../ui/notifications';
-import { navigate, registerZone, refreshView } from '../ui/router';
+import { navigate, registerZone } from '../ui/router';
 import { icon } from '../ui/sprites';
 import { held, setHeld } from '../ui/held';
 import { hasItem } from '../systems/inventory';
@@ -79,4 +79,3 @@ function render(): HTMLElement {
 }
 
 registerZone({ id: 'e404', render });
-void refreshView;

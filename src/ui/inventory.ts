@@ -1,5 +1,4 @@
 import { game } from '../core/runtime';
-import { RECIPES } from '../data/recipes';
 import { ITEMS } from '../data/items';
 import { SPECIES } from '../data/creatures';
 import { test } from '../systems/conditions';
@@ -171,7 +170,6 @@ function render(body: HTMLElement, win: WinHandle): void {
         h('p', { class: 'mystery' }, mysteries > 0 ? `${mysteries} combination${mysteries > 1 ? 's' : ''} still out there. They don't come with instructions.` : 'You have found every combination there is. Probably.'),
       ),
     );
-    void RECIPES;
   }
 
   const footer: Child = h('div', { class: `inv-foot ${over ? 'over' : ''}` }, `Carrying ${weight} / ${cap}`, over ? ' — ENCUMBERED: everything takes longer' : '');

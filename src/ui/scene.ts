@@ -42,7 +42,6 @@ export interface SceneOpts {
 
 /** A painted pixel scene with old-school image-map hotspots over it. */
 export function scene(opts: SceneOpts): HTMLElement {
-  const g = game();
   const canvas = h('canvas', { class: 'px scene-canvas', attrs: { width: opts.width, height: opts.height, role: 'img', 'aria-label': opts.caption ?? ZONES[opts.zone]?.title ?? 'scene' } });
   const ctx = canvas.getContext('2d')!;
   ctx.imageSmoothingEnabled = false;

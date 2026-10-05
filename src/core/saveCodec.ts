@@ -21,6 +21,7 @@ const QUEST_IDS = QUESTS.map((q) => q.id);
 const RECIPE_IDS = RECIPES.map((r) => r.id);
 const ZONE_IDS = Object.keys(ZONES);
 const CREATURE_IDS = ['chocobo'];
+const REVEAL_KEYS = ['inventory', 'cards', 'journal', 'stats', 'creature', 'memories', 'mypage', 'eleven', 'crafting'];
 
 const STATIC_FLAGS = 'ate_yoghurt blue_screened boat_ridden bob_coffee_given book_key_known boss_defeated chocobo_noticed clue_404 creature_met deduction_solved e404_open eleven_first finale_ready fridge_opened game_started gb_all_read gd_claimed golden_fumbled good_coffee_brewed guestbook_signed gus_yoghurt_seen intro_seen key_given key_opened lake_solved lamp_lit marl_asked_yoghurt maze_goal motion_override mug_first popups_closed postcard_decoded postcard_uv ride_pending ride_requested tape_played ticket_terminus voice_heard yoghurt_delivered yoghurt_wasted'.split(' ');
 
@@ -34,6 +35,12 @@ export const FLAG_DICT: string[] = [
 ];
 
 const idx = (list: string[], id: string) => list.indexOf(id);
+
+/** old 11:11 clock-crossing keys can never fire again once their day has passed */
+function pruneSeen(s: GameState): string[] {
+  const today = Math.floor(s.clock.minutes / 1440);
+  return s.eleven.seen.filter((k) => !k.startsWith('clock:') || Number(k.split(':')[1]) >= today - 1);
+}
 const pick = (list: string[], ids: number[]) => ids.map((i) => list[i]).filter(Boolean);
 
 export function encodeState(s: GameState): unknown[] {
@@ -70,7 +77,7 @@ export function encodeState(s: GameState): unknown[] {
     [s.vitals.hp, s.vitals.hpMax, s.vitals.coffee, s.vitals.coffeeMax],
     STATS.map((k) => s.stats[k]),
     s.buffs.map((b) => [STATS.indexOf(b.stat), b.by, b.until, b.label]),
-    [s.eleven.charges, s.eleven.max, s.eleven.gained, s.eleven.spent, s.eleven.seen],
+    [s.eleven.charges, s.eleven.max, s.eleven.gained, s.eleven.spent, pruneSeen(s)],
     s.visitors, s.stage, ZONE_IDS.indexOf(s.zone),
     inv,
     s.cards.earned.map((c) => idx(CARD_IDS, c)).filter((i) => i >= 0),
@@ -83,7 +90,7 @@ export function encodeState(s: GameState): unknown[] {
     creatures, s.activeCreature ? idx(CREATURE_IDS, s.activeCreature) : -1,
     zones, puzzles, enc,
     [s.myPage.wallpaper, s.myPage.title, s.myPage.slots],
-    Object.keys(s.ui.revealed).filter((k) => s.ui.revealed[k]),
+    REVEAL_KEYS.reduce((m, k, i) => (s.ui.revealed[k] ? m | (1 << i) : m), 0),
     [s.counters.actions, s.counters.checks, s.counters.crits, s.counters.fumbles, s.counters.crafts],
   ];
 }
@@ -91,7 +98,7 @@ export function encodeState(s: GameState): unknown[] {
 export function decodeState(a: unknown[]): GameState {
   const base = createInitialState(a[1] as number);
   const [, seed, rng, minutes, lastReturn, vit, stats, buffs, eleven, visitors, stage, zoneIdx, inv, earned, rec, hex, other, quests, know, mem, gb, creatures, active, zones, puzzles, enc, mp, revealed, counters] = a as [
-    number, number, number, number, number, number[], number[], unknown[][], unknown[], number, number, number, number[][], number[], unknown[], string, Record<string, FlagValue>, number[][], number[], number[], unknown[], unknown[][], number, unknown[][], unknown[][], unknown[][], unknown[], string[], number[],
+    number, number, number, number, number, number[], number[], unknown[][], unknown[], number, number, number, number[][], number[], unknown[], string, Record<string, FlagValue>, number[][], number[], number[], unknown[], unknown[][], number, unknown[][], unknown[][], unknown[][], unknown[], number, number[],
   ];
   const s = base;
   s.seed = seed;
@@ -143,7 +150,7 @@ export function decodeState(a: unknown[]): GameState {
   s.encounters = {};
   for (const e of enc ?? []) s.encounters[e[0] as string] = { phase: e[1] as number, fury: e[2] as number, won: !!e[3], attempts: e[4] as number, data: e[5] as Record<string, FlagValue> };
   s.myPage = { wallpaper: mp[0] as string, title: mp[1] as string, slots: (mp[2] as Array<string | null>) ?? base.myPage.slots };
-  s.ui.revealed = Object.fromEntries((revealed ?? []).map((k) => [k, true]));
+  s.ui.revealed = Object.fromEntries(REVEAL_KEYS.filter((_, i) => (revealed as number) & (1 << i)).map((k) => [k, true]));
   s.counters = { actions: counters[0], checks: counters[1], crits: counters[2], fumbles: counters[3], crafts: counters[4] };
   return s;
 }

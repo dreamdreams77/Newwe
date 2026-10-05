@@ -33,14 +33,14 @@ export function openSettings(): WinHandle {
         row('Always outline hotspots', h('input', { type: 'checkbox', checked: s.showHotspots, on: { change: (e) => ((s.showHotspots = (e.target as HTMLInputElement).checked), upd()) } }), 'Shows dotted outlines around everything you can click.'),
         row('Sparkle cursor', h('input', { type: 'checkbox', checked: s.sparkleCursor, on: { change: (e) => ((s.sparkleCursor = (e.target as HTMLInputElement).checked), upd()) } }), 'A trail of sparkles. Authentic. Mildly distracting.'),
         h('h3', {}, 'Save'),
-        h('div', { class: 'win-actions' }, btn('Save password…', () => (win.close(), openSavePassword()), 'small'), btn('Start over', () => startOver(win), 'small warn')),
+        h('div', { class: 'win-actions' }, btn('Save password…', () => (win.close(), openSavePassword()), 'small'), btn('Start over', () => startOver(), 'small warn')),
         h('p', { class: 'seed' }, `World seed: ${g.state.seed}  (the same seed reproduces the same dice)`),
       );
     },
   });
 }
 
-function startOver(win: WinHandle): void {
+function startOver(): void {
   openWindow({
     id: 'confirm-reset',
     title: 'Start over?',
@@ -55,7 +55,6 @@ function startOver(win: WinHandle): void {
         }, 'warn'), btn('Cancel', () => w.close(), 'go', { attrs: { 'data-autofocus': '' } })),
       ),
   });
-  void win;
 }
 
 export function openSavePassword(): WinHandle {

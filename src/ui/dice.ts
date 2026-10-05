@@ -44,7 +44,7 @@ export function openCheck(def: CheckDef, opts: { intro?: string; bonus?: { amoun
   g.reveal('stats');
   return new Promise((resolve) => {
     const approaches = approachesOf(def);
-    let approachId = approaches.find((a) => approachStatus(g, def, a).ok)?.id ?? approaches[0].id;
+    let approachId = approaches.find((a) => approachStatus(g, a).ok)?.id ?? approaches[0].id;
     const mods: RollMods = emptyMods();
     if (opts.bonus) {
       // help from outside the dice window (eg. a companion)
@@ -81,7 +81,7 @@ export function openCheck(def: CheckDef, opts: { intro?: string; bonus?: { amoun
       render: (body, win) => {
         rebuildPrep();
         const p = prep!;
-        const odds = oddsLabel(g, p);
+        const odds = oddsLabel(p);
         const cs = coffeeState(g);
 
         body.append(h('div', { class: 'check-head' }, h('h2', {}, def.title), def.text || opts.intro ? h('p', { class: 'check-text' }, opts.intro ?? def.text) : null));
@@ -90,8 +90,7 @@ export function openCheck(def: CheckDef, opts: { intro?: string; bonus?: { amoun
         if (approaches.length > 1 || !result) {
           const fs = h('fieldset', { class: 'approaches', attrs: { disabled: result || rolling ? '' : undefined } }, h('legend', {}, 'How do you go about it?'));
           approaches.forEach((a) => {
-            const st = approachStatus(g, def, a);
-            const dc = def.dc + (a.dcMod ?? 0);
+            const st = approachStatus(g, a);
             const lab = h(
               'label',
               { class: `approach ${st.ok ? '' : 'locked'} ${a.id === approachId ? 'sel' : ''}` },
@@ -100,7 +99,6 @@ export function openCheck(def: CheckDef, opts: { intro?: string; bonus?: { amoun
               a.text ? h('span', { class: 'ap-text' }, a.text) : null,
               !st.ok ? h('span', { class: 'ap-locked' }, `🔒 ${st.reason}`) : null,
             );
-            void dc;
             fs.appendChild(lab);
           });
           body.append(fs);

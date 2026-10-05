@@ -11,7 +11,6 @@ import { audio } from '../audio/audioManager';
 import { h, btn } from '../ui/dom';
 import { toast } from '../ui/notifications';
 import { navigate, registerZone, refreshView, currentZone } from '../ui/router';
-import { icon } from '../ui/sprites';
 import { anyModalOpen } from '../ui/windows';
 import { footer } from './pageKit';
 import { sniffAround } from './sniff';
@@ -223,4 +222,3 @@ if (new URLSearchParams(location.search).has('debug')) {
 }
 
 registerZone({ id: 'dungeon', render, onEnter: () => { ensure(); const [x, y] = pos(); markSeen(x, y); } });
-void icon;
