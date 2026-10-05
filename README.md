@@ -106,6 +106,10 @@ CORRUPTED, the Inspector sees deeper), Duct-Tape Gloves (from Bob, but only if y
 admit whether their own rumours are true), the Broken Mouse (clicks things the page considers inaccessible, including a
 second way past the `/dev/` gate) and a junk Receipt for Nothing that turns out to be lucky.
 
+## Playstyle identity and weaknesses
+
+Your playstyle is derived from how far you have grown stats past the start, never picked from a menu and never saved. Tinkerer (Creativity + Puzzle Sense), Gambler (Luck + Chaos), Daredevil (Courage + Dad Energy), Scholar (Curiosity + Observation) and Keeper (Nurture + Memory) each carry one small perk that plugs into an existing system (boss fury, crafting odds, hit damage, Inspector depth, companion energy). Until one pair clearly leads you are a Drifter. Bosses can have a weakness you only get by learning it in the world: VM-1111 cannot bear a pun, and once you know that, calming cards hit harder.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.
