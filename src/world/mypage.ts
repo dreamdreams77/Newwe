@@ -1,12 +1,11 @@
 import { game } from '../core/runtime';
 import { ITEMS } from '../data/items';
-import { MEMORIES } from '../data/memories';
+import { MEMORIES, memoryView } from '../data/memories';
 import { QUESTS } from '../data/quests';
 import { ENTRY_BY_ID } from '../data/guestbook';
 import { BALANCE } from '../config/balance';
 import { activeCreature } from '../systems/creatures';
 import { questStatus } from '../systems/quests';
-import { memoryView } from '../ui/memories';
 import { h, btn } from '../ui/dom';
 import { icon } from '../ui/sprites';
 import { navigate, registerZone, refreshView } from '../ui/router';

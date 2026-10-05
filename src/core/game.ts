@@ -49,6 +49,9 @@ export function createInitialState(seed = Date.now() >>> 0): GameState {
     },
     log: [],
     counters: { actions: 0, checks: 0, crits: 0, fumbles: 0, crafts: 0 },
+    inspector: { level: 0, tiers: {}, probes: 0 },
+    badges: [],
+    handbook: [],
     createdAt: Date.now(),
   };
 }

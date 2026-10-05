@@ -2,17 +2,22 @@ import { game } from '../core/runtime';
 import { audio } from '../audio/audioManager';
 import { h, btn, sleep, reducedMotion } from '../ui/dom';
 import { navigate, registerZone } from '../ui/router';
-import { QUESTS } from '../data/quests';
-import { questStatus } from '../systems/quests';
 import { counterDigits } from '../systems/hits';
+import { statusLines } from '../systems/status';
 
 /**
  * The end of the vertical slice: the page renders itself around you, and shows you what the
  * website had been the whole time. (The full 11:11 Room is the next build.)
  */
+const typed: string[] = [];
+let running = false;
+let finished = false;
+let livePre: HTMLElement | null = null;
+let liveActions: HTMLElement | null = null;
+
 function render(): HTMLElement {
   const g = game();
-  const done = QUESTS.filter((q) => questStatus(g, q) === 'done').length;
+  g.state.flags.finale_seen = true;
   const lines: string[] = [
     '<html>',
     '  <head><title>11:11</title></head>',
@@ -27,25 +32,36 @@ function render(): HTMLElement {
     '  </body>',
     '</html>',
     '',
-    `Quests finished: ${done}.  Memories: ${g.state.memories.length}.  Things learned: ${g.state.knowledge.length}.`,
-    `Wishes in your pocket: ${g.state.eleven.charges}.`,
     '',
-    'The 11:11 Room is not built yet.',
-    'It will ask one thing: what did you save your wishes for?',
+    ...statusLines(g),
+    '',
+    'Something is running this website. It is not finished.',
+    'FINAL.HTML has been written. (File → Save Files…)',
   ];
-  const pre = h('pre', { class: 'render-pre', attrs: { 'aria-live': 'polite' } });
-  const actions = h('div', { class: 'win-actions', hidden: true }, btn('Return to the homepage', () => navigate('home'), 'go big', { attrs: { 'data-autofocus': '' } }), btn('Keep playing', () => navigate('home'), 'small'));
+  const pre = h('pre', { class: 'render-pre', attrs: { 'aria-live': 'polite' } }, typed.join('\n') + (typed.length ? '\n' : ''));
+  const actions = h('div', { class: 'win-actions', hidden: !finished }, btn('Return to the homepage', () => navigate('home'), 'go big', { attrs: { 'data-autofocus': '' } }), btn('Keep playing', () => navigate('home'), 'small'));
   const el = h('div', { class: 'finale', role: 'region', ariaLabel: 'The page is rendering itself' }, h('h1', { class: 'rainbow-text' }, '1 1 : 1 1'), pre, actions);
-  (async () => {
-    audio.sfx('threshold');
-    for (const l of lines) {
-      pre.textContent += l + '\n';
-      if (!reducedMotion()) await sleep(l ? 260 : 120);
-    }
-    actions.hidden = false;
-    (actions.querySelector('[data-autofocus]') as HTMLElement | null)?.focus();
-  })();
+  // the zone can re-render while it types: keep one typing run and always draw into the live element
+  livePre = pre;
+  liveActions = actions;
+  if (!running && !finished) {
+    running = true;
+    (async () => {
+      audio.sfx('threshold');
+      for (const l of lines.slice(typed.length)) {
+        typed.push(l);
+        if (livePre) livePre.textContent = typed.join('\n') + '\n';
+        if (!reducedMotion()) await sleep(l ? 260 : 120);
+      }
+      finished = true;
+      running = false;
+      if (liveActions) {
+        liveActions.hidden = false;
+        (liveActions.querySelector('[data-autofocus]') as HTMLElement | null)?.focus();
+      }
+    })();
+  }
   return el;
 }
 
-registerZone({ id: 'elevenRoom', render, guard: (g) => (g.has('finale_ready') ? null : 'Not yet. The counter has not reached the number.') });
+registerZone({ id: 'elevenRoom', render, onLeave: () => { if (!running) { typed.length = 0; finished = false; } }, guard: (g) => (g.has('finale_ready') ? null : 'Not yet. The counter has not reached the number.') });

@@ -1,4 +1,5 @@
 import type { Effect } from '../core/types';
+import { PERSONAL } from './personal';
 
 // Memories are never just cutscenes: each one becomes a card, a clue, an item,
 // a location or an audio clip. The text here is a PLACEHOLDER layer. Real
@@ -79,3 +80,17 @@ const list: MemoryDef[] = [
 
 export const MEMORIES: Record<string, MemoryDef> = Object.fromEntries(list.map((m) => [m.id, m]));
 export const MEMORY_IDS = list.map((m) => m.id);
+
+/** merged view: personal content (if any) wins over the placeholder text */
+export function memoryView(def: MemoryDef) {
+  const p = PERSONAL[def.id] ?? {};
+  return {
+    title: p.title ?? def.title,
+    text: p.text ?? def.text,
+    caption: p.caption ?? def.caption,
+    image: p.image,
+    audio: p.audio,
+    personal: !!PERSONAL[def.id],
+  };
+}
+

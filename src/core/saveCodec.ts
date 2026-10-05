@@ -92,6 +92,9 @@ export function encodeState(s: GameState): unknown[] {
     [s.myPage.wallpaper, s.myPage.title, s.myPage.slots],
     REVEAL_KEYS.reduce((m, k, i) => (s.ui.revealed[k] ? m | (1 << i) : m), 0),
     [s.counters.actions, s.counters.checks, s.counters.crits, s.counters.fumbles, s.counters.crafts],
+    [s.inspector.level, s.inspector.tiers, s.inspector.probes],
+    s.badges,
+    s.handbook,
   ];
 }
 
@@ -152,5 +155,10 @@ export function decodeState(a: unknown[]): GameState {
   s.myPage = { wallpaper: mp[0] as string, title: mp[1] as string, slots: (mp[2] as Array<string | null>) ?? base.myPage.slots };
   s.ui.revealed = Object.fromEntries(REVEAL_KEYS.filter((_, i) => (revealed as number) & (1 << i)).map((k) => [k, true]));
   s.counters = { actions: counters[0], checks: counters[1], crits: counters[2], fumbles: counters[3], crafts: counters[4] };
+  const tail = a.slice(29) as unknown[];
+  const insp = (tail[0] as [number, Record<string, number>, number] | undefined) ?? [0, {}, 0];
+  s.inspector = { level: insp[0], tiers: insp[1], probes: insp[2] };
+  s.badges = (tail[1] as string[] | undefined) ?? [];
+  s.handbook = (tail[2] as string[] | undefined) ?? [];
   return s;
 }

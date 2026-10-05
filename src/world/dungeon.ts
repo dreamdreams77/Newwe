@@ -209,6 +209,13 @@ function render(): HTMLElement {
               toast('The flap pops open on its own and the Golden Dice rolls out, a little embarrassed.', 'magic');
               refreshView();
             }, 'magic', { disabled: g.state.eleven.charges < 1 }) : '') : btn('▶ Approach the machine', approachMachine, 'go big', { dataset: { fk: 'approach' } })) : '',
+        won && g.state.flags.vm_choice === 'refund' ? btn('☕ Take the coffee the machine kept for you', () => {
+          const day = Math.floor(g.state.clock.minutes / 1440);
+          if (g.state.flags.vm_coffee_day === day) return toast('The machine says: tomorrow. (It is trying to be firm.)', 'funny');
+          g.state.flags.vm_coffee_day = day;
+          addItem(g, 'coffee', 1);
+          refreshView();
+        }, 'small go') : '',
         pet && canSniff(pet) ? btn(`${pet.name}, sniff around`, () => (sniffAround(), refreshView()), 'small') : '',
         btn('◄ Back to the white page', () => navigate('e404'), 'small'),
       ),

@@ -196,3 +196,13 @@ export const SNIFFS: Record<string, SniffFind[]> = {
   construction: [{ id: 'sniff_cons_tape', text: 'It digs in the sand pit and pulls out a half-used roll of Duct Tape. Bob pretends not to notice.', item: 'duct_tape' }],
   dungeon: [{ id: 'sniff_dungeon_snack', text: 'It sniffs out a Suspicious 7-Eleven Snack, wedged behind a server rack. It looks very pleased with itself.', item: 'snack_711' }],
 };
+
+ZONES.dev = {
+  id: 'dev',
+  title: '/dev/',
+  url: 'http://www.cybercities.com/AreaFiftyOne/Vault/1111/dev/',
+  pageTitle: 'Index of /dev/',
+  ambience: 'static',
+  music: 'none',
+  hint: [{ text: 'Somebody left their workspace open.' }],
+};

@@ -20,6 +20,7 @@ export function gainEleven(g: Game, why: string, key?: string, text?: string): b
   }
   e.charges += 1;
   e.gained += 1;
+  if (key?.startsWith('real:')) g.state.flags.real_eleven_seen = true;
   g.reveal('eleven');
   g.toast(text ?? `11:11 — ${why}`, 'magic');
   g.sfx('eleven');

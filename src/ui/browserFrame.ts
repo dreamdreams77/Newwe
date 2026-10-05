@@ -30,6 +30,9 @@ export const TOOLS: ToolDef[] = [
   { key: 'stats', panel: 'stats', icon: 'heart', early: 'Profile', late: 'Status' },
   { key: 'creature', panel: 'creature', icon: 'chocobo', early: 'Pet', late: 'Pet' },
   { key: 'memories', panel: 'memories', icon: 'brain', early: 'Photos', late: 'Materia' },
+  { key: 'handbook', panel: 'handbook', icon: 'book', early: 'Handbook', late: 'Handbook' },
+  { key: 'inspector', panel: 'inspector', icon: 'lens', early: 'Inspector', late: 'Inspector' },
+  { key: 'terminal', panel: 'terminal', icon: 'puzzle', early: 'Terminal', late: 'Terminal' },
   { key: 'mypage', panel: 'mypage', icon: 'star', early: 'My Page', late: 'My Page' },
 ];
 
@@ -44,6 +47,7 @@ export interface FrameRefs {
   addressInput: HTMLInputElement;
   soundBtn: HTMLButtonElement;
   held: HTMLElement;
+  inspectBtn: HTMLButtonElement;
 }
 
 export interface FrameHandlers {
@@ -55,6 +59,7 @@ export interface FrameHandlers {
   go(text: string): void;
   openPanel(panel: string): void;
   toggleSound(): void;
+  toggleInspect(): void;
   menus: MenuDef[];
   joke(text: string): void;
 }
@@ -68,6 +73,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
   const loadingBar = h('div', { class: 'loading-bar' });
   const status = h('div', { class: 'cell grow' }, 'Document: Done');
   const zoneCell = h('div', { class: 'cell' }, '');
+  const inspectBtn = h('button', { type: 'button', class: 'btn small', hidden: true, onclick: () => hd.toggleInspect() }, '🔍 Inspect: off');
   const soundBtn = h('button', { type: 'button', class: 'btn small', onclick: () => hd.toggleSound(), ariaLabel: 'Toggle sound' }, '♪ Sound: off');
 
   // menus
@@ -153,7 +159,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
     h('div', { class: 'toolbar' }, navBtns, h('div', { class: 'addr' }, h('label', { for: 'address' }, 'Address:'), addressInput, btn('Go', () => hd.go(addressInput.value), 'small')), tools),
     hud,
     h('div', { style: 'position:relative;flex:1;min-height:0;display:flex;flex-direction:column' }, loadingBar, viewport, held),
-    h('div', { class: 'statusbar' }, status, zoneCell, soundBtn),
+    h('div', { class: 'statusbar' }, status, zoneCell, inspectBtn, soundBtn),
   );
 
   const refs: FrameRefs = {
@@ -161,6 +167,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
     viewport,
     addressInput,
     soundBtn,
+    inspectBtn,
     held,
     setTitle(t) {
       title.textContent = `${t} - Netscrape Navigator`;

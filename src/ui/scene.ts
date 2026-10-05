@@ -11,6 +11,7 @@ import { h, btn } from './dom';
 import { held, setHeld } from './held';
 import { toast } from './notifications';
 import { refreshView } from './router';
+import { inspectMode, openInspector } from './inspector';
 
 export interface Hotspot {
   id: string;
@@ -27,6 +28,8 @@ export interface Hotspot {
   hidden?: boolean;
   /** extra text for screen readers / tooltip */
   hint?: string;
+  /** the world-model object this hotspot is, for the Inspector */
+  obj?: string;
 }
 
 export interface SceneOpts {
@@ -61,6 +64,7 @@ export function scene(opts: SceneOpts): HTMLElement {
         ariaLabel: hs.hint ? `${hs.label}. ${hs.hint}` : hs.label,
         dataset: { fk: `hs-${hs.id}` },
         onclick: () => {
+          if (inspectMode && hs.obj) return void openInspector(hs.obj);
           const item = held();
           if (item) {
             const handled = hs.onItem?.(item);

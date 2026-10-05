@@ -5,6 +5,7 @@ import { addItem, removeItem } from '../systems/inventory';
 import { addVisitors } from '../systems/hits';
 import type { CheckDef } from '../systems/dice';
 import { isSuccess } from '../systems/dice';
+import { poke } from '../systems/pokes';
 import { runDialogue } from '../ui/dialogue';
 import { openCheck } from '../ui/dice';
 import { h, btn } from '../ui/dom';
@@ -53,6 +54,12 @@ async function investigateFridge(): Promise<void> {
   refreshView();
 }
 
+function pokeIt(id: string): void {
+  const g = game();
+  toast(poke(g, id), 'funny');
+  refreshView();
+}
+
 async function talkBob(): Promise<void> {
   await runDialogue(BOB);
   refreshView();
@@ -81,10 +88,11 @@ function render(): HTMLElement {
           return false;
         },
       },
-      { id: 'fridge', label: fridgeFound ? 'Mini fridge (empty)' : 'Something humming behind the tape', x: 69, y: 62, w: 12, h: 24, kind: 'object', onClick: investigateFridge, hint: 'Behind the barrier tape.' },
-      { id: 'sign', label: 'The sign', x: 0, y: 44, w: 22, h: 20, onClick: () => toast('"UNDER CONSTRUCTION. Please pardon our dust." (The dust has been pardoned. It is still there.)', 'funny') },
-      { id: 'sand', label: 'The sand pit', x: 6, y: 66, w: 26, h: 20, onClick: () => toast('There is sand. There are many individual grains of it.', 'funny') },
-      { id: 'www', label: 'The half-built WWW', x: 59, y: 22, w: 32, h: 28, onClick: () => toast('A scaffold in the shape of the thing you are inside. It has been "almost finished" since 2001.', 'funny') },
+      { id: 'fridge', label: fridgeFound ? 'Mini fridge (empty)' : 'Something humming behind the tape', x: 69, y: 62, w: 12, h: 24, kind: 'object', onClick: investigateFridge, hint: 'Behind the barrier tape.', obj: 'construction.fridge' },
+      { id: 'sign', label: 'The sign', x: 0, y: 44, w: 22, h: 20, onClick: () => pokeIt('sign') },
+      { id: 'sand', label: 'The sand pit', x: 6, y: 66, w: 26, h: 20, onClick: () => pokeIt('sand') },
+      { id: 'cone', label: 'A traffic cone', x: 48, y: 77, w: 5, h: 9, onClick: () => pokeIt('cone') },
+      { id: 'www', label: 'The half-built WWW', x: 59, y: 22, w: 32, h: 28, onClick: () => pokeIt('www') },
     ],
   });
   return h(

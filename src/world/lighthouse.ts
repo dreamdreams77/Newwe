@@ -7,6 +7,7 @@ import { grantMemory } from '../systems/effects';
 import { changeVital } from '../systems/stats';
 import { removeItem } from '../systems/inventory';
 import { activeCreature, canSniff } from '../systems/creatures';
+import { poke } from '../systems/pokes';
 import { runDialogue } from '../ui/dialogue';
 import { openCheck } from '../ui/dice';
 import { openCryptogram } from '../ui/puzzle/cryptogram';
@@ -44,7 +45,13 @@ async function fixLamp(): Promise<void> {
   if (!out) return;
   if (isSuccess(out.result.outcome)) {
     g.state.flags.lamp_lit = true;
+    g.state.flags.lamp_how = out.approach.id === 'tape' ? 'tape' : out.approach.id === 'jury' ? 'token' : 'kick';
     if (out.approach.id === 'tape' && hasItem(g, 'duct_tape')) removeItem(g, 'duct_tape', 1);
+    if (out.approach.id === 'jury') {
+      // the token is wedged into the mechanism for good. It will not be buying anything from a vending machine.
+      removeItem(g, hasItem(g, 'token_mended') ? 'token_mended' : 'token_broken', 1);
+      toast('The token is wedged in the mechanism for good. It will not be buying anything from a machine now.', 'info');
+    }
     audio.sfx('eleven');
     toast(out.result.outcome === 'crit' ? 'The lamp comes on with a sound like a very large cat being delighted. The beam makes the whole sea look like a postcard.' : 'The lamp shudders, thinks about it, and comes on. Warm white light, sweeping the water.', 'magic');
     g.changed();
@@ -126,12 +133,12 @@ function render(): HTMLElement {
           return false;
         },
       },
-      { id: 'lamp', label: lit ? 'The lamp (on)' : 'The lamp (stuck)', x: 26, y: 2, w: 20, h: 22, onClick: fixLamp, hint: 'The lamp at the top of the tower.', onItem: (item) => { if (!['postcard', 'duct_tape', 'token_broken', 'token_mended'].includes(item)) { toast('The lamp does not need that.', 'info'); return false; } void lampWithItem(item); return true; } },
-      { id: 'tower', label: 'The tower', x: 25, y: 24, w: 14, h: 40, onClick: () => toast('A tall white tower, with red stripes that were put on very carefully by someone who cared about stripes.', 'funny') },
-      { id: 'book', label: "The keeper's puzzle book", x: 48, y: 61, w: 8, h: 6, onClick: () => openBook(false), hint: 'A paperback on the table.', onItem: (item) => { if (item === 'willow_leaf') { void openBook(true); return true; } toast('That does not make a very good bookmark.', 'funny'); return false; } },
+      { id: 'lamp', label: lit ? 'The lamp (on)' : 'The lamp (stuck)', x: 26, y: 2, w: 20, h: 22, onClick: fixLamp, hint: 'The lamp at the top of the tower.', obj: 'lighthouse.lamp', onItem: (item) => { if (!['postcard', 'duct_tape', 'token_broken', 'token_mended'].includes(item)) { toast('The lamp does not need that.', 'info'); return false; } void lampWithItem(item); return true; } },
+      { id: 'tower', label: 'The tower', x: 25, y: 24, w: 14, h: 40, onClick: () => (toast(poke(g, 'tower'), 'funny'), refreshView()) },
+      { id: 'book', label: "The keeper's puzzle book", x: 48, y: 61, w: 8, h: 6, onClick: () => openBook(false), hint: 'A paperback on the table.', obj: 'lighthouse.book', onItem: (item) => { if (item === 'willow_leaf') { void openBook(true); return true; } toast('That does not make a very good bookmark.', 'funny'); return false; } },
       ...(lit ? [{ id: 'photo', label: 'A photo pinned by the lamp', x: 40, y: 10, w: 6, h: 8, onClick: pinnedPhoto, hint: 'Something pinned beside the lamp.' }] : []),
-      { id: 'sea', label: 'The sea', x: 62, y: 56, w: 38, h: 44, onClick: () => toast(tod === 'night' ? 'The sea is a black mirror with a lamp in it.' : 'The sea does what the sea does. Mostly it looks at you and then at the horizon.', 'funny') },
-      { id: 'gull', label: 'A gull', x: 46, y: 8, w: 8, h: 6, onClick: () => toast('A gull looks at you. It has seen things. It would like to tell you, but it is a gull.', 'funny') },
+      { id: 'sea', label: 'The sea', x: 62, y: 56, w: 38, h: 44, onClick: () => (toast(g.has('poke_sea') ? poke(g, 'sea') : tod === 'night' ? 'The sea is a black mirror with a lamp in it.' : poke(g, 'sea'), 'funny'), refreshView()) },
+      { id: 'gull', label: 'A gull', x: 46, y: 8, w: 8, h: 6, onClick: () => (toast(poke(g, 'gull'), 'funny'), refreshView()) },
     ],
   });
   const petRow = pet && canSniff(pet) ? btn(`${pet.name}, go sniff around`, () => (sniffAround(), refreshView()), 'small') : null;

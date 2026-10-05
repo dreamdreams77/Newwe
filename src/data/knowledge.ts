@@ -14,5 +14,9 @@ export const KNOWLEDGE: Record<string, string> = {
   marl_lamp_stuck: 'Marl says the lamp is not dead, only stuck. It needs something a bit stubborn.',
   terminus: 'The last stop on the Bullet Train is called TERMINUS. It is not on any map.',
   page_is_address: '404 is not an error. It is an address. It has a lock, and the lock is small.',
+  dev_xor: 'The back door does not care that two things are true. It cares that exactly ONE of them is. (XOR: one or the other, never both.)',
+  inspector_url: 'The page has a debug view. Its address is about:inspector.',
+  save_remembers: 'The corrupted file said THE PAGE REMEMBERS YOU. It was not a threat. It sounded relieved.',
+  dev_note: 'The developer left a test object. It considers itself clickable by anything.',
   gus_pads: 'Gus says the lily pads only sing for someone who is actually out on the water.',
 };

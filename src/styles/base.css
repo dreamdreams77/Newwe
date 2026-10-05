@@ -114,3 +114,6 @@ p { margin: 0 0 .7em; }
 .blink { animation: blink 1s steps(2, jump-none) infinite; }
 
 #content:focus, #content:focus-visible { outline: none; box-shadow: none; }
+
+/* the hidden attribute must always win over display rules */
+[hidden] { display: none !important; }

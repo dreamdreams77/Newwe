@@ -26,6 +26,7 @@ export type ZoneId =
   | 'e404'
   | 'dungeon'
   | 'mypage'
+  | 'dev'
   | 'elevenRoom';
 
 export type FlagValue = boolean | number | string;
@@ -164,6 +165,10 @@ export interface GameState {
   settings: SettingsState;
   log: Array<{ at: number; text: string }>;
   counters: { actions: number; checks: number; crits: number; fumbles: number; crafts: number };
+  /** the Inspector: how deeply each dependency of each world object has been understood (0..2) */
+  inspector: { level: number; tiers: Record<string, number>; probes: number };
+  badges: string[];
+  handbook: string[]; // extra unlocked handbook entries (events)
   createdAt: number;
 }
 

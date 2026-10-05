@@ -12,6 +12,7 @@ import './styles/scenes.css';
 import './styles/puzzles.css';
 import './styles/combat.css';
 import './styles/stages.css';
+import './styles/inspector.css';
 import { boot } from './app';
 
 boot().catch((err) => {

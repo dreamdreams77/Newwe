@@ -5,8 +5,11 @@ import { toast } from '../ui/notifications';
 import { navigate, registerZone } from '../ui/router';
 import { icon } from '../ui/sprites';
 import { held, setHeld } from '../ui/held';
+import { inspectMode, openInspector } from '../ui/inspector';
 import { hasItem } from '../systems/inventory';
 import { addVisitors } from '../systems/hits';
+import { isSuccess, type CheckDef } from '../systems/dice';
+import { openCheck } from '../ui/dice';
 
 function face(): string {
   const v = game().state.visitors;
@@ -15,18 +18,41 @@ function face(): string {
   return ':(';
 }
 
-function openDoor(): void {
+const LOCK: CheckDef = {
+  id: 'lock',
+  title: 'The very small lock',
+  stat: 'creativity',
+  dc: 11,
+  text: 'You do not have the key. You do have hands, and opinions about what a lock is for.',
+  approaches: [
+    { id: 'jimmy', label: 'Jimmy it with a token', stat: 'creativity', needs: { cond: { any: [{ has: 'token_broken' }, { has: 'token_mended' }] }, why: 'You need a small brass thing' }, text: 'A lock this size cannot tell a token from a key. Probably.' },
+    { id: 'tape', label: 'Tape the latch open', stat: 'dadEnergy', dcMod: -1, needs: { cond: { has: 'duct_tape' }, why: 'You need Duct Tape' }, text: 'Not a solution. A resolution.' },
+  ],
+};
+
+async function openDoor(): Promise<void> {
   const g = game();
+  if (g.has('e404_open')) return void navigate('dungeon');
   if (!hasItem(g, 'key')) {
-    toast('It is locked. The lock is very small. You are almost sure that what it needs is also very small, and probably useless.', 'info');
-    return;
+    const out = await openCheck(LOCK);
+    if (!out) return;
+    if (!isSuccess(out.result.outcome)) return void toast('The lock does not yield. It was made for something small, and probably useless.', 'info');
+    g.state.flags.e404_open = true;
+    g.state.flags.door_how = out.approach.id;
+    g.state.flags.bug_found = true;
+    addVisitors(g, 111, 'page found');
+    audio.sfx('door');
+    toast("That shouldn't have worked. The page opens, a little offended, a little impressed. The useless key, in your pocket, stays useless. For now.", 'magic');
+    g.changed();
+    return void navigate('dungeon');
   }
   if (!g.has('e404_open')) {
     g.state.flags.e404_open = true;
     g.state.flags.key_opened = true;
+    g.state.flags.door_how = 'key';
     addVisitors(g, 111, 'page found');
     audio.sfx('door');
-    toast('The World’s Least Useful Key turns, with the smug click of a thing that has been waiting its whole life. It is no longer useless. It would be insufferable about this, but it is a key.', 'magic');
+    toast('The World\u2019s Least Useful Key turns, with the smug click of a thing that has been waiting its whole life. It is no longer useless. It would be insufferable about this, but it is a key.', 'magic');
     g.changed();
   }
   navigate('dungeon');
@@ -65,14 +91,15 @@ function render(): HTMLElement {
       h('div', { class: 'keyhole-wrap' },
         h('button', { type: 'button', class: 'keyhole', ariaLabel: open ? 'Enter the page' : 'A very small lock', dataset: { fk: 'keyhole' },
           onclick: () => {
+            if (inspectMode) return void openInspector('e404.page');
             const item = held();
-            if (item === 'key') { setHeld(null); return openDoor(); }
+            if (item === 'key') { setHeld(null); return void openDoor(); }
             if (open) return navigate('dungeon');
-            openDoor();
+            void openDoor();
           } }, icon('key', 72)),
       ),
       h('p', {}, open ? 'It is open. It has always been open. It was waiting for someone to say so.' : 'There is a lock. It is small. It was made for something small, and probably useless.'),
-      open ? btn('▶ ENTER', () => navigate('dungeon'), 'go big', { dataset: { fk: 'enter' } }) : btn('Try the key', () => openDoor(), 'small', { disabled: !hasItem(g, 'key'), dataset: { fk: 'trykey' } }),
+      open ? btn('▶ ENTER', () => navigate('dungeon'), 'go big', { dataset: { fk: 'enter' } }) : btn(hasItem(g, 'key') ? 'Try the key' : 'Try the lock', () => openDoor(), 'small', { dataset: { fk: 'trykey' } }),
       h('div', { class: 'back-link' }, btn('◄ Back to the homepage', () => navigate('home'), 'small')),
     ),
   );

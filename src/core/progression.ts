@@ -7,6 +7,8 @@ import { updateQuests } from '../systems/quests';
 import { syncDeck } from '../systems/cards';
 import { raiseStat } from '../systems/stats';
 import { blueScreen } from '../systems/travel';
+import { awardBadges } from '../systems/badges';
+import { checkRumors } from '../systems/rumors';
 
 /** Work out what stage the website is in. Stages only ever go up. */
 export function computeStage(g: Game): Stage {
@@ -34,6 +36,9 @@ export function evaluate(g: Game): void {
   syncDeck(g);
   updateQuests(g);
   if (s.stage >= 3 || g.has('creature_met')) g.reveal('mypage');
+  if (s.stage >= 2) g.reveal('handbook');
+  awardBadges(g);
+  checkRumors(g);
   if (s.visitors >= BALANCE.hits.finale && g.has('boss_defeated') && !g.has('finale_ready')) {
     s.flags.finale_ready = true;
     g.toast('THE COUNTER READS 001111, and the thing at the end of the dark has been judged. The page holds very still.', 'magic');

@@ -1,0 +1,1 @@
+export const CREATURE_HB = [{ id: 'chocobo', name: 'Tiny Chocobo', blurb: 'Approximately fist-sized. Absolutely certain it is a hero.', likes: 'whatever you try (carefully). Coffee is a mistake. The Good Coffee is not.' }];

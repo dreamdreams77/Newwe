@@ -1,6 +1,7 @@
 import type { DTree } from './dialogueTypes';
 import { freshness, removeItem } from '../systems/inventory';
 import { ecoState } from '../systems/ecosystem';
+import { hearRumor, nextRumor, rumorText } from '../systems/rumors';
 
 // NPC conversation trees. Plain data + a few small hooks. Humour first; the
 // tender bits are rationed, and they come out of objects, not speeches.
@@ -17,6 +18,7 @@ export const BOB: DTree = {
       choices: [
         { text: 'What are you building?', next: 'what' },
         { text: 'Got any duct tape?', next: 'tape' },
+        { text: 'Heard anything lately?', next: 'rumor' },
         { text: '(Give him a coffee)', when: { has: 'coffee' }, next: 'coffee', action: (g) => removeItem(g, 'coffee', 1) },
         { text: 'Bye.', end: true },
       ],
@@ -54,6 +56,14 @@ export const BOB: DTree = {
       text: 'You groan. It is an appreciative groan. Something in your chest unlocks: you are now carrying Dad Energy.',
       end: true,
     },
+    rumor: {
+      id: 'rumor',
+      who: 'Bob (not THAT Bob)',
+      portrait: 'portrait_bob',
+      run: (g) => { const r = nextRumor(g, 'bob'); if (r) { hearRumor(g, r); g.state.flags.rumor_last = r.id; } },
+      text: (g) => rumorText(g),
+      next: 'greet',
+    },
     again: {
       id: 'again',
       who: 'Bob (not THAT Bob)',
@@ -90,11 +100,16 @@ export const GUS: DTree = {
       id: 'greet',
       who: 'Gus, Swan-Boat Clerk',
       portrait: 'portrait_gus',
-      text: "Swanny's Pond Swan-Boat Service. Open nine to five. Closed whenever. Tickets, please.",
+      text: (g) => {
+        const base = "Swanny's Pond Swan-Boat Service. Open nine to five. Closed whenever. Tickets, please.";
+        const c = g.flag('vm_choice');
+        return c === 'refund' ? base + ' ...Odd. The vending machine under the page apologised to me this morning. It has never done that.' : c === 'prize' ? base + ' The swans are nervous. Somebody rolled something golden down there.' : c === 'wish' ? base + ' There was a chime at 11:11. The whole pond heard it. Not saying who.' : base;
+      },
       choices: [
         { text: 'Can I ride a swan?', when: { not: { has: 'swan_ticket' } }, next: 'noticket' },
         { text: 'I have a ticket.', when: { has: 'swan_ticket' }, next: 'ticket' },
         { text: 'Tell me about the pond.', next: 'pond' },
+        { text: 'Heard anything lately?', next: 'rumor' },
         { text: '(Show him the yoghurt)', when: { has: 'yoghurt' }, next: 'yoghurt' },
         { text: '(Show him the key)', when: { has: 'key' }, next: 'key' },
         { text: 'Never mind.', end: true },
@@ -116,6 +131,14 @@ export const GUS: DTree = {
         { text: 'Board the swan.', effects: [{ t: 'flag', key: 'ride_requested' }], end: true },
         { text: 'Not yet.', end: true },
       ],
+    },
+    rumor: {
+      id: 'rumor',
+      who: 'Gus, Swan-Boat Clerk',
+      portrait: 'portrait_gus',
+      run: (g) => { const r = nextRumor(g, 'gus'); if (r) { hearRumor(g, r); g.state.flags.rumor_last = r.id; } },
+      text: (g) => rumorText(g),
+      next: 'greet',
     },
     pond: {
       id: 'pond',
@@ -190,11 +213,20 @@ export const MARL: DTree = {
       choices: [
         { text: 'What happened to the lamp?', next: 'lamp' },
         { text: 'Who are you?', next: 'who' },
+        { text: 'Heard anything lately?', next: 'rumor' },
         { text: '(Show him the yoghurt)', when: { has: 'yoghurt' }, next: 'yoghurt' },
         { text: '(Show him the key)', when: { has: 'key' }, next: 'key' },
         { text: '(Show him the postcard)', when: { has: 'postcard' }, next: 'postcard' },
         { text: 'Bye.', end: true },
       ],
+    },
+    rumor: {
+      id: 'rumor',
+      who: 'Marl, Keeper',
+      portrait: 'portrait_marl',
+      run: (g) => { const r = nextRumor(g, 'marl'); if (r) { hearRumor(g, r); g.state.flags.rumor_last = r.id; } },
+      text: (g) => rumorText(g),
+      next: 'greet',
     },
     lamp: {
       id: 'lamp',
@@ -247,6 +279,7 @@ export const MARL: DTree = {
       effects: [
         { t: 'flag', key: 'yoghurt_delivered' },
         { t: 'flag', key: 'lamp_lit' },
+        { t: 'flag', key: 'lamp_how', value: 'yoghurt' },
         { t: 'memory', id: 'MEMORY_002' },
       ],
       next: 'give2',
@@ -262,7 +295,7 @@ export const MARL: DTree = {
       id: 'lit',
       who: 'Marl, Keeper',
       portrait: 'portrait_marl',
-      text: 'Lamp is on. Duct tape. I knew a man who would have approved. Do not smudge the glass.',
+      text: (g) => g.flag('lamp_how') === 'token' ? 'Lamp is on. A vending token for a fuse. Resourceful. Also, you owe a machine somewhere a token.' : g.flag('lamp_how') === 'kick' ? 'Lamp is on. You kicked it. It is a lamp, not a vending machine. ...It worked. Do not do that again.' : 'Lamp is on. Duct tape. I knew a man who would have approved. Do not smudge the glass.',
       choices: [
         { text: '(Give him the yoghurt)', when: { has: 'yoghurt' }, next: 'yoghurt' },
         { text: 'Who was the man?', next: 'man' },

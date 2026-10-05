@@ -1,25 +1,11 @@
 import { game } from '../core/runtime';
-import { MEMORIES, type MemoryDef } from '../data/memories';
-import { PERSONAL } from '../data/personal';
+import { MEMORIES, memoryView } from '../data/memories';
 import { LULLABY, PAD_NOTES } from '../data/puzzles';
 import { noteFreq } from '../audio/music';
 import { audio } from '../audio/audioManager';
 import { h, btn, sleep } from './dom';
 import { icon } from './sprites';
 import { openWindow, type WinHandle } from './windows';
-
-/** merged view: personal content (if any) wins over the placeholder text */
-export function memoryView(def: MemoryDef) {
-  const p = PERSONAL[def.id] ?? {};
-  return {
-    title: p.title ?? def.title,
-    text: p.text ?? def.text,
-    caption: p.caption ?? def.caption,
-    image: p.image,
-    audio: p.audio,
-    personal: !!PERSONAL[def.id],
-  };
-}
 
 /** a procedural polaroid so placeholder photos are not empty grey boxes */
 export function drawPlaceholderPhoto(c: HTMLCanvasElement, seed: string): void {
@@ -112,3 +98,5 @@ export function openMemories(): WinHandle {
     },
   });
 }
+
+export { memoryView };

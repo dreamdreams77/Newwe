@@ -222,7 +222,7 @@ function render(): HTMLElement {
     paint: (ctx, w, hh) => paintLake(ctx, w, hh, tod, stock, eco.max, peeping, boatOut),
     caption: `A pond at ${tod}. A willow on the left, a ticket booth and dock on the right, four lily pads in the middle, and reeds in the corner.`,
     hotspots: [
-      { id: 'willow', label: 'The willow', x: 4, y: 28, w: 26, h: 52, onClick: harvestWillow, hint: `Pick a leaf. It is ${state}.` },
+      { id: 'willow', label: 'The willow', x: 4, y: 28, w: 26, h: 52, onClick: harvestWillow, hint: `Pick a leaf. It is ${state}.`, obj: 'lake.willow' },
       { id: 'tend', label: 'Tend the willow', x: 30, y: 62, w: 8, h: 14, onClick: tendWillow, hint: 'Look after it.' },
       { id: 'gus', label: 'Gus, Swan-Boat Clerk', x: 82, y: 46, w: 9, h: 18, kind: 'npc', onClick: talkGus, hint: 'Takes tickets very seriously.', onItem: (item) => {
           if (item !== 'swan_ticket') return false;
@@ -238,9 +238,9 @@ function render(): HTMLElement {
           })();
           return true;
         } },
-      { id: 'boat', label: boatOut ? 'The swan boat' : 'The swan boat (needs a ticket)', x: 72, y: 66, w: 14, h: 16, onClick: () => (g.has('boat_ridden') ? rideSwan() : toast('The swan boat needs a ticket. Gus guards it like a dragon with a name tag.', 'info')), onItem: (item) => { if (item === 'swan_ticket') { void rideSwan().then(refreshView); return true; } return false; } },
-      { id: 'pads', label: 'The lily pads', x: 41, y: 56, w: 28, h: 26, onClick: playPads, hint: 'Shy.' },
-      { id: 'reeds', label: g.state.creatures.chocobo?.met ? 'The reeds' : 'The reeds (rustling)', x: 2, y: 70, w: 22, h: 28, onClick: reeds, hint: 'Something is in there.',
+      { id: 'boat', label: boatOut ? 'The swan boat' : 'The swan boat (needs a ticket)', x: 72, y: 66, w: 14, h: 16, obj: 'lake.boat', onClick: () => (g.has('boat_ridden') ? rideSwan() : toast('The swan boat needs a ticket. Gus guards it like a dragon with a name tag.', 'info')), onItem: (item) => { if (item === 'swan_ticket') { void rideSwan().then(refreshView); return true; } return false; } },
+      { id: 'pads', label: 'The lily pads', x: 41, y: 56, w: 28, h: 26, onClick: playPads, hint: 'Shy.', obj: 'lake.pads' },
+      { id: 'reeds', label: g.state.creatures.chocobo?.met ? 'The reeds' : 'The reeds (rustling)', x: 2, y: 70, w: 22, h: 28, onClick: reeds, hint: 'Something is in there.', obj: 'creature.chocobo',
         onItem: (item) => { if (!g.state.creatures.chocobo?.met && reactionFor(species('chocobo'), item) !== species('chocobo').confused) { void reeds(); return false; } return false; } },
     ],
   });

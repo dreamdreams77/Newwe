@@ -68,6 +68,7 @@ const list: ItemDef[] = [
     },
     story: [
       { when: { flag: 'gus_yoghurt_seen' }, text: 'Gus looked at it the way people look at a lost dog they’ve already named.' },
+      { when: { flag: 'ng' }, text: 'The note on the lid says DO NOT EAT. Underneath, in a different pen: (again.)' },
       { when: { flag: 'marl_asked_yoghurt' }, text: '"Tassie Valley. Plain. Not vanilla." Someone has been waiting a long time for this.' },
     ],
     uses: [
@@ -261,6 +262,40 @@ const list: ItemDef[] = [
         text: 'It tastes like a hug from a tree.',
       },
     ],
+  },
+  {
+    id: 'floppy',
+    name: 'Floppy Disk (TEST)',
+    icon: 'floppy',
+    description: 'A 3.5-inch disk. The label says TEST in a handwriting you almost recognise. The shutter is stuck half open.',
+    tags: ['media', 'old', 'clue', 'corrupted'],
+    weight: 0.2,
+    rarity: 'uncommon',
+    uses: [
+      { id: 'blow', label: 'Blow on it', minutes: 1, effects: [{ t: 'say', text: 'You blow on the disk. Nostalgia comes out as a small, fine dust. Somewhere, a save file hears you.', kind: 'funny' }, { t: 'flag', key: 'floppy_blown' }] },
+    ],
+    story: [{ when: { flag: 'floppy_blown' }, text: 'It works better after you blow on it. This is not true of anything else, except cartridges.' }],
+  },
+  {
+    id: 'broken_mouse',
+    name: 'Broken Mouse',
+    icon: 'mouse',
+    description: 'A grey two-button mouse with the cable chewed off. Everything about it says 0. Except one thing.',
+    tags: ['hardware', 'broken', 'debug', 'tool'],
+    weight: 0.4,
+    rarity: 'rare',
+    uses: [{ id: 'click', label: 'Click it', minutes: 1, effects: [{ t: 'say', text: 'Click. Click-click. Somewhere a link that the game considers inaccessible twitches.', kind: 'funny' }] }],
+    story: [{ when: { flag: 'bug_found' }, text: 'It can click things the page insists nobody can click. This is, officially, a bug. It is also, unofficially, a feature.' }],
+  },
+  {
+    id: 'crt_goggles',
+    name: 'CRT Monitor Goggles',
+    icon: 'goggles',
+    description: 'Safety goggles with a phosphor-green tint, a tiny scanline filter, and a handwritten label: DO NOT STARE AT THE FLICKER.',
+    tags: ['wearable', 'debug', 'lens', 'green'],
+    weight: 0.5,
+    rarity: 'rare',
+    uses: [{ id: 'wear', label: 'Look through them', minutes: 1, effects: [{ t: 'say', text: 'The page goes green and gets a little more honest. Corrupted pixels shimmer. (While you carry these, the Inspector sees +2 deeper.)', kind: 'magic' }] }],
   },
   {
     id: 'receipt',

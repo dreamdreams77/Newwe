@@ -11,6 +11,9 @@ import { passTime } from '../systems/actions';
 import { activeCreature, creatureMoodText } from '../systems/creatures';
 import { unreadCount } from '../systems/guestbook';
 import { audio } from '../audio/audioManager';
+import { poke } from '../systems/pokes';
+import { held, setHeld } from '../ui/held';
+import { inspectMode, openInspector } from '../ui/inspector';
 import { h, btn } from '../ui/dom';
 import { toast } from '../ui/notifications';
 import { navigate, registerZone, refreshView } from '../ui/router';
@@ -56,6 +59,8 @@ function newsItems(): Array<{ date: string; text: string; cls?: string }> {
   const s = g.state;
   const items: Array<{ date: string; text: string; cls?: string }> = [];
   if (s.stage >= 5) items.push({ date: 'NOW', text: 'THE PAGE IS RENDERING ITSELF.', cls: 'glitchy' });
+  if (g.flag('vm_choice')) items.push({ date: formatClock(s.clock.minutes), text: g.flag('vm_choice') === 'refund' ? 'The vending machine under the page has started leaving things out for you.' : g.flag('vm_choice') === 'prize' ? 'Something golden is being passed around the page. The page would like it back. (It would not.)' : 'A bell rang at 11:11. The page was not scheduled to ring.', cls: 'alive' });
+  if (g.flag('lamp_how')) items.push({ date: 'LATE', text: `The lighthouse is lit (${g.flag('lamp_how') === 'yoghurt' ? 'somebody cared enough to bring dairy' : g.flag('lamp_how') === 'tape' ? 'held together by tape' : g.flag('lamp_how') === 'token' ? 'powered by a vending token' : 'after a regrettable kick'}).`, cls: '' });
   if (s.stage >= 4) {
     const pet = activeCreature(g);
     items.push({ date: formatClock(s.clock.minutes), text: pet ? `${pet.name} is ${pet.mood > 60 ? 'delighted' : pet.mood > 30 ? 'fine' : 'sulking'} today. ${creatureMoodText(g, pet)}` : 'The page is awake. It would like you to keep going.', cls: 'alive' });
@@ -80,7 +85,7 @@ function render(): HTMLElement {
     h('ul', {}, 
       h('li', {}, h('a', { href: '#', dataset: { fk: 'l-guestbook' }, onclick: (e: Event) => (e.preventDefault(), navigate('guestbook')) }, 'Guestbook'), unread ? h('span', { class: 'new-tag blink' }, ` NEW (${unread})`) : null),
       h('li', {}, h('a', { href: '#', dataset: { fk: 'l-construction' }, onclick: (e: Event) => (e.preventDefault(), navigate('construction')) }, 'Under Construction'), h('span', { class: 'new-tag' }, ' (always)')),
-      h('li', {}, h('a', { href: '#', class: 'broken-link', dataset: { fk: 'l-404' }, onclick: (e: Event) => (e.preventDefault(), navigate('e404')) }, 'Secret Page!!'), h('span', { class: 'tiny' }, ' (broken)')),
+      h('li', {}, h('a', { href: '#', class: 'broken-link', dataset: { fk: 'l-404' }, onclick: (e: Event) => { e.preventDefault(); if (held() === 'broken_mouse' && !g.has('clue_404')) { setHeld(null); g.state.flags.clue_404 = true; g.state.flags.bug_found = true; g.sfx('eleven'); toast("That shouldn't have worked. The Broken Mouse clicks a link the page insists is dead, and the link, embarrassed, comes back to life.", 'magic'); g.changed(); } navigate('e404'); } }, 'Secret Page!!'), h('span', { class: 'tiny' }, ' (broken)')),
       s.ui.revealed.mypage ? h('li', {}, h('a', { href: '#', dataset: { fk: 'l-mypage' }, onclick: (e: Event) => (e.preventDefault(), navigate('mypage')) }, 'My Page'), h('span', { class: 'new-tag blink' }, ' NEW')) : null,
     ),
   );
@@ -89,7 +94,7 @@ function render(): HTMLElement {
     'section',
     { class: 't-box corner' },
     h('h2', {}, "~ Webmaster's Corner ~"),
-    h('div', { class: 'corner-btns' }, btn([icon('mug', 22), ' The Mug'], sipMug, 'small', { title: "Sip the webmaster's coffee. Refills slowly.", dataset: { fk: 'mug' } }), btn('Nap on the couch', () => (restAtHome(g), toast('You nap on a couch that smells like 2001. +3 HP. An hour gone.', 'good'), refreshView()), 'small', { title: 'An hour passes. HP comes back.' })),
+    h('div', { class: 'corner-btns' }, btn([icon('mug', 22), ' The Mug'], sipMug, 'small', { title: "Sip the webmaster's coffee. Refills slowly.", dataset: { fk: 'mug' } }), btn('The Chair', () => (toast(poke(g, 'chair'), 'funny'), refreshView()), 'small', { title: 'A chair.', dataset: { fk: 'chair' } }), btn('Nap on the couch', () => (restAtHome(g), toast('You nap on a couch that smells like 2001. +3 HP. An hour gone.', 'good'), refreshView()), 'small', { title: 'An hour passes. HP comes back.' })),
   );
 
   const ring = h(
@@ -139,7 +144,7 @@ function render(): HTMLElement {
     'section',
     { class: 't-box counter-box' },
     h('div', { class: 'cb-label' }, 'You are visitor number'),
-    h('button', { type: 'button', class: 'odo-btn', ariaLabel: `Visitor counter ${s.visitors}. Press for details.`, onclick: () => funnyToast(COUNTER_LINES) }, odometer(s.visitors)),
+    h('button', { type: 'button', class: 'odo-btn', ariaLabel: `Visitor counter ${s.visitors}. Press for details.`, onclick: () => (inspectMode ? openInspector('site.counter') : funnyToast(COUNTER_LINES)) }, odometer(s.visitors)),
     h('div', { class: 'cb-sub' }, 'since March 2001'),
   );
 
@@ -153,7 +158,7 @@ function render(): HTMLElement {
     'div',
     { class: 'page home-page' },
     marquee(`~*~ WELCOME TO MY WORLD ~*~ you are visitor #${s.visitors} ~*~ sign my guestbook!! ~*~ best viewed in 800x600 ~*~`),
-    pageHeader(OWNER.siteTitle, '(this page is under construction. it has always been under construction.)'),
+    pageHeader(OWNER.siteTitle, g.has('ng') ? 'WELCOME BACK. (you have been here before. haven\'t you?)' : '(this page is under construction. it has always been under construction.)'),
     h('div', { class: 'cols' }, h('aside', { class: 'side' }, counter, links, corner, midi, badges), h('div', { class: 'main' }, finaleBox, welcome, news, ring)),
     squintTools('home'),
     ringBar('home'),

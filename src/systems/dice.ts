@@ -201,6 +201,7 @@ export function commitRoll(g: Game, res: RollResult, firstRoll = true): void {
     addBuff(g, 'chaos', BALANCE.dice.goldenFumbleChaos, BALANCE.dice.goldenFumbleMinutes, 'Gilded Fumble');
     g.toast('The Golden Dice bites back: -1 Coffee, Chaos up for a while.', 'bad');
   }
+  if (res.snakeEyes) g.state.flags.snake_eyes_seen = true;
   if (res.snakeEyes) gainEleven(g, 'snake eyes', undefined, '11:11 — two ones. Even disasters are wishes.');
   g.sfx(res.outcome === 'crit' ? 'crit' : res.outcome === 'critFail' ? 'fumble' : isSuccess(res.outcome) ? 'success' : 'fail');
   g.changed();

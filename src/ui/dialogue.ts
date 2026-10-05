@@ -14,6 +14,7 @@ import { openWindow } from './windows';
 export function runDialogue(tree: DTree): Promise<void> {
   const g = game();
   return new Promise((resolve) => {
+    g.state.flags[`met_${tree.id}`] = true;
     let nodeId = typeof tree.start === 'function' ? tree.start(g) : tree.start;
     let typer: ReturnType<typeof setInterval> | null = null;
     let finished = false;

@@ -1,7 +1,7 @@
 import { Game, createInitialState } from './core/game';
 import { installProgression, evaluate } from './core/progression';
 import { installAutosave, loadFromStorage, saveToStorage } from './core/saveSystem';
-import { setGame } from './core/runtime';
+import { setGame, game } from './core/runtime';
 import { ZONES } from './data/zones';
 import { checkRealEleven } from './systems/elevenEleven';
 import { passTime } from './systems/actions';
@@ -25,6 +25,15 @@ import { aboutWindow, openSavePassword, openSettings } from './ui/settings';
 import { ITEMS } from './data/items';
 import type { ZoneId } from './core/types';
 import { sparkleInit } from './ui/sparkle';
+import { openInspector, setInspectMode, onInspectMode, inspectMode } from './ui/inspector';
+import { openHandbook } from './ui/handbook';
+import { openSource } from './ui/source';
+import { openTerminal } from './ui/terminal';
+import { openVersions } from './ui/versions';
+import { openDevGate } from './ui/gate';
+import { statusLines } from './systems/status';
+import { openSaveFiles } from './ui/saves';
+import { alertWindow } from './ui/windows';
 
 // zones register themselves on import
 import './world/homepage';
@@ -36,6 +45,7 @@ import './world/e404';
 import './world/dungeon';
 import './world/mypage';
 import './world/finale';
+import './world/dev';
 import './world/ticket';
 
 const STAGE_TEXT: Record<number, string> = {
@@ -60,7 +70,6 @@ export async function boot(): Promise<void> {
   setGame(g);
   installProgression(g);
   evaluate(g);
-  installAutosave(g, 250);
   if (params.has('debug')) (window as unknown as { __game: unknown }).__game = { g, navigate, audio, setHeld, saveToStorage, passTime: (m: number) => passTime(g, m, { raw: true }), refresh: refreshView };
 
   const app = document.getElementById('app')!;
@@ -79,6 +88,8 @@ export async function boot(): Promise<void> {
     g.replace(createInitialState((Date.now() ^ (Math.random() * 1e9)) >>> 0));
   }
 
+  installAutosave(g, 250); // only once the player has chosen: a stray load must never overwrite a save
+
   // ---- frame
   const menus: MenuDef[] = buildMenus(g);
   let frame!: FrameRefs;
@@ -90,6 +101,7 @@ export async function boot(): Promise<void> {
     stop: () => (closeAllWindows(), setHeld(null)),
     go: (text) => goAddress(text),
     openPanel,
+    toggleInspect: () => setInspectMode(!inspectMode),
     toggleSound: () => {
       audio.init();
       g.state.settings.muted = !g.state.settings.muted;
@@ -113,6 +125,8 @@ export async function boot(): Promise<void> {
     applySettings(g);
     frame.soundBtn.textContent = g.state.settings.muted ? '♪ Sound: muted' : audio.ready ? '♪ Sound: on' : '♪ Sound: off';
     frame.held.classList.toggle('on', !!held());
+    frame.inspectBtn.hidden = !g.has('inspector_on');
+    frame.inspectBtn.textContent = inspectMode ? '🔍 Inspect: ON' : '🔍 Inspect: off';
     refreshLive();
   };
   g.bus.on('change', syncFrame);
@@ -132,6 +146,7 @@ export async function boot(): Promise<void> {
     }
     frame.setStatus(`Done — ${z?.title ?? zone}`);
   });
+  onInspectMode(() => syncFrame());
   onHeldChange(() => {
     const id = held();
     frame.held.classList.toggle('on', !!id);
@@ -178,6 +193,12 @@ function openPanel(panel: string): void {
       return void openCreature();
     case 'memories':
       return void openMemories();
+    case 'handbook':
+      return void openHandbook();
+    case 'inspector':
+      return void openInspector();
+    case 'terminal':
+      return void openTerminal();
     case 'mypage':
       closeAllWindows();
       navigate('mypage');
@@ -185,16 +206,40 @@ function openPanel(panel: string): void {
 }
 
 function goAddress(text: string): void {
+  const g = game();
   const t = text.trim().toLowerCase();
-  const hit = (Object.keys(ZONES) as ZoneId[]).find((z) => ZONES[z].url.toLowerCase() === t || ZONES[z].url.toLowerCase().replace(/^https?:\/\//, '') === t.replace(/^https?:\/\//, ''));
-  if (hit && hit !== 'dungeon' && hit !== 'elevenRoom') {
-    // only places you already know about
-    const g = (window as unknown as { __g?: never }).__g;
-    void g;
-    navigate(hit);
-    return;
+  if (t.startsWith('about:')) {
+    const [page, arg] = t.slice(6).split('/');
+    if (page === 'inspector') return void openInspector();
+    if (page === 'version') return void openVersions();
+    if (page === 'terminal') return void openTerminal();
+    if (page === 'handbook') return void openHandbook();
+    if (page === 'status') {
+      if (g.has('finale_ready')) return void alertWindow('about:status', h('pre', { class: 'term-out' }, statusLines(g).join('\n')));
+      return void toast('about:status — 403. Not yet. Nothing is finished running.', 'info');
+    }
+    if (page === 'blank') return void toast('A blank page. It has never been blank. It is thinking.', 'funny');
+    void arg;
+    return void navigate('e404');
   }
-  // anything else is a dead page: the 404
+  const strip = (u: string) => u.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const hit = (Object.keys(ZONES) as ZoneId[]).find((z) => strip(ZONES[z].url.toLowerCase()) === strip(t));
+  if (hit === 'dev') return void openDevGate();
+  if (hit === 'dungeon') {
+    // a controlled bug: if you know the page is an address you can just... type it. That should not have worked.
+    if (g.has('e404_open')) return void navigate('dungeon');
+    if (g.has('clue_404') || g.state.knowledge.includes('page_is_address')) {
+      g.state.flags.e404_open = true;
+      g.state.flags.e404_exploit = true;
+      g.state.flags.bug_found = true;
+      g.sfx('eleven');
+      toast("That shouldn't have worked. (The lock is for visitors who use the link. You typed the address.)", 'magic');
+      g.changed();
+      return void navigate('dungeon');
+    }
+    return void navigate('e404');
+  }
+  if (hit && hit !== 'elevenRoom') return void navigate(hit);
   navigate('e404');
 }
 
@@ -208,6 +253,7 @@ function buildMenus(g: Game): MenuDef[] {
     {
       label: 'File',
       items: () => [
+        { label: 'Save Files…', onSelect: () => void openSaveFiles() },
         { label: 'Save Password…', onSelect: () => void openSavePassword() },
         { label: 'Load Password…', onSelect: () => void openSavePassword() },
         { sep: true, label: '', onSelect: () => undefined },
@@ -220,6 +266,7 @@ function buildMenus(g: Game): MenuDef[] {
         { label: 'Text bigger', onSelect: () => ((g.state.settings.textScale = Math.min(1.5, g.state.settings.textScale + 0.1)), applySettings(g), g.changed()) },
         { label: 'Text smaller', onSelect: () => ((g.state.settings.textScale = Math.max(0.9, g.state.settings.textScale - 0.1)), applySettings(g), g.changed()) },
         { label: g.state.settings.reducedMotion ? '✓ Reduce motion' : 'Reduce motion', onSelect: () => ((g.state.settings.reducedMotion = !g.state.settings.reducedMotion), applySettings(g), g.changed()) },
+        { label: 'Page Source', onSelect: () => openSource(g.state.zone) },
         { label: g.state.settings.showHotspots ? '✓ Outline clickable things' : 'Outline clickable things', onSelect: () => ((g.state.settings.showHotspots = !g.state.settings.showHotspots), applySettings(g), g.changed()) },
       ],
     },
@@ -228,6 +275,6 @@ function buildMenus(g: Game): MenuDef[] {
       label: 'Bookmarks',
       items: () => TOOLS.filter((t) => g.state.ui.revealed[t.key]).map((t) => ({ label: g.state.stage >= 3 ? t.late : t.early, onSelect: () => openPanel(t.panel) })).concat(g.state.ui.revealed.inventory ? [] : [{ label: '(nothing bookmarked yet)', onSelect: () => undefined }]),
     },
-    { label: 'Help', items: () => [{ label: 'About this page…', onSelect: () => void aboutWindow() }] },
+    { label: 'Help', items: () => [{ label: "The Webmaster's Handbook", onSelect: () => void openHandbook(), hidden: () => !g.state.ui.revealed.handbook }, { label: 'About this page…', onSelect: () => void aboutWindow() }] },
   ];
 }
