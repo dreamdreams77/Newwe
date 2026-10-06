@@ -379,3 +379,28 @@ describe('Tasmania', () => {
     expect(statValue(g, 'observation')).toBe(base + 2);
   });
 });
+
+describe('Act III and the trophy room', () => {
+  it('the parent process is gated behind the whole crossword and the finale, and rewrites SYSTEM STATUS', async () => {
+    const { PARENT_QS } = await import('../src/data/parent');
+    const { parentReady } = await import('../src/world/parent');
+    const { CROSSWORD } = await import('../src/world/terminalPage');
+    const { statusLines } = await import('../src/systems/status');
+    for (const q of PARENT_QS) { expect(q.answer).toBeGreaterThanOrEqual(0); expect(q.answer).toBeLessThan(q.options.length); expect(q.nudge.length).toBeGreaterThan(10); }
+    const g = newGame();
+    expect(parentReady(g).ok).toBe(false);
+    g.state.flags.cw_solved = CROSSWORD.map((c) => c.id).join(',');
+    expect(parentReady(g).ok).toBe(false); // finale not seen yet
+    g.state.flags.finale_seen = true;
+    expect(parentReady(g).ok).toBe(true);
+    g.state.flags.finale_ready = true;
+    expect(statusLines(g).join('\n')).toContain('UNKNOWN (not yet found)');
+    g.state.flags.act3_done = true;
+    expect(statusLines(g).join('\n')).toContain('visitor_73 (you)');
+  });
+  it('every crossword answer is learnable from the world', async () => {
+    const { CROSSWORD } = await import('../src/world/terminalPage');
+    const { KNOWLEDGE } = await import('../src/data/knowledge');
+    for (const c of CROSSWORD) expect(KNOWLEDGE[c.need]).toBeTruthy();
+  });
+});

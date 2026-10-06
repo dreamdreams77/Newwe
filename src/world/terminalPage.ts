@@ -8,6 +8,7 @@ import { h, btn } from '../ui/dom';
 import { toast } from '../ui/notifications';
 import { navigate, registerZone, refreshView } from '../ui/router';
 import { footer, ringBar } from './pageKit';
+import { parentReady } from './parent';
 import { audio } from '../audio/audioManager';
 
 /**
@@ -61,6 +62,7 @@ function render(): HTMLElement {
       return h('p', { class: `tm-clue ${done ? 'done' : ''}` }, c.clue, h('br'), input, done ? ' ✓' : btn('ENTER', check, 'small', { dataset: { fk: `cwb-${c.id}` } }));
     }),
     all ? h('p', { class: 'tm-know' }, 'CROSSWORD COMPLETE.') : '',
+    all ? h('p', { class: 'tm-menu' }, parentReady(g).ok ? [ 'A new process has appeared in the table: PID 1. ', btn('> ATTACH', () => navigate('parent'), 'go small', { dataset: { fk: 'attach-parent' } }) ] : 'PID 1: not ready. (The page is still rendering something at the bottom of the counter.)') : '',
   );
   return h('div', { class: 'terminal-page' },
     h('pre', { class: 'tm-banner' }, '*** STRATEGY GUIDE v1.1 ***\n(c) W. 2001. NOT FOR RESALE. NOT FOR ANYONE, REALLY.\n\nType nothing. Press nothing. Read.'),

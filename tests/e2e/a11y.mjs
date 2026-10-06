@@ -18,11 +18,11 @@ async function audit(name) {
   for (const v of res) report.push({ screen: name, ...v });
   console.log(`${name}: ${res.length} rule(s) violated${res.length ? ' -> ' + res.map((v) => `${v.id}(${v.impact},${v.count})`).join(', ') : ''}`);
 }
-const setup = () => mut(() => { const g = window.__game.g; const s = g.state; s.stage = 4; s.visitors = 600; for (const k of ['inventory','cards','journal','stats','creature','memories','mypage','eleven','crafting','terminal']) s.ui.revealed[k] = true; s.flags.lake_solved = true; s.flags.postcard_decoded = true; s.flags.e404_open = true; s.flags.clue_404 = true; s.flags.boss_defeated = true; s.flags.tas_diffs = true; s.flags.oak_found = true; g.changed(); });
+const setup = () => mut(() => { const g = window.__game.g; const s = g.state; s.stage = 4; s.visitors = 600; for (const k of ['inventory','cards','journal','stats','creature','memories','mypage','eleven','crafting','terminal']) s.ui.revealed[k] = true; s.flags.lake_solved = true; s.flags.postcard_decoded = true; s.flags.e404_open = true; s.flags.clue_404 = true; s.flags.boss_defeated = true; s.flags.tas_diffs = true; s.flags.oak_found = true; s.flags.finale_seen = true; s.flags.cw_solved = 'cw1,cw2,cw3,cw4,cw5,cw6,cw7'; s.flags.hits_100 = true; s.flags.hits_500 = true; s.badges.push('parent'); g.changed(); });
 
 await page.goto(URL_); await wait(600); await audit('splash');
 await page.click('text=ENTER SITE'); await wait(400); await setup();
-for (const z of ['home', 'construction', 'guestbook', 'lake', 'lighthouse', 'e404', 'dungeon', 'forest', 'tasmania', 'terminal', 'brokenHome', 'mypage']) {
+for (const z of ['home', 'construction', 'guestbook', 'lake', 'lighthouse', 'e404', 'dungeon', 'forest', 'tasmania', 'terminal', 'brokenHome', 'mypage', 'parent']) {
   await mut((z) => window.__game.navigate(z, { free: true }), z); await audit('zone:' + z);
 }
 for (const t of ['stats', 'inventory', 'cards', 'journal']) {

@@ -50,6 +50,7 @@ import './world/finale';
 import './world/room';
 import './world/forest';
 import './world/tasmania';
+import './world/parent';
 import './world/terminalPage';
 import './world/dev';
 import './world/ticket';
@@ -237,6 +238,7 @@ function goAddress(text: string): void {
     if (page === 'version') return void openVersions();
     if (page === 'terminal') return void openTerminal();
     if (page === 'handbook') return void openHandbook();
+    if (page === 'parent') return void navigate('parent');
     if (page === 'status') {
       if (g.has('finale_ready')) return void alertWindow('about:status', h('pre', { class: 'term-out' }, statusLines(g).join('\n')));
       return void toast('about:status — 403. Not yet. Nothing is finished running.', 'info');

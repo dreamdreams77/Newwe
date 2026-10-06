@@ -218,6 +218,15 @@ export const ZONES: Record<string, ZoneData> = {
       { when: { flag: 'tas_diffs' }, done: { flag: 'tas_aurora' }, text: 'Five letters, left to right. The sky only answers after dark.' },
     ],
   },
+  parent: {
+    id: 'parent',
+    title: 'PARENT PROCESS',
+    url: 'http://www.cybercities.com/AreaFiftyOne/Vault/1111/pid1.txt',
+    pageTitle: 'PID 1',
+    ambience: 'hum',
+    music: 'finale',
+    hint: [{ text: '...' }],
+  },
 };
 
 /** Webring tiles: unlocked by clues, not by a menu. */

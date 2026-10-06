@@ -31,7 +31,8 @@ export type ZoneId =
   | 'brokenHome'
   | 'terminal'
   | 'forest'
-  | 'tasmania';
+  | 'tasmania'
+  | 'parent';
 
 export type FlagValue = boolean | number | string;
 
