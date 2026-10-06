@@ -153,6 +153,26 @@ export const ZONES: Record<string, ZoneData> = {
     music: 'finale',
     hint: [{ text: '...' }],
   },
+  brokenHome: {
+    id: 'brokenHome',
+    title: 'The 11:11 Room',
+    url: 'http://www.cybercities.com/AreaFiftyOne/Vault/1111/room.html',
+    pageTitle: '11:11',
+    ambience: 'static',
+    music: 'dungeon',
+    hint: [
+      { done: { flag: 'bh_defeated' }, text: 'Every page you have visited is here at once. It is trying to remember itself. Look at it carefully, five different ways.' },
+    ],
+  },
+  terminal: {
+    id: 'terminal',
+    title: 'The Terminal',
+    url: 'http://www.cybercities.com/AreaFiftyOne/Vault/1111/strategy.txt',
+    pageTitle: 'STRATEGY GUIDE v1.1',
+    ambience: 'hum',
+    music: 'dungeon',
+    hint: [{ text: 'Green text on black. A menu, and a crossword. It is a strategy guide for something it has not been told about.' }],
+  },
 };
 
 /** Webring tiles: unlocked by clues, not by a menu. */
@@ -168,7 +188,8 @@ export interface RingTile {
 export const WEBRING: RingTile[] = [
   { zone: 'lake', label: "Swanny's Pond", alt: '[broken image: a boat shaped like a bird]', unlock: { flag: 'read_E_pete' }, colour: '#4aa3ff' },
   { zone: 'lighthouse', label: 'The Light on the Cliff', alt: '[broken image: a tall thing with a hat of light]', unlock: { flag: 'read_E_strange' }, colour: '#ffcf3a' },
-  { zone: 'terminal', label: 'The Terminal', alt: '[broken image: a blinking cursor, waiting]', future: true, colour: '#4cff7a' },
+  { zone: 'brokenHome', label: 'The 11:11 Room', alt: '[broken image: a clock with both hands on 11]', unlock: { flag: 'boss_defeated' }, colour: '#ff8cff' },
+  { zone: 'terminal', label: 'The Terminal', alt: '[broken image: a blinking cursor, waiting]', unlock: { flag: 'e404_open' }, colour: '#4cff7a' },
   { zone: 'forest', label: 'The Forest', alt: '[broken image: something green, thinking]', future: true, colour: '#3ab55a' },
   { zone: 'vending', label: 'Vending Machine Dungeon', alt: '[broken image: a glowing rectangle of cola]', future: true, colour: '#ff4a6a' },
   { zone: 'tasmania', label: 'Tasmania', alt: '[broken image: the bottom of the world]', future: true, colour: '#b08aff' },

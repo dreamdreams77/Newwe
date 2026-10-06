@@ -279,3 +279,27 @@ describe('knacks', () => {
     expect(back.flags.knacks).toBe('steady_hands,second_wind');
   });
 });
+
+describe('the Broken Homepage', () => {
+  it('its puzzles are fair: symmetrical banner, exactly one future forgery, a reversible shift, a 5-key sequence', async () => {
+    const b = await import('../src/systems/brokenHome');
+    const g = newGame();
+    for (let attempt = 1; attempt <= 12; attempt++) {
+      const p = b.bannerPattern(g, attempt);
+      expect(p.length).toBeGreaterThanOrEqual(3);
+      for (const c of p) { const mirror = (c % 3 === 0 ? c + 2 : c % 3 === 2 ? c - 2 : c); expect(p).toContain(mirror); }
+      const f = b.guestbookForgery(g, attempt);
+      expect(f.entries.filter((e) => e.n > f.counter)).toHaveLength(1);
+      expect(f.entries[f.forged].n).toBeGreaterThan(f.counter);
+      const w = b.cipherWord(g, attempt);
+      expect(b.shiftWord(b.shiftWord(w), 26 - b.CIPHER_SHIFT)).toBe(w);
+      expect(b.keySequence(g, attempt)).toHaveLength(5);
+    }
+  });
+  it('every piece of knowledge its phases reveal exists, and the zone is guarded until the first boss falls', async () => {
+    const { BROKEN_HOME } = await import('../src/data/encounters');
+    const { KNOWLEDGE } = await import('../src/data/knowledge');
+    for (const ph of BROKEN_HOME.phases) for (const r of ph.reveals) expect(KNOWLEDGE[r.know]).toBeTruthy();
+    expect(KNOWLEDGE[BROKEN_HOME.weakness!.know]).toBeTruthy();
+  });
+});

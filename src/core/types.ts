@@ -27,7 +27,9 @@ export type ZoneId =
   | 'dungeon'
   | 'mypage'
   | 'dev'
-  | 'elevenRoom';
+  | 'elevenRoom'
+  | 'brokenHome'
+  | 'terminal';
 
 export type FlagValue = boolean | number | string;
 

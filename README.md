@@ -118,6 +118,14 @@ Once the 404 page is open, a man stands in the link. He deals only in things tha
 
 There is no XP bar and no level number. How far you have grown since the start (total stat points gained) earns you a pick at 4, 10 and 18: choose one of two permanent Knacks from the Status window. Steady Hands forgives the first mistake of every boss fight, Quick Study counts as one more thing known about the boss, Second Wind heals on a solved phase, Night Owl shaves a tenth off all time, Lucky Streak gives +2 Luck, Archivist makes Inspector probes free. They are stored as one flag, so saves and passwords carry them with no format change.
 
+## The second boss, the Terminal, and a few throwbacks
+
+Beating the Vending Machine opens **The 11:11 Room** on the web ring: *The Broken Homepage*, a five-phase puzzle boss that matches the original brief. A banner pattern to memorise (always left-right symmetrical), a corrupted guestbook with one entry from the future, a cryptogram shifted by W's favourite number, a four-key memory sequence, and a final choice that is not labelled correct (restore it, rebuild it, or leave it broken on purpose; each changes a stat, an item and the finale text). Observation buys extra looks at the banner, Memory buys extra replays of the keys, Puzzle Sense rules things out, and everything the room teaches you shows up in Boss Knowledge. Its weakness is kindness, not cleverness.
+
+**The Terminal** is a retro-RPG menu page on the ring: a strategy guide that only fills in what you have actually learned (everything else is `???`), and a crossword whose answers it will only accept if the world has already told you. And there is a Konami code.
+
+Note for anyone with an old save password: zones and items are part of the compact save codec's flag dictionary, so passwords from before these additions will not decode. Autosave in the same browser is unaffected.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.
