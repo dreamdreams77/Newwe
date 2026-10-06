@@ -7,7 +7,7 @@ import { activeCreature, canSniff } from '../systems/creatures';
 import { passTime } from '../systems/actions';
 import { grantMemory } from '../systems/effects';
 import { isSuccess, type CheckDef } from '../systems/dice';
-import { FORKS, foxfireOut, forkHint, trailStep, walk } from '../systems/forest';
+import { FORKS, foxfireOut, forkHint, minutesToDusk, trailStep, waitForDusk, walk } from '../systems/forest';
 import { runDialogue } from '../ui/dialogue';
 import { openCheck } from '../ui/dice';
 import { h, btn } from '../ui/dom';
@@ -59,6 +59,7 @@ function openTrail(): void {
         h('p', {}, msg),
         h('p', { class: hint.reliable ? 'know' : 'unknown', role: 'status' }, hint.text),
         foxfireOut(g) ? '' : h('p', { class: 'tiny' }, 'It is not dark. Whatever is hiding in this wood is hiding better in the light.'),
+        foxfireOut(g) ? '' : btn(`Sit on the stump until dusk (${Math.round(minutesToDusk(g) / 60 * 10) / 10} h)`, () => { waitForDusk(g); msg = 'You sit on the stump by the lantern. The light goes gold, then green, then the first pale sparks come up out of the moss.'; w.refresh(); refreshView(); }, 'small', { dataset: { fk: 'trail-wait' } }),
         h('div', { class: 'win-actions' },
           btn('◄ Left', () => go('L', w), 'go', { dataset: { fk: 'trail-L' } }),
           btn('Right ►', () => go('R', w), 'go', { dataset: { fk: 'trail-R' } }),
@@ -136,6 +137,7 @@ function render(): HTMLElement {
       ? 'The path to the clearing is open. The oak, at the end of it, has been counting since before the webring.'
       : dark ? 'It is dark, and the woods are lit from the inside. Pale green sparks drift across the path. They seem to be going somewhere.'
         : 'Pines, moss, a signpost that does not help. A lantern and a tent on the right. Somewhere past the third fork, something old.'),
+    !dark ? h('div', { class: 'back-link' }, btn(`Sit on the stump until dusk (${Math.round(minutesToDusk(g) / 60 * 10) / 10} h)`, () => { waitForDusk(g); toast('You wait. The light goes gold, then green, and the foxfire wakes up.', 'magic'); refreshView(); }, 'small', { dataset: { fk: 'forest-wait' } })) : '',
     sniff ? h('div', { class: 'back-link' }, sniff) : '',
     h('div', { class: 'back-link' }, btn('◄ Back to the homepage', () => navigate('home'), 'small')),
     ringBar('forest'),

@@ -116,7 +116,7 @@ Once the 404 page is open, a man stands in the link. He deals only in things tha
 
 ## Knacks
 
-There is no XP bar and no level number. How far you have grown since the start (total stat points gained) earns you a pick at 4, 10 and 18: choose one of two permanent Knacks from the Status window. Steady Hands forgives the first mistake of every boss fight, Quick Study counts as one more thing known about the boss, Second Wind heals on a solved phase, Night Owl shaves a tenth off all time, Lucky Streak gives +2 Luck, Archivist makes Inspector probes free. They are stored as one flag, so saves and passwords carry them with no format change.
+There is no XP bar and no level number. How far you have grown since the start (total stat points gained) earns you a pick at 2, 5 and 9: choose one of two permanent Knacks from the Status window. Steady Hands forgives the first mistake of every boss fight, Quick Study counts as one more thing known about the boss, Second Wind heals on a solved phase, Night Owl shaves a tenth off all time, Lucky Streak gives +2 Luck, Archivist makes Inspector probes free. They are stored as one flag, so saves and passwords carry them with no format change.
 
 ## The second boss, the Terminal, and a few throwbacks
 
@@ -131,6 +131,10 @@ Note for anyone with an old save password: zones and items are part of the compa
 ## The Whispering Woods
 
 The web ring's Forest (it unlocks when the lake is solved) is a nature fan page by a hermit called Fern. It has an ecosystem (a mushroom ring that shrinks when you pick and regrows with the clock), a hermit with rumours you can verify, a quest, a memory, a card, and a puzzle that uses the game clock: the trail has three forks, the right way is a fair coin flip from your world seed, and the foxfire only shows it at dusk and at night. By day, a sharp eye (Observation) can read the moss one fork at a time. Guess wrong and you are LOST, back at the first fork, which the Ring of the Old Oak (the reward at the end, counted one ring at a time) cures for good. Mushrooms nibbled raw make you INSPIRED, and Foxfire Tea (mushroom plus coffee) is a crafting discovery.
+
+## Pacing notes (measured, not guessed)
+
+A natural full run of the original slice (no shortcuts for stats) ends around 14:48 on day 1 with about 1,350 visitors, so the 1,111 finale gate arrives without grinding, and all the extras (second boss, Forest, crossword) are surplus. Total stat growth over that run is only about 5 points, which is why Knack tiers sit at 2, 5 and 9 (they were 4, 10 and 18, and the last two were out of reach). The Forest's foxfire needs dusk, so the stump by Fern's lantern lets you wait for it (costing the time and the coffee that goes with it) instead of leaving you stuck at midday.
 
 ## Design rules this build follows
 

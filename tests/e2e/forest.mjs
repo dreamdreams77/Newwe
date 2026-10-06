@@ -62,14 +62,14 @@ log('Fern: "follow the glow, but only after dark" (Boss Knowledge-style note lea
 await page.click(fk('hs-sign'));
 await page.waitForSelector('.trail-win');
 assert(/THIS WAY/.test(await page.textContent('.trail-win .unknown')), 'daytime sign is useless');
-await page.click('.trail-win .win-x');
-log('By day the signpost is useless');
-
-// night: foxfire shows each fork
-await mut(() => { const g = window.__game.g; g.state.clock.minutes = 22 * 60; g.changed(); window.__game.refresh(); });
-await wait(300);
-await page.click(fk('hs-sign'));
+// ...but you can sit on the stump until dusk, right there in the trail window
+const before = (await state()).clock.minutes;
+await page.click(fk('trail-wait'));
 await page.waitForSelector('.trail-win .know');
+const after = (await state()).clock.minutes;
+assert(after - before >= 5 * 60 && after % 1440 >= 18 * 60, 'waited until dusk: ' + (after - before) + ' min');
+log('By day the signpost is useless, but "Sit on the stump until dusk" passes the time (costing it) and the foxfire wakes up');
+await wait(200);
 // one deliberate wrong turn first
 let t = await page.textContent('.trail-win .know');
 await page.click(fk(/LEFT/.test(t) ? 'trail-R' : 'trail-L'));

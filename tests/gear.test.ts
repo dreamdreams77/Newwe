@@ -259,7 +259,7 @@ describe('knacks', () => {
     const g = newGame();
     expect(k.pendingTier(g)).toBeNull();
     expect(k.pickKnack(g, 'steady_hands')).toBe(false);
-    g.state.stats.courage += 4;
+    g.state.stats.courage += 2;
     expect(k.pendingTier(g)).toBe(0);
     expect(k.pickKnack(g, 'second_wind')).toBe(false); // wrong tier
     expect(k.pickKnack(g, 'steady_hands')).toBe(true);
@@ -270,6 +270,7 @@ describe('knacks', () => {
     raiseFury(g, e, encDef('vm1111'));
     expect(e.fury).toBe(1);
     g.state.stats.courage += 6;
+    expect(k.pendingTier(g)).toBe(1);
     k.pickKnack(g, 'second_wind');
     g.state.vitals.hp = 3;
     advancePhase(g, e);

@@ -69,7 +69,7 @@ log('In the boss fight the Sprite glitched the machine (next hit negated), splas
 await page.click('.combat-win >> text=Retreat');
 await page.waitForSelector('.combat-win', { state: 'detached' });
 // knacks: grow, then choose one of two in the Status window
-await mut(() => { const g = window.__game.g; g.state.stats.courage += 5; g.state.ui.revealed.stats = true; g.changed(); window.__game.navigate('home', { free: true }); });
+await mut(() => { const g = window.__game.g; g.state.stats.courage += 2; g.state.ui.revealed.stats = true; g.changed(); window.__game.navigate('home', { free: true }); });
 await wait(300);
 await page.click('.tools button[data-tool="stats"]');
 await page.waitForSelector('.stats-win .knack-pick');
@@ -78,7 +78,7 @@ await wait(200);
 s = await state();
 assert(s.flags.knacks === 'quick_study', 'knack chosen from the Status window');
 assert(!(await page.$('.stats-win .knack-pick')), 'no second pick until you grow more');
-log('Grew by 5: the Status window offered two Knacks, I chose Quick Study, and the offer went away');
+log('Grew by 2: the Status window offered two Knacks, I chose Quick Study, and the offer went away');
 console.log(errors.length ? 'ERRORS:\n' + errors.join('\n') : '\nNo console errors or warnings.');
 await browser.close();
 if (errors.length) process.exit(1);

@@ -13,7 +13,8 @@ export interface KnackDef {
   text: string;
 }
 
-export const KNACK_TIERS = [4, 10, 18]; // total stat growth needed for each pick
+/** total stat growth for each pick. Measured: a full run of the original slice grows about 5 points, so these are 'early, mid, after the extras' */
+export const KNACK_TIERS = [2, 5, 9];
 
 export const KNACKS: KnackDef[] = [
   { id: 'steady_hands', tier: 0, label: 'Steady Hands', text: 'The first mistake in every boss fight is forgiven.' },

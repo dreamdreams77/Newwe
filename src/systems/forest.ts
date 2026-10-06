@@ -62,3 +62,16 @@ export function walk(g: Game, dir: Dir): WalkResult {
   g.changed();
   return { ok: false, done: false, text: `${word(dir)}. The path goes round and round and delivers you, gently, back at the first fork. ${lost ? 'You are LOST.' : 'The woods know you too well to let you get lost, but it still cost you a quarter hour.'}` };
 }
+
+/** the stump by the lantern: sit until the foxfire wakes. Costs the time it takes (and the coffee that goes with it). */
+export function minutesToDusk(g: Game): number {
+  const m = g.state.clock.minutes % 1440;
+  if (foxfireOut(g)) return 0;
+  return Math.max(0, 18 * 60 - m);
+}
+
+export function waitForDusk(g: Game): number {
+  const n = minutesToDusk(g);
+  if (n > 0) passTime(g, n, { raw: true });
+  return n;
+}
