@@ -13,7 +13,11 @@ const assert = (c, m) => { if (!c) throw new Error('ASSERT FAILED: ' + m); };
 await page.goto(BASE); // no ?debug or ?fresh, so the service worker registers
 await page.waitForSelector('text=ENTER SITE');
 await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
-await page.waitForTimeout(1500); // let the precache message land
+// wait for the cache to actually hold the app (script, stylesheet and page), rather than guessing a delay
+await page.waitForFunction(async () => {
+  const keys = (await (await caches.open('eleven-eleven-v1')).keys()).map((r) => r.url);
+  return keys.some((u) => u.endsWith('.js')) && keys.some((u) => u.endsWith('.css')) && keys.some((u) => /\/$/.test(u));
+}, null, { timeout: 15000 });
 const manifest = await page.evaluate(() => fetch('manifest.webmanifest').then((r) => r.json()));
 assert(manifest.name.includes('11:11') && manifest.icons.length >= 2, 'a web app manifest with icons');
 log('The service worker is active and the web app manifest is valid (installable)');

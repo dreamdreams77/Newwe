@@ -2,8 +2,20 @@
 // Hashed assets (they never change under the same name): cache first.
 const CACHE = 'eleven-eleven-v1';
 
+// On install, cache the shell and every script and stylesheet the page references, so the app works offline after one visit
+// (fonts and anything else the page already loaded arrive through the 'precache' message below).
+async function precacheShell() {
+  const cache = await caches.open(CACHE);
+  await cache.addAll(['./', './manifest.webmanifest', './icon-192.png']);
+  try {
+    const html = await (await fetch('./', { cache: 'no-store' })).text();
+    const urls = [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css))"/g)].map((m) => new URL(m[1], self.registration.scope).href);
+    await Promise.all(urls.map((u) => cache.add(u).catch(() => {})));
+  } catch { /* offline install: nothing more to cache */ }
+}
+
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './manifest.webmanifest', './icon-192.png'])).then(() => self.skipWaiting()));
+  event.waitUntil(precacheShell().then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
