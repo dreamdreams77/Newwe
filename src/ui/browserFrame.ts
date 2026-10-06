@@ -83,8 +83,8 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
   const closers: Array<() => void> = [];
   const closeAll = () => closers.forEach((c) => c());
   hd.menus.forEach((m) => {
-    const wrap = h('div', { class: 'menu' });
-    const trigger = h('button', { type: 'button', attrs: { 'aria-haspopup': 'true', 'aria-expanded': 'false' } }, m.label);
+    const wrap = h('div', { class: 'menu', role: 'none' });
+    const trigger = h('button', { type: 'button', role: 'menuitem', attrs: { 'aria-haspopup': 'true', 'aria-expanded': 'false' } }, m.label);
     const list = h('ul', { role: 'menu' });
     const close = () => {
       wrap.classList.remove('open');
@@ -137,7 +137,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
     btn('■', hd.stop, '', { ariaLabel: 'Stop and close windows' }),
   );
   const tools = h('div', { class: 'tools', role: 'toolbar', ariaLabel: 'Game panels' });
-  const hud = h('div', { class: 'hud', role: 'group', ariaLabel: 'Vital signs' });
+  const hud = h('div', { class: 'hud', role: 'region', ariaLabel: 'Vital signs' });
   const viewport = h('main', { class: 'viewport', id: 'content', tabindex: -1 });
   const held = h('div', { class: 'held-banner', attrs: { 'aria-live': 'polite' } });
 
@@ -146,7 +146,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
     { class: 'browser' },
     h(
       'div',
-      { class: 'titlebar' },
+      { class: 'titlebar', role: 'region', ariaLabel: 'Window title' },
       icon('star', 16),
       title,
       h(
@@ -157,11 +157,11 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
         btn('×', () => hd.joke('You can close this tab, but the page will still be there. Waiting.'), 'tb-btn', { ariaLabel: 'Close (decorative)' }),
       ),
     ),
-    menubar,
-    h('div', { class: 'toolbar' }, navBtns, h('div', { class: 'addr' }, h('label', { for: 'address' }, 'Address:'), addressInput, btn('Go', () => hd.go(addressInput.value), 'small')), tools),
+    h('nav', { class: 'menubar-nav', ariaLabel: 'Menus' }, menubar),
+    h('div', { class: 'toolbar', role: 'region', ariaLabel: 'Browser toolbar' }, navBtns, h('div', { class: 'addr' }, h('label', { for: 'address' }, 'Address:'), addressInput, btn('Go', () => hd.go(addressInput.value), 'small')), tools),
     hud,
     h('div', { style: 'position:relative;flex:1;min-height:0;display:flex;flex-direction:column' }, loadingBar, viewport, held),
-    h('div', { class: 'statusbar' }, status, zoneCell, inspectBtn, soundBtn),
+    h('div', { class: 'statusbar', role: 'region', ariaLabel: 'Status bar' }, status, zoneCell, inspectBtn, soundBtn),
   );
 
   const refs: FrameRefs = {

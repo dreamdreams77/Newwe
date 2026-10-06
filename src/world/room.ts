@@ -27,7 +27,7 @@ function render(): HTMLElement {
       h('p', {}, done
         ? 'The page is still, now. It flickers like a held breath. In one window, someone is waving.'
         : 'The room is every page you have ever visited, stacked and flickering. It is not hostile. It is trying very hard to remember what it was, and getting it wrong in new ways each time.'),
-      h('h3', {}, 'Look around'),
+      h('h2', {}, 'Look around'),
       h('ul', { class: 'room-clues' }, CLUES.map((c) => {
         const have = c.know.every((k) => g.state.knowledge.includes(k));
         return h('li', {}, btn(c.label + (have ? ' ✓' : ''), () => { c.know.forEach((k) => learn(g, k)); toast(c.text, 'magic'); refreshView(); }, 'small', { dataset: { fk: `room-${c.id}` } }));

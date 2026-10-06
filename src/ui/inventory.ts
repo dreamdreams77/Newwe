@@ -48,17 +48,16 @@ function render(body: HTMLElement, win: WinHandle): void {
   const cap = carryCapacity(g);
   const over = weight > cap;
 
-  const grid = h('div', { class: 'inv-grid', role: 'list', ariaLabel: 'Items' });
+  const grid = h('div', { class: 'inv-grid', ...(list.length ? { role: 'list', ariaLabel: 'Items' } : {}) });
   if (!list.length) grid.append(h('p', { class: 'empty' }, 'Nothing yet. Poke around. Take things. Everything on this page is a bit suspicious.'));
   list.forEach(({ def, stack }) => {
     const fresh = freshness(g, def.id);
     const picked = picks.includes(def.id);
     grid.append(
-      h(
+      h('div', { role: 'listitem', class: 'inv-li' }, h(
         'button',
         {
           type: 'button',
-          role: 'listitem',
           class: `inv-item rar-${def.rarity} ${selected === def.id ? 'sel' : ''} ${picked ? 'picked' : ''} ${fresh ? `fresh-${fresh}` : ''}`,
           dataset: { fk: `item-${def.id}`, item: def.id },
           ariaLabel: `${def.name}${stack.qty > 1 ? ', ' + stack.qty : ''}`,
@@ -78,7 +77,7 @@ function render(body: HTMLElement, win: WinHandle): void {
         h('span', { class: 'ii-name' }, def.name),
         stack.qty > 1 ? h('span', { class: 'ii-qty' }, `×${stack.qty}`) : null,
         picked ? h('span', { class: 'ii-pick' }, String(picks.indexOf(def.id) + 1)) : null,
-      ),
+      )),
     );
   });
 

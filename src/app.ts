@@ -96,6 +96,7 @@ export async function boot(): Promise<void> {
 
   installAutosave(g, 250); // only once the player has chosen: a stray load must never overwrite a save
 
+  document.querySelector('.skip-link')?.removeAttribute('hidden'); // there is a #content to skip to now
   // ---- frame
   const menus: MenuDef[] = buildMenus(g);
   let frame!: FrameRefs;

@@ -98,6 +98,7 @@ export function openWindow(opts: WinOpts): WinHandle {
       const fk = active && body.contains(active) ? active.dataset.fk : undefined;
       clear(body);
       opts.render(body, handle);
+      keyboardScroll(body);
       body.scrollTop = st;
       if (fk) body.querySelector<HTMLElement>(`[data-fk="${fk}"]`)?.focus();
     },
@@ -113,6 +114,7 @@ export function openWindow(opts: WinOpts): WinHandle {
   open.set(opts.id, { handle, restore, release, opts });
   layer.appendChild(backdrop);
   opts.render(body, handle);
+  keyboardScroll(body);
   focusIn(el);
   return handle;
 }
@@ -137,4 +139,10 @@ export function alertWindow(title: string, content: Child, okLabel = 'OK'): Prom
       },
     });
   });
+}
+
+/** a window with no focusable content can still scroll: give keyboard users a way to scroll it */
+function keyboardScroll(body: HTMLElement): void {
+  if (body.querySelector('button, a[href], input, select, textarea, [tabindex]')) body.removeAttribute('tabindex');
+  else body.setAttribute('tabindex', '0');
 }

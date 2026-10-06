@@ -140,7 +140,7 @@ export function runBrokenHomepage(): Promise<EncounterResult> {
         body.append(widget);
 
         const hand = g.state.cards.hand.filter((c) => CARDS[c.cardId].where.includes('combat'));
-        const handEl = h('div', { class: 'enc-hand' }, h('h4', {}, 'Your hand'));
+        const handEl = h('div', { class: 'enc-hand' }, h('h3', {}, 'Your hand'));
         const row = h('div', { class: 'hand-row' });
         hand.forEach((c) => {
           const why = whyNotPlayable(g, c.uid, 'combat');

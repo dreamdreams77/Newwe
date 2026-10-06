@@ -53,7 +53,15 @@ const at = async (cx, cy) => { const box = await page.$eval('.spot-wrap canvas',
 await at(10, 10);
 await wait(120);
 assert(!(await state()).flags.tas_found, 'a wrong click finds nothing');
-for (const [cx, cy] of DIFFS.slice(0, 4)) { await at(cx, cy); await wait(120); }
+// the keyboard route: focus the 2003 photograph, nudge the crosshair, press Enter (and a screen reader hears Hot/Warm/Cold)
+await page.focus(fk('spot-b'));
+await page.keyboard.press('ArrowDown');
+assert(/Hot|Warm/.test(await page.textContent('.spot-wrap .sr-only')), 'hot/cold read-out is exposed');
+await page.keyboard.press('Enter');
+await wait(150);
+assert((await state()).flags.tas_found === 'boat', 'the keyboard found the sailboat');
+log('Keyboard: arrow keys move a crosshair, the hot/cold read-out speaks, Enter found the sailboat');
+for (const [cx, cy] of [DIFFS[0], DIFFS[1], DIFFS[3]]) { await at(cx, cy); await wait(120); }
 assert((await state()).flags.tas_found.split(',').length === 4, 'four found');
 await at(...DIFFS[4]);
 await page.waitForSelector('.spot-win', { state: 'detached' });

@@ -82,3 +82,6 @@ body:has(.combat-win) .toast { font-size: .8rem; padding: 5px 9px; pointer-event
 @media (prefers-reduced-motion: reduce) { .spot-ring.glow { animation: none; } }
 .spot-letters { font: 700 28px monospace; letter-spacing: .4em; text-align: center; color: #9fffb4; background: #021; padding: 4px; }
 @media (max-width: 640px) { .spot-pair { grid-template-columns: 1fr; } }
+.spot-cross { position: absolute; width: 18px; height: 18px; transform: translate(-50%, -50%); border: 2px solid #fff; box-shadow: 0 0 0 1px #000; border-radius: 50%; pointer-events: none; opacity: 0; }
+.spot-wrap:focus-visible { outline: 3px solid #ffd23a; outline-offset: 2px; }
+.spot-wrap:focus-visible .spot-cross { opacity: 1; }

@@ -22,7 +22,10 @@ export function openSpotChange(): Promise<boolean> {
     let misses = 0;
     let squints = 0;
     let glow: string | null = null;
-    let note = 'Click on the right-hand photograph, wherever something is new.';
+    let note = 'Click on the right-hand photograph, wherever something is new. (Keyboard: Tab to the 2003 photograph, arrow keys move a crosshair, Enter looks closely.)';
+    let cx = 160;
+    let cy = 90;
+    let warmth = '';
     const squintsMax = () => Math.floor(statValue(g, 'observation') / 3);
     const tod = timeOfDay(g.state.clock.minutes) === 'night' ? 'dusk' : timeOfDay(g.state.clock.minutes);
     const save = () => { g.state.flags.tas_found = [...found].join(','); g.changed(); };
@@ -57,10 +60,7 @@ export function openSpotChange(): Promise<boolean> {
             wrapB.append(h('i', { class: `spot-ring ${found.has(d.id) ? 'ok' : 'glow'}`, style: `left:${(d.x / 320) * 100}%;top:${(d.y / 180) * 100}%;width:${((d.r * 2) / 320) * 100}%;height:${((d.r * 2) / 180) * 100}%` }));
           }
         }
-        b.addEventListener('click', (ev) => {
-          const rect = b.getBoundingClientRect();
-          const x = ((ev.clientX - rect.left) / rect.width) * 320;
-          const y = ((ev.clientY - rect.top) / rect.height) * 180;
+        const probe = (x: number, y: number) => {
           const hit = DIFFS.find((d) => !found.has(d.id) && Math.hypot(d.x - x, d.y - y) <= d.r);
           if (!hit) {
             misses++;
@@ -76,6 +76,35 @@ export function openSpotChange(): Promise<boolean> {
           save();
           if (found.size >= DIFFS.length) return finish(w);
           w.refresh();
+        };
+        b.addEventListener('click', (ev) => {
+          const rect = b.getBoundingClientRect();
+          probe(((ev.clientX - rect.left) / rect.width) * 320, ((ev.clientY - rect.top) / rect.height) * 180);
+        });
+        // keyboard: the 2003 photograph is focusable; arrows move a crosshair, Enter looks closely, and a hot/cold read-out says how near you are
+        const cross = h('i', { class: 'spot-cross', attrs: { 'aria-hidden': 'true' }, style: `left:${(cx / 320) * 100}%;top:${(cy / 180) * 100}%` });
+        const live = h('span', { class: 'sr-only', attrs: { 'aria-live': 'polite', role: 'status' } }, warmth);
+        wrapB.setAttribute('tabindex', '0');
+        wrapB.setAttribute('role', 'group');
+        wrapB.setAttribute('aria-label', '2003 photograph. Arrow keys move a crosshair, Enter looks closely.');
+        wrapB.dataset.fk = 'spot-b';
+        wrapB.append(cross, live);
+        wrapB.addEventListener('keydown', (ev) => {
+          const step = ev.shiftKey ? 4 : 12;
+          const d: Record<string, [number, number]> = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+          if (d[ev.key]) {
+            ev.preventDefault();
+            cx = Math.max(0, Math.min(320, cx + d[ev.key][0]));
+            cy = Math.max(0, Math.min(180, cy + d[ev.key][1]));
+            cross.style.left = `${(cx / 320) * 100}%`;
+            cross.style.top = `${(cy / 180) * 100}%`;
+            const near = Math.min(...DIFFS.filter((x) => !found.has(x.id)).map((x) => Math.hypot(x.x - cx, x.y - cy)));
+            warmth = near <= 30 ? 'Hot' : near <= 65 ? 'Warm' : 'Cold';
+            live.textContent = warmth;
+          } else if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            probe(cx, cy);
+          }
         });
         const letters = DIFFS.map((d) => (found.has(d.id) ? d.letter : '_')).join(' ');
         body.append(
