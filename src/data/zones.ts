@@ -173,6 +173,34 @@ export const ZONES: Record<string, ZoneData> = {
     music: 'dungeon',
     hint: [{ text: 'Green text on black. A menu, and a crossword. It is a strategy guide for something it has not been told about.' }],
   },
+  forest: {
+    id: 'forest',
+    title: 'The Whispering Woods',
+    url: 'http://www.geocities.com/Yosemite/Trails/3011/woods.html',
+    pageTitle: '~ the whispering woods ~ (a nature fan page)',
+    ambience: 'wind',
+    music: 'lake',
+    eco: {
+      mushrooms: {
+        max: 4,
+        regrowMinutes: 360,
+        states: [
+          { atMost: 0, name: 'bare' },
+          { atMost: 2, name: 'sparse' },
+          { atMost: 99, name: 'lush' },
+        ],
+      },
+    },
+    spots: [
+      { id: 'forest_visitor_a', x: 12, y: 44, obs: 5, text: 'A visitor sitting very still on a branch, pretending to be a squirrel. Counted.' },
+      { id: 'forest_visitor_b', x: 84, y: 24, obs: 8, text: 'A visitor tucked into a hollow, reading a very small book. They look up and wave a leaf at you.' },
+    ],
+    hint: [
+      { done: { flag: 'fern_met' }, text: 'Somebody lives in the woods, near the stump with the lantern.' },
+      { when: { flag: 'fern_met' }, done: { flag: 'oak_found' }, text: 'The path forks three times. The foxfire only shows the way after dark.' },
+      { when: { flag: 'oak_found' }, done: { flag: 'tree_ring_taken' }, text: 'The oak has been counting for a long time. So can you.' },
+    ],
+  },
 };
 
 /** Webring tiles: unlocked by clues, not by a menu. */
@@ -190,7 +218,7 @@ export const WEBRING: RingTile[] = [
   { zone: 'lighthouse', label: 'The Light on the Cliff', alt: '[broken image: a tall thing with a hat of light]', unlock: { flag: 'read_E_strange' }, colour: '#ffcf3a' },
   { zone: 'brokenHome', label: 'The 11:11 Room', alt: '[broken image: a clock with both hands on 11]', unlock: { flag: 'boss_defeated' }, colour: '#ff8cff' },
   { zone: 'terminal', label: 'The Terminal', alt: '[broken image: a blinking cursor, waiting]', unlock: { flag: 'e404_open' }, colour: '#4cff7a' },
-  { zone: 'forest', label: 'The Forest', alt: '[broken image: something green, thinking]', future: true, colour: '#3ab55a' },
+  { zone: 'forest', label: 'The Forest', alt: '[broken image: something green, thinking]', unlock: { flag: 'lake_solved' }, colour: '#3ab55a' },
   { zone: 'vending', label: 'Vending Machine Dungeon', alt: '[broken image: a glowing rectangle of cola]', future: true, colour: '#ff4a6a' },
   { zone: 'tasmania', label: 'Tasmania', alt: '[broken image: the bottom of the world]', future: true, colour: '#b08aff' },
 ];
@@ -215,6 +243,10 @@ export const SNIFFS: Record<string, SniffFind[]> = {
   ],
   home: [{ id: 'sniff_home_visitor', text: 'It stares at the hit counter until a visitor falls out of the digits. +11 visitors.', hits: 11 }],
   construction: [{ id: 'sniff_cons_tape', text: 'It digs in the sand pit and pulls out a half-used roll of Duct Tape. Bob pretends not to notice.', item: 'duct_tape' }],
+  forest: [
+    { id: 'sniff_forest_mushroom', text: 'It noses through the leaf litter and comes up with a speckled mushroom, held very proudly in its beak.', item: 'forest_mushroom' },
+    { id: 'sniff_forest_visitor', text: 'It stares up a tree until a visitor, caught, climbs down. +11 visitors.', hits: 11 },
+  ],
   dungeon: [{ id: 'sniff_dungeon_snack', text: 'It sniffs out a Suspicious 7-Eleven Snack, wedged behind a server rack. It looks very pleased with itself.', item: 'snack_711' }],
 };
 

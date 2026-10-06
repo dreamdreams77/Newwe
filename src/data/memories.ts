@@ -76,6 +76,18 @@ const list: MemoryDef[] = [
       { t: 'know', id: 'november_yoghurt' },
     ],
   },
+  {
+    id: 'FOREST_001',
+    kind: 'note',
+    title: 'Carved in the Oak',
+    text: 'Cut into the bark, old and healed over: 11. And below it, smaller, in a different hand: come back when it\u2019s time.',
+    caption: 'The Old Oak, at the end of the foxfire.',
+    becomes: 'Clue: the oak has been counting',
+    onGain: [
+      { t: 'know', id: 'forest_eleven' },
+      { t: 'hits', by: 22, why: 'a memory surfaced' },
+    ],
+  },
 ];
 
 export const MEMORIES: Record<string, MemoryDef> = Object.fromEntries(list.map((m) => [m.id, m]));

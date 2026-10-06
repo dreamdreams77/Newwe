@@ -20,6 +20,7 @@ export const CROSSWORD: Array<{ id: string; clue: string; answer: string; need: 
   { id: 'cw3', clue: '3 ACROSS (4): The keeper of the lighthouse. Gruff, tender, never says why.', answer: 'MARL', need: 'light_was_tended' },
   { id: 'cw4', clue: '4 DOWN (8): The last stop on the Bullet Train. Not on any map.', answer: 'TERMINUS', need: 'terminus' },
   { id: 'cw5', clue: '5 ACROSS (7): A guestbook can only hold one of these who has already arrived. They are counted, and the counter never lies.', answer: 'VISITOR', need: 'bh_counter' },
+  { id: 'cw6', clue: '6 DOWN (3): The old tree at the end of the foxfire. It has been counting eleven rings, and then some.', answer: 'OAK', need: 'forest_eleven' },
 ];
 
 function render(): HTMLElement {

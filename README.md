@@ -128,6 +128,10 @@ Retro polish: fights open with the classic flash-and-bars battle wipe (skipped u
 
 Note for anyone with an old save password: zones and items are part of the compact save codec's flag dictionary, so passwords from before these additions will not decode. Autosave in the same browser is unaffected.
 
+## The Whispering Woods
+
+The web ring's Forest (it unlocks when the lake is solved) is a nature fan page by a hermit called Fern. It has an ecosystem (a mushroom ring that shrinks when you pick and regrows with the clock), a hermit with rumours you can verify, a quest, a memory, a card, and a puzzle that uses the game clock: the trail has three forks, the right way is a fair coin flip from your world seed, and the foxfire only shows it at dusk and at night. By day, a sharp eye (Observation) can read the moss one fork at a time. Guess wrong and you are LOST, back at the first fork, which the Ring of the Old Oak (the reward at the end, counted one ring at a time) cures for good. Mushrooms nibbled raw make you INSPIRED, and Foxfire Tea (mushroom plus coffee) is a crafting discovery.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.

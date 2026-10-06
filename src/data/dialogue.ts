@@ -372,4 +372,32 @@ export const SALESMAN: DTree = {
   },
 };
 
-export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL, salesman: SALESMAN };
+const FERN_W = { who: 'Fern (hermit, webmaster of this page)' };
+
+/** The hermit of the Whispering Woods. Hand-coded the page herself, in 2002, in the dark. */
+export const FERN: DTree = {
+  id: 'fern',
+  start: (g) => (g.has('fern_met') ? 'back' : 'greet'),
+  nodes: {
+    greet: { id: 'greet', ...FERN_W, text: 'Oh! A visitor who clicked past the guestbook. I wrote this whole page by lantern. The counter says four. Three of those are me.', effects: [{ t: 'flag', key: 'fern_met' }], next: 'menu' },
+    back: { id: 'back', ...FERN_W, text: 'Back again. The woods said you might be. Mind the moss, it has opinions.', next: 'menu' },
+    menu: {
+      id: 'menu', ...FERN_W, text: 'What can I do you for? (I cannot do anything. I can talk.)',
+      choices: [
+        { text: 'What is this place?', next: 'place' },
+        { text: 'How do I get through the trail?', next: 'trail' },
+        { text: 'Heard anything lately?', next: 'rumor' },
+        { text: '(Trade a Coffee for two Speckled Mushrooms)', when: { has: 'coffee' }, next: 'trade', action: (g) => removeItem(g, 'coffee', 1), effects: [{ t: 'item', id: 'forest_mushroom', qty: 2 }] },
+        { text: 'Who carved the number in the oak?', when: { flag: 'oak_found' }, next: 'oak' },
+        { text: 'Bye.', end: true },
+      ],
+    },
+    place: { id: 'place', ...FERN_W, text: 'A nature fan page. Trees, mostly. There is a webring. It is not as exciting as it sounds. But the woods are older than the webring, and they remember everyone who ever clicked.', next: 'menu' },
+    trail: { id: 'trail', ...FERN_W, text: 'Three forks. In daylight the signs are just my handwriting, which is wrong. After dark the foxfire wakes up and drifts toward the right way. Follow the glow. Keep your head, or you will get lost, and lost is a state of mind that comes with a timer.', effects: [{ t: 'know', id: 'forest_foxfire' }], next: 'menu' },
+    rumor: { id: 'rumor', ...FERN_W, run: (g) => { const r = nextRumor(g, 'fern'); if (r) { hearRumor(g, r); g.state.flags.rumor_last = r.id; } }, text: (g) => rumorText(g), next: 'menu' },
+    trade: { id: 'trade', ...FERN_W, text: 'Coffee! I have not had coffee since the dial-up era. Here. They are fine. I labelled them. (The labels are not reliable.)', next: 'menu' },
+    oak: { id: 'oak', ...FERN_W, text: 'It was there when I got here. I have always assumed it was the Webmaster. W liked a good round number. Say it to the tree, it listens better than I do.', next: 'menu' },
+  },
+};
+
+export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL, salesman: SALESMAN, fern: FERN };

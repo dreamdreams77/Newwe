@@ -303,3 +303,57 @@ describe('the Broken Homepage', () => {
     expect(KNOWLEDGE[BROKEN_HOME.weakness!.know]).toBeTruthy();
   });
 });
+
+describe('the Whispering Woods', () => {
+  it('the trail: foxfire only after dark, sharp eyes by day, a wrong turn is LOST (unless you wear the ring), three rights find the oak', async () => {
+    const f = await import('../src/systems/forest');
+    const g = newGame();
+    const dirs = f.forkDirs(g);
+    expect(dirs).toHaveLength(3);
+    expect(f.forkDirs(g)).toEqual(dirs); // fair and repeatable per world
+    // daytime, low Observation: the sign tells you nothing
+    g.state.clock.minutes = 12 * 60;
+    g.state.stats.observation = 2;
+    expect(f.foxfireOut(g)).toBe(false);
+    expect(f.forkHint(g, 0).reliable).toBe(false);
+    // keen eyes read the moss
+    g.state.stats.observation = 9;
+    expect(f.forkHint(g, 0).reliable).toBe(true);
+    // after dark the foxfire is reliable at every fork
+    g.state.stats.observation = 2;
+    g.state.clock.minutes = 22 * 60;
+    expect(f.foxfireOut(g)).toBe(true);
+    for (let i = 0; i < 3; i++) expect(f.forkHint(g, i).text).toContain(dirs[i] === 'L' ? 'LEFT' : 'RIGHT');
+    // a wrong turn resets and loses you
+    const wrong = dirs[0] === 'L' ? 'R' : 'L';
+    expect(f.walk(g, wrong).ok).toBe(false);
+    expect(f.trailStep(g)).toBe(0);
+    expect(hasAilment(g, 'lost')).toBe(true);
+    // the ring makes you unlosable
+    g.state.ailments = [];
+    give(g, 'tree_ring'); equip(g, 'tree_ring');
+    f.walk(g, wrong);
+    expect(hasAilment(g, 'lost')).toBe(false);
+    // three rights
+    for (const d of dirs) f.walk(g, d);
+    expect(g.state.flags.oak_found).toBe(true);
+  });
+  it('the content is wired: zone, quest, memory, card, items, recipe, knowledge, hotspot objects', async () => {
+    const { ZONES, WEBRING } = await import('../src/data/zones');
+    const { QUESTS } = await import('../src/data/quests');
+    const { MEMORIES } = await import('../src/data/memories');
+    const { CARDS } = await import('../src/data/cards');
+    const { RECIPES } = await import('../src/data/recipes');
+    const { KNOWLEDGE } = await import('../src/data/knowledge');
+    const { WORLD_BY_ID } = await import('../src/data/world');
+    expect(ZONES.forest.eco?.mushrooms.max).toBeGreaterThan(0);
+    expect(WEBRING.find((t) => t.zone === 'forest')?.future).toBeFalsy();
+    expect(QUESTS.find((q) => q.id === 'q_forest')).toBeTruthy();
+    expect(MEMORIES.FOREST_001).toBeTruthy();
+    expect(CARDS.old_oak).toBeTruthy();
+    expect(ITEMS.forest_mushroom && ITEMS.tree_ring).toBeTruthy();
+    expect(RECIPES.find((r) => r.id === 'foxfire_tea')).toBeTruthy();
+    expect(KNOWLEDGE.forest_foxfire && KNOWLEDGE.forest_eleven).toBeTruthy();
+    for (const id of ['forest.mushrooms', 'forest.trail', 'forest.oak']) expect(WORLD_BY_ID[id]).toBeTruthy();
+  });
+});

@@ -48,6 +48,7 @@ import './world/dungeon';
 import './world/mypage';
 import './world/finale';
 import './world/room';
+import './world/forest';
 import './world/terminalPage';
 import './world/dev';
 import './world/ticket';

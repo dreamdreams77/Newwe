@@ -240,6 +240,48 @@ export const WORLD: WorldObj[] = [
     ],
     error: { code: '403', text: 'FORBIDDEN. (but not very.)', reveal: T('dev_gate_seen') },
   },
+  {
+    id: 'forest.mushrooms',
+    label: 'mushroom_ring',
+    kind: 'object',
+    zone: 'forest',
+    known: T('visited_forest'),
+    stateRules: [
+      { when: { zoneState: { zone: 'forest', key: 'mushrooms', is: 'bare' } }, is: 'BARE' },
+      { when: { zoneState: { zone: 'forest', key: 'mushrooms', is: 'sparse' } }, is: 'SPARSE' },
+      { when: T('visited_forest'), is: 'LUSH' },
+    ],
+    mode: 'ALL',
+    deps: [{ id: 's', name: 'caps.stock', op: '>', value: '0', cond: { not: { zoneState: { zone: 'forest', key: 'mushrooms', is: 'bare' } } }, nameKnown: T('visited_forest'), obs: 1 }],
+    note: { text: 'regrow_rate = 1 per 360 min. the labels are not reliable', reveal: { stat: 'observation', gte: 6 } },
+  },
+  {
+    id: 'forest.trail',
+    label: 'trail.fork[3]',
+    kind: 'object',
+    zone: 'forest',
+    known: T('visited_forest'),
+    stateRules: [{ when: T('oak_found'), is: 'RESOLVED' }, { when: T('fern_met'), is: 'TANGLED' }, { when: T('visited_forest'), is: 'UNMARKED' }],
+    mode: 'ALL',
+    deps: [
+      { id: 'n', name: 'time.is_dark', op: '==', value: 'TRUE', cond: { time: { from: 18 * 60, to: 5 * 60 } }, nameKnown: T('visited_forest'), obs: 2 },
+      { id: 'o', name: 'observation', op: '>=', value: '5', cond: { stat: 'observation', gte: 5 }, nameKnown: T('fern_met'), obs: 3 },
+    ],
+  },
+  {
+    id: 'forest.oak',
+    label: 'old_oak.rings',
+    kind: 'object',
+    zone: 'forest',
+    known: T('oak_found'),
+    stateRules: [{ when: T('tree_ring_taken'), is: 'COUNTED' }, { when: T('oak_found'), is: 'WAITING' }],
+    mode: 'ANY',
+    deps: [
+      { id: 'o', name: 'observation', op: '>=', value: '7', cond: { stat: 'observation', gte: 7 }, nameKnown: T('oak_found'), obs: 2 },
+      { id: 'n', name: 'nurture', op: '>=', value: '6', cond: { stat: 'nurture', gte: 6 }, nameKnown: T('oak_found'), obs: 3 },
+    ],
+    note: { text: 'rings = 11. there is a twelfth, but it is not a ring', reveal: { stat: 'observation', gte: 8 } },
+  },
 ];
 
 export const WORLD_BY_ID: Record<string, WorldObj> = Object.fromEntries(WORLD.map((o) => [o.id, o]));

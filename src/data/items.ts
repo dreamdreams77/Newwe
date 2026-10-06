@@ -423,6 +423,38 @@ const list: ItemDef[] = [
       },
     ],
   },
+  {
+    id: 'forest_mushroom',
+    name: 'Speckled Mushroom',
+    icon: 'sprout',
+    description: 'Red with white spots, exactly like the ones in the picture books. A hand-lettered tag on the stem says: PROBABLY FINE.',
+    tags: ['food', 'nature', 'crafting', 'forest'],
+    weight: 0.2,
+    rarity: 'common',
+    uses: [
+      {
+        id: 'nibble',
+        label: 'Nibble the cap',
+        minutes: 2,
+        consume: true,
+        effects: [
+          { t: 'say', text: 'It tastes like rain and slightly regretted decisions. Then, behind your eyes, a very good idea sits down.', kind: 'magic' },
+          { t: 'ailment', id: 'inspired', minutes: 120 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'tree_ring',
+    name: 'The Ring of the Old Oak',
+    icon: 'eye',
+    description: 'A thin slice of the oak, polished by years. Eleven rings, and a twelfth that is only a feeling. Warm, like a held hand.',
+    tags: ['relic', 'wearable', 'nature', 'forest'],
+    weight: 0.2,
+    rarity: 'rare',
+    equip: { slot: 'accessory', text: 'The woods know you now. You cannot be lost, and you remember a little more.', mods: { nurture: 1, memory: 1 }, perks: ['no_lost', 'tree_ring'] },
+    uses: [{ id: 'count', label: 'Count the rings', minutes: 1, effects: [{ t: 'say', text: 'One, two, three... eleven. You count them again. Still eleven. The twelfth is the part you are standing in.', kind: 'magic' }] }],
+  },
 ];
 
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries(list.map((i) => [i.id, i]));

@@ -2,6 +2,8 @@
 // encounters reveal extra detail when the matching entry is known.
 
 export const KNOWLEDGE: Record<string, string> = {
+  forest_foxfire: 'In the Whispering Woods the foxfire drifts toward the right path, but only at dusk and at night.',
+  forest_eleven: 'The Old Oak has eleven rings, and someone carved the number beside it.',
   bh_symmetry: 'The Broken Homepage’s banner pattern is always symmetrical, left to right.',
   bh_counter: 'A guestbook can only hold visitors who have already arrived. An entry number higher than the counter is a forgery.',
   bh_shift: 'The cipher on the Broken Homepage shifts each letter forward by the webmaster’s favourite number.',

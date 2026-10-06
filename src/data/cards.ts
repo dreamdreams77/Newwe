@@ -73,6 +73,20 @@ const list: CardDef[] = [
     ],
   },
   {
+    id: 'old_oak',
+    name: 'The Old Oak',
+    category: 'Location',
+    glyph: 'sprout',
+    text: '+2 to Nurture and Observation rolls. Out of a roll: recall a hint about where you are.',
+    flavor: 'It has been counting a long time. It will not tell you the total.',
+    where: ['world', 'check', 'combat'],
+    effects: [
+      { t: 'mod', amount: 2, stat: 'nurture' },
+      { t: 'mod', amount: 2, stat: 'observation' },
+      { t: 'peek' },
+    ],
+  },
+  {
     id: 'shrug',
     name: 'Shrug',
     category: 'Wild',
