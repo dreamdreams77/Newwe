@@ -114,6 +114,10 @@ Your playstyle is derived from how far you have grown stats past the start, neve
 
 Once the 404 page is open, a man stands in the link. He deals only in things that no longer work: a Glitch Sprite in a jar for a Floppy Disk and a Receipt (or just the Floppy, if you can haggle with Luck), and VM-1111's weakness for a Suspicious Snack. The Sprite is not a pet. It lives in the new Familiar equipment slot, and once per boss fight it makes the machine miss a frame (the next hit passes through). The glitch splashes CORRUPTED on you, unless you are wearing the CRT goggles. Relics (the Edge Coin, the Stopped Clock, the Chain Letter) sit in their own slot, and each one trades a strength for a weakness: the coin gives Luck and takes Courage, the clock slows time and dulls Observation, the letter makes rare crafting results (and disasters) likelier. A merchant, a status effect, equipment and the fight system all meet in one choice.
 
+## Knacks
+
+There is no XP bar and no level number. How far you have grown since the start (total stat points gained) earns you a pick at 4, 10 and 18: choose one of two permanent Knacks from the Status window. Steady Hands forgives the first mistake of every boss fight, Quick Study counts as one more thing known about the boss, Second Wind heals on a solved phase, Night Owl shaves a tenth off all time, Lucky Streak gives +2 Luck, Archivist makes Inspector probes free. They are stored as one flag, so saves and passwords carry them with no format change.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.
