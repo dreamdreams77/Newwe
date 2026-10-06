@@ -60,7 +60,7 @@
 .e404.lost { background: #fff; color: #000; } .e404.lost h1 { font-family: var(--font-pixel); font-size: 1.6rem; } .e404.lost h2 { font-family: var(--font-pixel); font-size: 1rem; }
 .e404-box { max-width: 640px; margin: 0 auto; } .e404-small { color: #666; font-size: .85rem; margin-top: 24px; }
 .e404.found { background: #000; color: #7fff8a; text-align: center; } .e404.found h1 { font-family: var(--font-pixel); font-size: clamp(1.4rem, 5vw, 2.4rem); color: #7fff8a; text-shadow: 0 0 12px #2f6; }
-.blink-slow { animation: blink 2.4s steps(2, jump-none) infinite; }
+.blink-slow { animation: blink 2.4s steps(2, jump-none) 2; } /* ~5 seconds, then stops (WCAG 2.2.2) */
 .keyhole-wrap { margin: 20px auto; } .keyhole { width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, #1a2a1a, #000); border: 4px solid #7fff8a; cursor: pointer; box-shadow: 0 0 24px #2f6; }
 /* finale + my page */
 .finale { min-height: 100%; background: #000; color: #7fff8a; padding: 24px; text-align: center; }

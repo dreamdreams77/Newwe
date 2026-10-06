@@ -5,7 +5,9 @@ const browser = await pw.chromium.launch({ executablePath: process.env.CHROME_PA
 const context = await browser.newContext({ viewport: { width: 1000, height: 700 } });
 const page = await context.newPage();
 const errors = [];
+const failed = [];
 page.on('pageerror', (e) => errors.push('PAGEERROR: ' + e.message));
+page.on('requestfailed', (r) => failed.push(`${r.url()} ${r.failure()?.errorText}`));
 let n = 0;
 const log = (m) => console.log(`[${String(++n).padStart(2, '0')}] ${m}`);
 const assert = (c, m) => { if (!c) throw new Error('ASSERT FAILED: ' + m); };
@@ -23,8 +25,21 @@ assert(manifest.name.includes('11:11') && manifest.icons.length >= 2, 'a web app
 log('The service worker is active and the web app manifest is valid (installable)');
 
 await context.setOffline(true);
-await page.reload();
-await page.waitForSelector('text=ENTER SITE', { timeout: 8000 });
+// opening the app with no signal is a fresh navigation (not a reload), which is what an installed PWA does
+try {
+  await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await page.waitForSelector('text=ENTER SITE', { timeout: 10000 });
+} catch (e) {
+  const info = await page.evaluate(async () => ({
+    url: location.href,
+    ready: document.readyState,
+    body: document.body?.innerText?.slice(0, 120),
+    controller: !!navigator.serviceWorker?.controller,
+    cache: (await (await caches.open('eleven-eleven-v1')).keys()).map((r) => r.url.replace(location.origin, '')),
+  })).catch((err) => ({ evaluateFailed: String(err) }));
+  console.log('OFFLINE DIAGNOSTICS', JSON.stringify(info, null, 1), 'FAILED REQUESTS', JSON.stringify(failed.slice(0, 12), null, 1));
+  throw e;
+}
 log('Offline: reload still shows the title screen from cache');
 await page.click('text=ENTER SITE');
 await page.waitForSelector('.browser .viewport', { timeout: 8000 });

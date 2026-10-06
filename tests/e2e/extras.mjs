@@ -28,6 +28,17 @@ const c0 = s.eleven.charges;
 for (const k of ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']) await page.keyboard.press(k);
 assert((await state()).eleven.charges === c0, 'no second reward');
 
+// The address bar must not be overwritten while you are typing in it, even if something re-renders the page
+await page.fill('#address', 'http://www.swannys-pond.net/~ped');
+await mut(() => { window.__game.g.changed(); window.__game.refresh(); });
+await wait(300);
+assert((await page.inputValue('#address')) === 'http://www.swannys-pond.net/~ped', 'a re-render did not clobber the half-typed address');
+await page.fill('#address', 'http://www.swannys-pond.net/~pedalo/index.htm');
+await page.keyboard.press('Enter');
+await page.waitForSelector('.lake-page');
+log('Typing an address survives a re-render of the page, and Enter still navigates');
+await mut(() => window.__game.navigate('home', { free: true }));
+
 // The Terminal
 await mut(() => { const g = window.__game.g; g.state.flags.e404_open = true; g.state.knowledge.push('vm_exact_change'); g.changed(); window.__game.navigate('terminal', { free: true }); });
 await wait(300);

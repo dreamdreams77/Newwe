@@ -69,8 +69,15 @@ export interface FrameHandlers {
 export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
   const title = h('span', { class: 'tb-title' }, 'Netscrape Navigator');
   const addressInput = h('input', { type: 'text', id: 'address', value: '', attrs: { 'aria-label': 'Address', spellcheck: 'false', autocomplete: 'off' } });
+  // while the player is typing an address, a re-render must not overwrite it with the current page's URL
+  let editing = false;
+  addressInput.addEventListener('input', () => { editing = true; });
+  addressInput.addEventListener('blur', () => { editing = false; });
   addressInput.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Enter') hd.go(addressInput.value);
+    if (ev.key === 'Enter') {
+      editing = false;
+      hd.go(addressInput.value);
+    } else if (ev.key === 'Escape') editing = false;
   });
   const loadingBar = h('div', { class: 'loading-bar' });
   const status = h('div', { class: 'cell grow' }, 'Document: Done');
@@ -158,7 +165,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
       ),
     ),
     h('nav', { class: 'menubar-nav', ariaLabel: 'Menus' }, menubar),
-    h('div', { class: 'toolbar', role: 'region', ariaLabel: 'Browser toolbar' }, navBtns, h('div', { class: 'addr' }, h('label', { for: 'address' }, 'Address:'), addressInput, btn('Go', () => hd.go(addressInput.value), 'small')), tools),
+    h('div', { class: 'toolbar', role: 'region', ariaLabel: 'Browser toolbar' }, navBtns, h('div', { class: 'addr' }, h('label', { for: 'address' }, 'Address:'), addressInput, btn('Go', () => { editing = false; hd.go(addressInput.value); }, 'small')), tools),
     hud,
     h('div', { style: 'position:relative;flex:1;min-height:0;display:flex;flex-direction:column' }, loadingBar, viewport, held),
     h('div', { class: 'statusbar', role: 'region', ariaLabel: 'Status bar' }, status, zoneCell, inspectBtn, soundBtn),
@@ -176,6 +183,7 @@ export function buildFrame(g: Game, hd: FrameHandlers): FrameRefs {
       document.title = t;
     },
     setAddress(url) {
+      if (editing) return;
       addressInput.value = url;
     },
     setStatus(t) {
