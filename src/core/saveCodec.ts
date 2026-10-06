@@ -36,6 +36,19 @@ export const FLAG_DICT: string[] = [
 
 const idx = (list: string[], id: string) => list.indexOf(id);
 
+/**
+ * A fingerprint of every id table the positional encoding depends on. A password carries it, so one made by a
+ * different version of the game is refused with a clear message instead of being silently misread.
+ */
+export const DICT_FINGERPRINT: number = (() => {
+  let h = 0x811c9dc5;
+  for (const list of [FLAG_DICT, KNOWLEDGE_IDS, QUEST_IDS, RECIPE_IDS, ZONE_IDS, ITEM_IDS, CARD_IDS, MEMORY_IDS, STATS]) {
+    for (const id of list) for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    h ^= 0xff; h = Math.imul(h, 0x01000193) >>> 0; // list boundary
+  }
+  return (h ^ (h >>> 16)) & 0xffff;
+})();
+
 /** old 11:11 clock-crossing keys can never fire again once their day has passed */
 function pruneSeen(s: GameState): string[] {
   const today = Math.floor(s.clock.minutes / 1440);

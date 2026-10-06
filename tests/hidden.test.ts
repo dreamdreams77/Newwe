@@ -213,7 +213,7 @@ describe('status and saves', () => {
     expect(lines).toMatch(/VISITORS: 1,111/);
     expect(lines).toMatch(/homepage.exe/);
     expect(lines).toMatch(/PARENT PROCESS/);
-    expect(lines).toMatch(/ERRORS:   0/);
+    expect(lines).toMatch(/ERRORS: {3}0/);
   });
 
   it('inspector tiers and badges survive a save password', async () => {

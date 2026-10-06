@@ -235,7 +235,7 @@ export function oddsLabel(prep: Prepared): { label: string; pct: number } {
     let sum = 0;
     const dice: number[] = [];
     for (let k = 0; k < prep.poolDice; k++) {
-      let v = r.chance(prep.wildP) ? r.die(d.wildSides) - d.wildOffset : r.die(d.sides);
+      const v = r.chance(prep.wildP) ? r.die(d.wildSides) - d.wildOffset : r.die(d.sides);
       dice.push(v);
     }
     for (let l = 0; l < prep.luckRerolls; l++) {

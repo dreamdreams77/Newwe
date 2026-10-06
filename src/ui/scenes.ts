@@ -347,7 +347,7 @@ export function paintMyPageSky(c: Ctx, w: number, h: number): void {
 /** the Whispering Woods: layered pines, a path, a mushroom ring, a signpost, Fern's lantern, and (after dark) foxfire */
 export function paintForest(c: Ctx, w: number, h: number, tod: TimeOfDay, mushStock: number, mushMax: number, foxfire: boolean, oakFound: boolean): void {
   const hor = 78;
-  const s = sky(c, w, hor, tod, 9);
+  sky(c, w, hor, tod, 9);
   const dim = tod === 'night' ? 0.55 : tod === 'dusk' || tod === 'dawn' ? 0.8 : 1;
   const tint = (n: number) => Math.round(n * dim);
   const green = (rr: number, gg: number, bb: number) => `rgb(${tint(rr)},${tint(gg)},${tint(bb)})`;

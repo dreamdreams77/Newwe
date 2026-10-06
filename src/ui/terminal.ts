@@ -41,8 +41,15 @@ export function openTerminal(): WinHandle {
       };
       input.addEventListener('keydown', (ev) => {
         if (ev.key === 'Enter') run();
-        else if (ev.key === 'ArrowUp' && history.length) (ev.preventDefault(), (hi = Math.max(0, hi - 1)), (input.value = history[hi] ?? ''));
-        else if (ev.key === 'ArrowDown') (ev.preventDefault(), (hi = Math.min(history.length, hi + 1)), (input.value = history[hi] ?? ''));
+        else if (ev.key === 'ArrowUp' && history.length) {
+          ev.preventDefault();
+          hi = Math.max(0, hi - 1);
+          input.value = history[hi] ?? '';
+        } else if (ev.key === 'ArrowDown') {
+          ev.preventDefault();
+          hi = Math.min(history.length, hi + 1);
+          input.value = history[hi] ?? '';
+        }
       });
       body.append(out, h('label', { class: 'term-line' }, h('span', {}, '>'), input));
       setTimeout(() => input.focus(), 30);

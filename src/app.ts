@@ -100,7 +100,8 @@ export async function boot(): Promise<void> {
   document.querySelector('.skip-link')?.removeAttribute('hidden'); // there is a #content to skip to now
   // ---- frame
   const menus: MenuDef[] = buildMenus(g);
-  let frame!: FrameRefs;
+  let frame!: FrameRefs; // the handlers below close over it before buildFrame returns
+  // eslint-disable-next-line prefer-const
   frame = buildFrame(g, {
     back: goBack,
     forward: goForward,

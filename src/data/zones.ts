@@ -245,7 +245,7 @@ export const WEBRING: RingTile[] = [
   { zone: 'brokenHome', label: 'The 11:11 Room', alt: '[broken image: a clock with both hands on 11]', unlock: { flag: 'boss_defeated' }, colour: '#ff8cff' },
   { zone: 'terminal', label: 'The Terminal', alt: '[broken image: a blinking cursor, waiting]', unlock: { flag: 'e404_open' }, colour: '#4cff7a' },
   { zone: 'forest', label: 'The Forest', alt: '[broken image: something green, thinking]', unlock: { flag: 'lake_solved' }, colour: '#3ab55a' },
-  { zone: 'vending', label: 'Vending Machine Dungeon', alt: '[broken image: a glowing rectangle of cola]', future: true, colour: '#ff4a6a' },
+  { zone: 'dungeon', label: 'Vending Machine Dungeon', alt: '[broken image: a glowing rectangle of cola]', unlock: { flag: 'e404_open' }, colour: '#ff4a6a' },
   { zone: 'tasmania', label: 'Tasmania', alt: '[broken image: the bottom of the world]', unlock: { flag: 'postcard_decoded' }, colour: '#b08aff' },
 ];
 

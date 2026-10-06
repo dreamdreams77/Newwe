@@ -148,6 +148,20 @@ Unlocked by decoding the lighthouse postcard. A coast with a noticeboard, a very
 
 **Accessibility, measured.** `tests/e2e/a11y.mjs` runs axe-core over 20 screens and windows (including both boss fights) and fails on serious or critical findings. The first run found a menubar with the wrong child roles, an empty list, a missing skip-link target, content outside landmarks, a heading skip, and a scrollable window with nothing focusable; all fixed, now zero. The spot-the-change picture has a keyboard route (arrow keys move a crosshair, Enter looks, a Hot/Warm/Cold read-out is announced) alongside the coffee-for-a-description button, and an old bug (white text on white in the page-title field) is fixed.
 
+## For developers
+
+```bash
+npm install
+npm run dev            # vite dev server
+npm run check          # lint + typecheck + unit/property tests + build + size budget
+npm run e2e            # every browser suite against a fresh build (or: npm run e2e -- forest a11y)
+npm run graph          # regenerate docs/content-graph.md from the data tables
+```
+
+`docs/ARCHITECTURE.md` has the diagrams and the decision log. Highlights: 96 unit and property tests, 13 real-click
+browser suites, an axe accessibility audit and a seeded monkey test in CI, a content-graph lint, ESLint, a gzipped bundle
+budget (137 of 160 kB), an offline-capable installable PWA, and save passwords that refuse to load into the wrong build.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.

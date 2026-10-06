@@ -16,7 +16,7 @@ const give = (id) => mut((i) => { const g = window.__game.g; g.state.inventory[i
 const choose = async (re) => {
   for (let i = 0; i < 40; i++) {
     const hit = await page.$$eval('.dlg-choice', (els, src) => { const r = new RegExp(src); const e = els.findIndex((x) => r.test(x.textContent)); return e; }, re.source);
-    if (hit >= 0) { await page.evaluate(({ src, idx }) => { const els = [...document.querySelectorAll('.dlg-choice')]; els[idx].click(); }, { src: re.source, idx: hit }); return; }
+    if (hit >= 0) { await page.evaluate(({ idx }) => { const els = [...document.querySelectorAll('.dlg-choice')]; els[idx].click(); }, { src: re.source, idx: hit }); return; }
     const only = await page.$$eval('.dlg-choice', (els) => els.length === 1 ? els[0].textContent : '');
     if (only && !/Goodbye/.test(only)) await page.click('.dlg-choice').catch(() => {});
     else await page.click('.dlg-text').catch(() => {});

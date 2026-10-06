@@ -28,7 +28,7 @@ export function runBrokenHomepage(): Promise<EncounterResult> {
   return new Promise((resolve) => {
     const log: string[] = [def.intro];
     let finished = false;
-    let locked = false;
+    const locked = false;
     let phaseSeen = -1;
     // phase-local
     let picked = new Set<number>();

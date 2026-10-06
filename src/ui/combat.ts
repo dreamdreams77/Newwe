@@ -86,7 +86,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
     let digits = '';
     let wrong = 0;
     let hintItem: string | null = null;
-    let finalResult: string | null = null;
+    const finalResult: string | null = null;
     let locked = false;
     let phaseSeen = -1;
 

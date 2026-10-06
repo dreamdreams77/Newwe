@@ -2,6 +2,7 @@
 // encounters reveal extra detail when the matching entry is known.
 
 export const KNOWLEDGE: Record<string, string> = {
+  vm_beaten: 'You judged the Vending Machine, and it judged you back. It chimed. It was, you suspect, relieved.',
   tas_south: 'The five changes between the two Tasmania photographs spell SOUTH. The sky wants to hear it after dark.',
   tas_photos: 'Two photographs are pinned to the Tasmania noticeboard, 2001 and 2003. Five things changed.',
   forest_foxfire: 'In the Whispering Woods the foxfire drifts toward the right path, but only at dusk and at night.',

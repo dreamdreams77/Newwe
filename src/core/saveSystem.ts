@@ -1,6 +1,6 @@
 import { createInitialState, Game, SAVE_VERSION } from './game';
 import type { GameState } from './types';
-import { decodeState, encodeState } from './saveCodec';
+import { DICT_FINGERPRINT, decodeState, encodeState } from './saveCodec';
 
 const KEY = 'eleven-eleven:save:v1';
 
@@ -93,7 +93,7 @@ function checksum(bytes: Uint8Array): number {
   return ((b << 16) | a) >>> 0;
 }
 
-function toBase32(bytes: Uint8Array): string {
+export function toBase32(bytes: Uint8Array): string {
   let out = '';
   let bits = 0;
   let acc = 0;
@@ -110,7 +110,7 @@ function toBase32(bytes: Uint8Array): string {
   return out;
 }
 
-function fromBase32(str: string): Uint8Array {
+export function fromBase32(str: string): Uint8Array {
   const clean = str.toUpperCase().replace(/[^0-9A-Z]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1').replace(/U/g, 'V');
   const out: number[] = [];
   let bits = 0;
@@ -139,27 +139,30 @@ export async function exportPassword(state: GameState): Promise<string> {
   const json = new TextEncoder().encode(JSON.stringify(encodeState(state)));
   const z = await pipe(json, new CompressionStream('deflate-raw'));
   const sum = checksum(z);
-  const framed = new Uint8Array(z.length + 6);
+  const framed = new Uint8Array(z.length + 7);
   framed[0] = 0x11; // magic
-  framed[1] = 2; // codec version
-  framed.set(z, 2);
-  framed[2 + z.length] = sum & 255;
-  framed[3 + z.length] = (sum >>> 8) & 255;
-  framed[4 + z.length] = (sum >>> 16) & 255;
-  framed[5 + z.length] = (sum >>> 24) & 255;
+  framed[1] = DICT_FINGERPRINT & 255; // which version of the game's id tables made this
+  framed[2] = DICT_FINGERPRINT >>> 8;
+  framed.set(z, 3);
+  framed[3 + z.length] = sum & 255;
+  framed[4 + z.length] = (sum >>> 8) & 255;
+  framed[5 + z.length] = (sum >>> 16) & 255;
+  framed[6 + z.length] = (sum >>> 24) & 255;
   const raw = toBase32(framed);
   return raw.match(/.{1,4}/g)!.join('-');
 }
 
 export async function importPassword(code: string): Promise<GameState> {
   const framed = fromBase32(code);
-  if (framed.length < 8 || framed[0] !== 0x11) throw new Error('That password is not from this game.');
+  if (framed.length < 9 || framed[0] !== 0x11) throw new Error('That password is not from this game.');
   // the trailing base-32 padding can leave a byte of slack; find the real end via checksum
   for (let extra = 0; extra < 3; extra++) {
     const end = framed.length - extra;
-    const body = framed.slice(2, end - 4);
+    const body = framed.slice(3, end - 4);
     const want = (framed[end - 4] | (framed[end - 3] << 8) | (framed[end - 2] << 16) | (framed[end - 1] << 24)) >>> 0;
     if (checksum(body) === want) {
+      const made = framed[1] | (framed[2] << 8);
+      if (made !== DICT_FINGERPRINT) throw new Error('This password was made by a different version of the game, so it cannot be read safely. (The game has changed since. Your browser autosave is unaffected.)');
       const json = await pipe(body, new DecompressionStream('deflate-raw'));
       const parsed = JSON.parse(new TextDecoder().decode(json));
       return Array.isArray(parsed) ? decodeState(parsed) : migrate(parsed);
