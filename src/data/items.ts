@@ -455,6 +455,17 @@ const list: ItemDef[] = [
     equip: { slot: 'accessory', text: 'The woods know you now. You cannot be lost, and you remember a little more.', mods: { nurture: 1, memory: 1 }, perks: ['no_lost', 'tree_ring'] },
     uses: [{ id: 'count', label: 'Count the rings', minutes: 1, effects: [{ t: 'say', text: 'One, two, three... eleven. You count them again. Still eleven. The twelfth is the part you are standing in.', kind: 'magic' }] }],
   },
+  {
+    id: 'aurora_jar',
+    name: 'Aurora in a Jar',
+    icon: 'star',
+    description: 'A little of the southern lights, in a jam jar. It ripples green and violet and does not mind being looked at. It hums in a key you can almost hear.',
+    tags: ['relic', 'wearable', 'light', 'tasmania'],
+    weight: 0.3,
+    rarity: 'rare',
+    equip: { slot: 'accessory', text: 'Creativity and Memory +1. At night you see +2 sharper.', mods: { creativity: 1, memory: 1 }, perks: ['aurora'] },
+    uses: [{ id: 'hold', label: 'Hold it up', minutes: 1, effects: [{ t: 'say', text: 'The jar ripples. For a moment every shadow in the room leans towards the south.', kind: 'magic' }] }],
+  },
 ];
 
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries(list.map((i) => [i.id, i]));

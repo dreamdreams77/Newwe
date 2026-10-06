@@ -201,6 +201,23 @@ export const ZONES: Record<string, ZoneData> = {
       { when: { flag: 'oak_found' }, done: { flag: 'tree_ring_taken' }, text: 'The oak has been counting for a long time. So can you.' },
     ],
   },
+  tasmania: {
+    id: 'tasmania',
+    title: 'Greetings from the Bottom of the World',
+    url: 'http://www.tasmanian-lights.com.au/postcards/south.html',
+    pageTitle: 'Greetings from the Bottom of the World!',
+    ambience: 'wind',
+    music: 'lighthouse',
+    spots: [
+      { id: 'tas_visitor_a', x: 8, y: 66, obs: 5, text: 'A visitor on the rocks, wrapped in a towel, waving at a ship that is not there. Counted.' },
+      { id: 'tas_visitor_b', x: 90, y: 30, obs: 8, text: 'A visitor in a very small hot-air balloon, at a great distance, waving. You wave back. It counts.' },
+    ],
+    hint: [
+      { done: { flag: 'devil_met' }, text: 'Someone small and furious lives on the rocks near the noticeboard.' },
+      { when: { flag: 'devil_met' }, done: { flag: 'tas_diffs' }, text: 'Two photographs are pinned to the board. Something changed between them. Five things.' },
+      { when: { flag: 'tas_diffs' }, done: { flag: 'tas_aurora' }, text: 'Five letters, left to right. The sky only answers after dark.' },
+    ],
+  },
 };
 
 /** Webring tiles: unlocked by clues, not by a menu. */
@@ -220,7 +237,7 @@ export const WEBRING: RingTile[] = [
   { zone: 'terminal', label: 'The Terminal', alt: '[broken image: a blinking cursor, waiting]', unlock: { flag: 'e404_open' }, colour: '#4cff7a' },
   { zone: 'forest', label: 'The Forest', alt: '[broken image: something green, thinking]', unlock: { flag: 'lake_solved' }, colour: '#3ab55a' },
   { zone: 'vending', label: 'Vending Machine Dungeon', alt: '[broken image: a glowing rectangle of cola]', future: true, colour: '#ff4a6a' },
-  { zone: 'tasmania', label: 'Tasmania', alt: '[broken image: the bottom of the world]', future: true, colour: '#b08aff' },
+  { zone: 'tasmania', label: 'Tasmania', alt: '[broken image: the bottom of the world]', unlock: { flag: 'postcard_decoded' }, colour: '#b08aff' },
 ];
 
 export interface SniffFind {
@@ -243,6 +260,10 @@ export const SNIFFS: Record<string, SniffFind[]> = {
   ],
   home: [{ id: 'sniff_home_visitor', text: 'It stares at the hit counter until a visitor falls out of the digits. +11 visitors.', hits: 11 }],
   construction: [{ id: 'sniff_cons_tape', text: 'It digs in the sand pit and pulls out a half-used roll of Duct Tape. Bob pretends not to notice.', item: 'duct_tape' }],
+  tasmania: [
+    { id: 'sniff_tas_snack', text: 'It trots along the tideline and returns with a Suspicious 7-Eleven Snack, salt-washed, still sealed. Its pride is total.', item: 'snack_711' },
+    { id: 'sniff_tas_visitor', text: 'It stares at a rock pool until a visitor, up to the knees, looks up. +11 visitors.', hits: 11 },
+  ],
   forest: [
     { id: 'sniff_forest_mushroom', text: 'It noses through the leaf litter and comes up with a speckled mushroom, held very proudly in its beak.', item: 'forest_mushroom' },
     { id: 'sniff_forest_visitor', text: 'It stares up a tree until a visitor, caught, climbs down. +11 visitors.', hits: 11 },

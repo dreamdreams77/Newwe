@@ -400,4 +400,32 @@ export const FERN: DTree = {
   },
 };
 
-export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL, salesman: SALESMAN, fern: FERN };
+const DEV_W = { who: 'Mr. Gnarl (Tasmanian devil)' };
+
+/** The small furious resident of the southern rocks. Screams at things he likes. Screams at everything. */
+export const DEVIL: DTree = {
+  id: 'devil',
+  start: (g) => (g.has('devil_met') ? 'back' : 'greet'),
+  nodes: {
+    greet: { id: 'greet', ...DEV_W, text: 'AAAAAAH. (That is hello. I am very pleased to see you.) Visitors! Do you know how long it has been? The counter says nine. Eight are gulls.', effects: [{ t: 'flag', key: 'devil_met' }], next: 'menu' },
+    back: { id: 'back', ...DEV_W, text: 'AAAAH! (Welcome back.) Mind the penguins. They are not on the guest list.', next: 'menu' },
+    menu: {
+      id: 'menu', ...DEV_W, text: 'What do you want? (I have no idea what I can do for you. Ask.)',
+      choices: [
+        { text: 'Where am I?', next: 'place' },
+        { text: 'What are those photographs on the board?', next: 'photos' },
+        { text: 'Anything about the sky?', when: { flag: 'tas_diffs' }, next: 'sky' },
+        { text: 'Heard anything lately?', next: 'rumor' },
+        { text: '(Offer a Suspicious Snack)', when: { all: [{ has: 'snack_711' }, { notFlag: 'devil_fed' }] }, next: 'fed', action: (g) => removeItem(g, 'snack_711', 1), effects: [{ t: 'flag', key: 'devil_fed' }, { t: 'stat', stat: 'courage', by: 1 }] },
+        { text: 'Bye.', end: true },
+      ],
+    },
+    place: { id: 'place', ...DEV_W, text: 'The bottom of the world. Postcards come from here. Nobody reads the back. AAH. The back is the good part.', next: 'menu' },
+    photos: { id: 'photos', ...DEV_W, text: 'One from 2001 and one from 2003. Same coast, same cliff. Somebody keeps moving things in the second one, to see who notices. Click on the one on the right, where something is new. There are five.', effects: [{ t: 'know', id: 'tas_photos' }], next: 'menu' },
+    sky: { id: 'sky', ...DEV_W, text: 'The sky answers anyone who asks nicely. In capitals. Only after dark, though, and only if you say the word the photographs said. Left to right. Do not mumble.', next: 'menu' },
+    rumor: { id: 'rumor', ...DEV_W, run: (g) => { const r = nextRumor(g, 'devil'); if (r) { hearRumor(g, r); g.state.flags.rumor_last = r.id; } }, text: (g) => rumorText(g), next: 'menu' },
+    fed: { id: 'fed', ...DEV_W, text: 'AAAAAAAAAH! (That is the best thing anyone has ever done.) Here. Have some courage. It is mostly screaming. It works.', next: 'menu' },
+  },
+};
+
+export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL, salesman: SALESMAN, fern: FERN, devil: DEVIL };

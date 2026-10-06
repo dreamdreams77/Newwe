@@ -63,6 +63,19 @@ export const QUESTS: QuestDef[] = [
     doneText: 'The woods know your name now. They are not going to say it.',
   },
   {
+    id: 'q_tas',
+    title: 'Greetings from the Bottom of the World',
+    blurb: 'Two photographs, five changes, and a sky that only answers after dark.',
+    start: { flag: 'visited_tasmania' },
+    steps: [
+      { text: 'Meet whoever lives on the rocks.', done: { flag: 'devil_met' }, hint: 'Small, furious, near the noticeboard.' },
+      { text: 'Find the five changes between the photographs.', done: { flag: 'tas_diffs' }, hint: 'Click on the right-hand photograph where something is new.' },
+      { text: 'Tell the sky what it wants to hear.', done: { flag: 'tas_aurora' }, hint: 'The five letters, left to right. After dark.' },
+    ],
+    reward: [{ t: 'card', id: 'aurora' }, { t: 'hits', by: 80, why: 'bottom of the world' }],
+    doneText: 'The sky answered, in capitals. It is a good sky.',
+  },
+  {
     id: 'q_peep',
     title: 'Something in the Reeds',
     blurb: 'It is peeping. It is tiny. It is absolutely a hero.',

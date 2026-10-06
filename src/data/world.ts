@@ -282,6 +282,33 @@ export const WORLD: WorldObj[] = [
     ],
     note: { text: 'rings = 11. there is a twelfth, but it is not a ring', reveal: { stat: 'observation', gte: 8 } },
   },
+  {
+    id: 'tasmania.board',
+    label: 'noticeboard.photos[2]',
+    kind: 'object',
+    zone: 'tasmania',
+    known: T('visited_tasmania'),
+    stateRules: [{ when: T('tas_diffs'), is: 'RECONCILED' }, { when: T('visited_tasmania'), is: 'DIFFERS' }],
+    mode: 'ANY',
+    deps: [
+      { id: 'o', name: 'observation', op: '>=', value: '6', cond: { stat: 'observation', gte: 6 }, nameKnown: T('visited_tasmania'), obs: 2 },
+      { id: 'c', name: 'diffs.found', op: '==', value: '5', cond: T('tas_diffs'), nameKnown: T('devil_met'), obs: 3 },
+    ],
+    note: { text: 'diff_count = 5. the letters are not random', reveal: { stat: 'observation', gte: 7 } },
+  },
+  {
+    id: 'tasmania.sky',
+    label: 'sky.aurora',
+    kind: 'object',
+    zone: 'tasmania',
+    known: T('tas_diffs'),
+    stateRules: [{ when: T('tas_aurora'), is: 'ALIGHT' }, { when: T('tas_diffs'), is: 'LISTENING' }],
+    mode: 'ALL',
+    deps: [
+      { id: 'n', name: 'time.is_night', op: '==', value: 'TRUE', cond: { time: { from: 21 * 60, to: 5 * 60 } }, nameKnown: T('tas_diffs'), obs: 2 },
+      { id: 'w', name: 'word.spoken', op: '==', value: 'TRUE', cond: T('tas_aurora'), nameKnown: T('tas_diffs'), obs: 3 },
+    ],
+  },
 ];
 
 export const WORLD_BY_ID: Record<string, WorldObj> = Object.fromEntries(WORLD.map((o) => [o.id, o]));

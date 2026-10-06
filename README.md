@@ -136,6 +136,10 @@ The web ring's Forest (it unlocks when the lake is solved) is a nature fan page 
 
 A natural full run of the original slice (no shortcuts for stats) ends around 14:48 on day 1 with about 1,350 visitors, so the 1,111 finale gate arrives without grinding, and all the extras (second boss, Forest, crossword) are surplus. Total stat growth over that run is only about 5 points, which is why Knack tiers sit at 2, 5 and 9 (they were 4, 10 and 18, and the last two were out of reach). The Forest's foxfire needs dusk, so the stump by Fern's lantern lets you wait for it (costing the time and the coffee that goes with it) instead of leaving you stuck at midday.
 
+## Tasmania: Greetings from the Bottom of the World
+
+Unlocked by decoding the lighthouse postcard. A coast with a noticeboard, a very small furious Tasmanian devil called Mr. Gnarl (he screams when he likes you, which is always), and a sky. The board holds two photographs, 2001 and 2003: click on the 2003 one wherever something is new (five changes, painted by one function with a variant flag, so the pictures can never drift apart). Observation lets you squint at one, and a coffee buys a description in plain words for anyone who cannot see the pictures well. The five changes carry letters that, read left to right, spell the word the sky wants to hear after dark. By day it stays silent; the rocks let you wait for night (costing time and coffee). Say it right and the aurora answers, hands you a jar of itself (+1 Creativity, +1 Memory, and Observation +2 at night, an accessory that competes with the Forest ring for the slot), and the back of the postcard can be read.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.

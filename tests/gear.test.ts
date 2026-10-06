@@ -358,3 +358,24 @@ describe('the Whispering Woods', () => {
     for (const id of ['forest.mushrooms', 'forest.trail', 'forest.oak']) expect(WORLD_BY_ID[id]).toBeTruthy();
   });
 });
+
+describe('Tasmania', () => {
+  it('the five changes, left to right, spell the word the sky wants, and the aurora jar sharpens you only at night', async () => {
+    const { DIFFS, AURORA_WORD } = await import('../src/data/tasmania');
+    const sorted = [...DIFFS].sort((a, b) => a.x - b.x).map((d) => d.letter).join('');
+    expect(sorted).toBe(AURORA_WORD);
+    expect(AURORA_WORD).toBe('SOUTH');
+    // no two changes overlap
+    for (const a of DIFFS) for (const b of DIFFS) if (a !== b) expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThan(a.r + b.r);
+    const { ZONES, WEBRING } = await import('../src/data/zones');
+    expect(ZONES.tasmania).toBeTruthy();
+    expect(WEBRING.find((t) => t.zone === 'tasmania')?.future).toBeFalsy();
+    const g = newGame();
+    const base = statValue(g, 'observation');
+    give(g, 'aurora_jar'); equip(g, 'aurora_jar');
+    g.state.clock.minutes = 12 * 60;
+    expect(statValue(g, 'observation')).toBe(base);
+    g.state.clock.minutes = 23 * 60;
+    expect(statValue(g, 'observation')).toBe(base + 2);
+  });
+});

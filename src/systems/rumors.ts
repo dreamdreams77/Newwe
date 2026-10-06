@@ -8,7 +8,7 @@ import { hasPerk } from './equipment';
 
 export interface Rumor {
   id: string;
-  who: 'bob' | 'gus' | 'marl' | 'fern';
+  who: 'bob' | 'gus' | 'marl' | 'fern' | 'devil';
   text: string;
   /** evaluates true when the rumour has been verified true */
   isTrue?: Cond;
@@ -27,6 +27,8 @@ export const RUMORS: Rumor[] = [
   { id: 'r_boats', who: 'gus', text: 'The swan boats run on spite. And a bit of lard.', verdictText: {} },
   { id: 'r_foxfire', who: 'fern', text: 'The foxfire only glows at night. Anything else is just a rumour of a candle.', isTrue: { flag: 'oak_found' }, verdictText: { true: 'The glow led somewhere. Fern is right about nights.' } },
   { id: 'r_oakage', who: 'fern', text: 'The Old Oak is only forty years old. It looks older out of spite.', isFalse: { flag: 'tree_ring_taken' }, verdictText: { false: 'Eleven rings, not forty. Fern was being modest on the tree’s behalf.' } },
+  { id: 'r_devil', who: 'devil', text: 'Devils only scream at things we like. I scream at everything. Draw your own conclusions.', verdictText: {} },
+  { id: 'r_sky', who: 'devil', text: 'The sky answers anyone who asks nicely. In capitals.', isTrue: { flag: 'tas_aurora' }, verdictText: { true: 'It answered. In capitals. The devil was right, and is being insufferable about it.' } },
   { id: 'r_tape', who: 'bob', text: 'Duct tape holds everything together. It is the only thing that does.', isFalse: { flag: 'lamp_lit' }, verdictText: { false: 'Not the only thing. A lamp can be lit other ways.' } },
 ];
 

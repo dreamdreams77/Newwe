@@ -87,6 +87,20 @@ const list: CardDef[] = [
     ],
   },
   {
+    id: 'aurora',
+    name: 'The Southern Lights',
+    category: 'Location',
+    glyph: 'star',
+    text: '+2 to Creativity and Memory rolls. Out of a roll: recall a hint about where you are.',
+    flavor: 'It is always further south than you think.',
+    where: ['world', 'check', 'combat'],
+    effects: [
+      { t: 'mod', amount: 2, stat: 'creativity' },
+      { t: 'mod', amount: 2, stat: 'memory' },
+      { t: 'peek' },
+    ],
+  },
+  {
     id: 'shrug',
     name: 'Shrug',
     category: 'Wild',

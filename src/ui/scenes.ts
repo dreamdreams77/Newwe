@@ -416,3 +416,51 @@ export function paintForest(c: Ctx, w: number, h: number, tod: TimeOfDay, mushSt
     }
   }
 }
+
+/**
+ * The bottom of the world. One painter, two photographs: variant 'A' (2001) and 'B' (2003). B differs in exactly
+ * the five places listed in data/tasmania.ts. The aurora flag paints the southern lights over the sky.
+ */
+export function paintTasmania(c: Ctx, w: number, h: number, tod: TimeOfDay, variant: 'A' | 'B', aurora = false): void {
+  const hor = 88;
+  const s = sky(c, w, hor, tod, 14);
+  // distant swell
+  grad(c, hor, h, w, s.water[0], s.water[1], 10);
+  const rng = seeded(52);
+  for (let i = 0; i < 60; i++) r(c, rng.int(0, w), rng.int(hor + 3, h - 3), rng.int(6, 14), 1, tod === 'night' ? '#3a5acc' : '#ffffff66');
+  // the cliff and the lighthouse on it (right)
+  for (let x = 236; x < w; x += 2) r(c, x, 74 + (x - 236) * 0.05, 2, h - 74, '#5a4a3a');
+  r(c, 250, 74, 70, 6, '#6b5a46');
+  r(c, 262, 36, 12, 40, '#f2f2f2');
+  r(c, 262, 48, 12, 6, '#d8302c');
+  r(c, 262, 60, 12, 6, '#d8302c');
+  r(c, 259, 30, 18, 6, '#333');
+  disc(c, 268, 26, 4, tod === 'day' ? '#fff2a0' : '#ffd24a');
+  // the beach and a rock (right foreground)
+  r(c, 236, 134, 84, 46, tod === 'night' ? '#4a4a5a' : '#e8d8a8');
+  disc(c, 300, 150, 9, '#4a4a54');
+  // a rocky headland (left)
+  for (let x = 0; x < 80; x += 2) r(c, x, 112 + Math.sin(x / 9) * 4 - x * 0.2, 2, h - 112, '#4a4048');
+  // seabird dots, same in both photographs
+  r(c, 190, 30, 3, 1, '#fff'); r(c, 194, 29, 3, 1, '#fff');
+  if (aurora && tod === 'night') {
+    for (let band = 0; band < 3; band++) {
+      for (let x = 0; x < w; x += 2) {
+        const y = 14 + band * 12 + Math.sin(x / 17 + band) * 7;
+        r(c, x, y, 2, 22, band === 1 ? '#c07aff40' : '#58ffb040');
+      }
+    }
+  }
+  if (variant === 'B') {
+    // 1: a red buoy
+    disc(c, 40, 124, 3, '#e03030'); r(c, 39, 118, 2, 4, '#e03030'); r(c, 36, 127, 8, 1, '#ffffff88');
+    // 2: a gull
+    r(c, 96, 40, 4, 1, '#fff'); r(c, 100, 39, 4, 1, '#fff'); r(c, 104, 40, 4, 1, '#fff'); r(c, 99, 38, 2, 1, '#fff');
+    // 3: a sailboat
+    r(c, 150, 104, 20, 3, '#6b4a2a'); r(c, 159, 90, 2, 14, '#ddd'); for (let i = 0; i < 12; i++) r(c, 160, 92 + i, Math.max(1, 12 - i), 1, '#fff7e0');
+    // 4: a kite over the cliff
+    r(c, 214, 52, 8, 8, '#ffd23a'); r(c, 216, 54, 4, 4, '#e03030'); r(c, 218, 60, 1, 14, '#eee'); r(c, 216, 66, 4, 1, '#38a0ff');
+    // 5: a penguin on the beach
+    r(c, 272, 124, 8, 14, '#222'); r(c, 274, 128, 4, 9, '#f2f2f2'); r(c, 273, 136, 6, 2, '#f0a020'); r(c, 273, 126, 1, 1, '#fff');
+  }
+}

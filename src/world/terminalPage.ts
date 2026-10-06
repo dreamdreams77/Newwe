@@ -21,6 +21,7 @@ export const CROSSWORD: Array<{ id: string; clue: string; answer: string; need: 
   { id: 'cw4', clue: '4 DOWN (8): The last stop on the Bullet Train. Not on any map.', answer: 'TERMINUS', need: 'terminus' },
   { id: 'cw5', clue: '5 ACROSS (7): A guestbook can only hold one of these who has already arrived. They are counted, and the counter never lies.', answer: 'VISITOR', need: 'bh_counter' },
   { id: 'cw6', clue: '6 DOWN (3): The old tree at the end of the foxfire. It has been counting eleven rings, and then some.', answer: 'OAK', need: 'forest_eleven' },
+  { id: 'cw7', clue: '7 ACROSS (5): The direction at the very bottom of the world. The sky wants to hear it after dark.', answer: 'SOUTH', need: 'tas_south' },
 ];
 
 function render(): HTMLElement {

@@ -30,7 +30,8 @@ export type ZoneId =
   | 'elevenRoom'
   | 'brokenHome'
   | 'terminal'
-  | 'forest';
+  | 'forest'
+  | 'tasmania';
 
 export type FlagValue = boolean | number | string;
 

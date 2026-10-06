@@ -88,6 +88,18 @@ const list: MemoryDef[] = [
       { t: 'hits', by: 22, why: 'a memory surfaced' },
     ],
   },
+  {
+    id: 'TAS_001',
+    kind: 'note',
+    title: 'On the Back of the Postcard',
+    text: 'In pencil, pressed hard: "It is always further south than you think. Look up. \u2014W"',
+    caption: 'Read under the southern lights.',
+    becomes: 'A gift of 11:11',
+    onGain: [
+      { t: 'eleven', by: 1, why: 'a memory completed' },
+      { t: 'hits', by: 33, why: 'a memory surfaced' },
+    ],
+  },
 ];
 
 export const MEMORIES: Record<string, MemoryDef> = Object.fromEntries(list.map((m) => [m.id, m]));

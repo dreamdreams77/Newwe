@@ -69,3 +69,16 @@ body:has(.combat-win) .toast { font-size: .8rem; padding: 5px 9px; pointer-event
 .combat-win .enc-widget::after, .terminal-page::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.12) 0 1px, transparent 1px 3px); }
 .bh-win .enc-widget { display: flex; flex-direction: column; align-items: center; }
 @media (prefers-reduced-motion: reduce) { .battle-wipe { display: none; } }
+
+/* ---- Tasmania: spot the change ---- */
+.spot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.spot-pair figure { margin: 0; text-align: center; }
+.spot-pair figcaption { font: 700 13px "Courier New", monospace; color: #ffd23a; }
+.spot-canvas { width: 100%; height: auto; image-rendering: pixelated; border: 3px ridge #8aa0ff; cursor: crosshair; display: block; }
+.spot-wrap { position: relative; }
+.spot-ring { position: absolute; transform: translate(-50%, -50%); border: 3px solid #4cff7a; border-radius: 50%; pointer-events: none; box-sizing: border-box; }
+.spot-ring.glow { border-color: #ffd23a; animation: spotglow 1s steps(2) infinite; }
+@keyframes spotglow { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .spot-ring.glow { animation: none; } }
+.spot-letters { font: 700 28px monospace; letter-spacing: .4em; text-align: center; color: #9fffb4; background: #021; padding: 4px; }
+@media (max-width: 640px) { .spot-pair { grid-template-columns: 1fr; } }

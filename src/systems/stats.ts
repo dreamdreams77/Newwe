@@ -1,7 +1,8 @@
 import { BALANCE } from '../config/balance';
 import type { Game } from '../core/game';
 import { ailmentMod, hasAilment } from './ailments';
-import { equipMod } from './equipment';
+import { equipMod, hasPerk } from './equipment';
+import { timeOfDay } from '../core/timeSystem';
 import { hasKnack } from './knacks';
 import type { StatId } from '../core/types';
 
@@ -11,6 +12,7 @@ export function statValue(g: Game, id: StatId): number {
   let v = s.stats[id] ?? 0;
   if (id === 'bossKnowledge') v += s.knowledge.length + (hasKnack(g, 'quick_study') ? 1 : 0);
   if (id === 'luck' && hasKnack(g, 'lucky_streak')) v += 2;
+  if (id === 'observation' && hasPerk(g, 'aurora') && timeOfDay(g.state.clock.minutes) === 'night') v += 2;
   if (hasAilment(g, 'overwritten') && id !== 'bossKnowledge' && isStrongest(g, id)) v = BALANCE.stats.start[id];
   for (const b of s.buffs) if (b.stat === id) v += b.by;
   v += ailmentMod(g, id) + equipMod(g, id);

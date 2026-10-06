@@ -49,6 +49,7 @@ import './world/mypage';
 import './world/finale';
 import './world/room';
 import './world/forest';
+import './world/tasmania';
 import './world/terminalPage';
 import './world/dev';
 import './world/ticket';
