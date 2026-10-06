@@ -13,6 +13,18 @@
   <body>
     <a class="skip-link" href="#content" hidden>Skip to content</a>
     <div id="app"></div>
+    <noscript><p style="font:16px sans-serif;padding:2em;color:#fff;background:#102">11:11 is a game that runs in the browser, so it needs JavaScript switched on.</p></noscript>
+    <div id="boot-fallback" hidden style="font:16px/1.5 system-ui,sans-serif;max-width:34em;margin:10vh auto;padding:1.5em;background:#102;color:#fff;border:3px solid #ff0">
+      <h1 style="font-size:1.3em;margin:0 0 .5em">11:11 &mdash; The Lost Homepage</h1>
+      <p>The game did not start. Try reloading the page. It needs JavaScript and a reasonably recent browser (Chrome, Edge, Firefox or Safari).</p>
+      <p style="font-size:.85em;opacity:.8">If you published this yourself and only ever see this message: GitHub Pages is probably serving the unbuilt source. Open Settings &rarr; Pages &rarr; Build and deployment, and set Source to <b>GitHub Actions</b>.</p>
+    </div>
+    <script>
+      // if the game has not booted a few seconds in, say so instead of leaving a blank white page
+      setTimeout(function () {
+        if (!document.documentElement.getAttribute('data-booted')) document.getElementById('boot-fallback').hidden = false;
+      }, 4000);
+    </script>
     <div id="sr-live" class="sr-only" aria-live="polite" role="status"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

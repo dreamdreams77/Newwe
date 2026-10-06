@@ -23,6 +23,9 @@ await page.waitForFunction(async () => {
 const manifest = await page.evaluate(() => fetch('manifest.webmanifest').then((r) => r.json()));
 assert(manifest.name.includes('11:11') && manifest.icons.length >= 2, 'a web app manifest with icons');
 log('The service worker is active and the web app manifest is valid (installable)');
+await page.waitForTimeout(4300); // past the point where the "game did not start" notice would appear
+assert(await page.$eval('#boot-fallback', (e) => e.hidden), 'the built game must never show the "did not start" notice');
+log('The "game did not start" notice stays hidden on a working build');
 
 await context.setOffline(true);
 // opening the app with no signal is a fresh navigation (not a reload), which is what an installed PWA does

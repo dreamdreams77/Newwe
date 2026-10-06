@@ -15,6 +15,9 @@ import './styles/stages.css';
 import './styles/inspector.css';
 import { boot } from './app';
 
+// the game's script is running: the "it did not start" notice in index.html stays hidden
+document.documentElement.setAttribute('data-booted', '1');
+
 boot().catch((err) => {
   console.error(err);
   const el = document.getElementById('app');

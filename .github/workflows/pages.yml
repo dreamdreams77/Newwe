@@ -37,3 +37,16 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Smoke test the live site (it must be the built game, not the raw source)
+        run: |
+          url="${{ steps.deployment.outputs.page_url }}"
+          for i in 1 2 3 4 5 6; do
+            sleep 15
+            html=$(curl -fsSL "${url}?smoke=$RANDOM" || true)
+            if echo "$html" | grep -q '/assets/index-' && ! echo "$html" | grep -q '/src/main.ts'; then
+              echo "The live site is serving the built game."
+              exit 0
+            fi
+          done
+          echo "::error::The live site is not serving the built game. If Pages is set to 'Deploy from a branch', GitHub publishes the raw repository and visitors see a white page. Set Settings > Pages > Build and deployment > Source to 'GitHub Actions'."
+          exit 1
