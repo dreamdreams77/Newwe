@@ -15,6 +15,7 @@ import { h, btn, type Child } from './dom';
 import { icon } from './sprites';
 import { toast } from './notifications';
 import { openWindow } from './windows';
+import { battleIntro } from './battleFx';
 import type { EncounterResult } from './combat';
 
 /** The second boss: five phases, one for each kind of thing the website was made of. */
@@ -22,6 +23,7 @@ export function runBrokenHomepage(): Promise<EncounterResult> {
   const g = game();
   const def = encDef('broken_home');
   const e = startEncounter(g, 'broken_home');
+  battleIntro();
   const attempt = e.attempts;
   return new Promise((resolve) => {
     const log: string[] = [def.intro];
@@ -92,7 +94,7 @@ export function runBrokenHomepage(): Promise<EncounterResult> {
       g.state.flags.bh_defeated = true;
       addVisitors(g, 111, 'helped the Broken Homepage remember');
       learn(g, 'bh_beaten');
-      audio.sfx('questDone');
+      audio.sfx('fanfare');
       toast(def.winText, 'magic');
       g.changed();
       end('won');

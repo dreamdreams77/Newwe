@@ -124,6 +124,8 @@ Beating the Vending Machine opens **The 11:11 Room** on the web ring: *The Broke
 
 **The Terminal** is a retro-RPG menu page on the ring: a strategy guide that only fills in what you have actually learned (everything else is `???`), and a crossword whose answers it will only accept if the world has already told you. And there is a Konami code.
 
+Retro polish: fights open with the classic flash-and-bars battle wipe (skipped under reduced motion) and a falling-beeps sound, a boss win plays a da-da-da-DAAA fanfare, the ▶ menu cursor appears on every choice, fights and the Terminal get a faint CRT scanline sheen, and toasts get out of the way (and click-through) while a fight is open.
+
 Note for anyone with an old save password: zones and items are part of the compact save codec's flag dictionary, so passwords from before these additions will not decode. Autosave in the same browser is unaffected.
 
 ## Design rules this build follows

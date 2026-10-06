@@ -11,6 +11,7 @@ import { addVisitors } from '../systems/hits';
 import { statValue, changeVital } from '../systems/stats';
 import { spendEleven } from '../systems/elevenEleven';
 import { isIdentity } from '../systems/identity';
+import { battleIntro } from './battleFx';
 import { hasPerk } from '../systems/equipment';
 import { applyAilment } from '../systems/ailments';
 import { passTime } from '../systems/actions';
@@ -70,6 +71,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
   const g = game();
   const def = encDef(id);
   const e = startEncounter(g, id);
+  battleIntro();
   return new Promise((resolve) => {
     const log: string[] = [def.intro];
     let finished = false;
@@ -144,7 +146,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
       g.state.flags.boss_defeated = true;
       addVisitors(g, 150, 'defeated the Vending Machine of Judgment');
       learn(g, 'vm_beaten');
-      audio.sfx('questDone');
+      audio.sfx('fanfare');
       toast(def.winText, 'magic');
       g.changed();
       end('won');
