@@ -1,6 +1,6 @@
 // The Terminal (strategy guide + crossword) and the Konami code, through the real UI.
 const pw = await import(process.env.PLAYWRIGHT_PATH ?? 'playwright');
-const URL = process.env.URL ?? 'http://127.0.0.1:4173/?fresh&seed=31&debug';
+const URL = process.env.URL ?? (process.env.E2E_BASE ?? 'http://127.0.0.1:4173/') + '?fresh&seed=31&debug';
 const browser = await pw.chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
 const errors = [];

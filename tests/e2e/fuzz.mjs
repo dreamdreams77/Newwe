@@ -4,7 +4,7 @@
 const pw = await import(process.env.PLAYWRIGHT_PATH ?? 'playwright');
 const SEEDS = (process.env.SEEDS ?? '1,2,3').split(',').map(Number);
 const STEPS = Number(process.env.STEPS ?? 250);
-const BASE = process.env.URL ?? 'http://127.0.0.1:4173/';
+const BASE = process.env.URL ?? (process.env.E2E_BASE ?? 'http://127.0.0.1:4173/') + '';
 const SKIP = /new game|delete|erase|clear|reset|wipe|import|load password|paste/i;
 
 function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }

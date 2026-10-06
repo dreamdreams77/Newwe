@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 const pw = await import(process.env.PLAYWRIGHT_PATH ?? 'playwright');
 const axeSrc = fs.readFileSync(new URL('../../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
-const URL_ = process.env.URL ?? 'http://127.0.0.1:4173/?fresh&seed=61&debug';
+const URL_ = process.env.URL ?? (process.env.E2E_BASE ?? 'http://127.0.0.1:4173/') + '?fresh&seed=61&debug';
 const browser = await pw.chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 const page = await browser.newPage({ viewport: { width: 1100, height: 800 } });
 const wait = (ms) => page.waitForTimeout(ms);

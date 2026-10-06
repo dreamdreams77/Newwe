@@ -1,6 +1,6 @@
 // Offline play: visit once online, go offline, reload, and the game still opens.
 const pw = await import(process.env.PLAYWRIGHT_PATH ?? 'playwright');
-const BASE = process.env.URL ?? 'http://127.0.0.1:4173/';
+const BASE = process.env.URL ?? (process.env.E2E_BASE ?? 'http://127.0.0.1:4173/') + '';
 const browser = await pw.chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 const context = await browser.newContext({ viewport: { width: 1000, height: 700 } });
 const page = await context.newPage();
