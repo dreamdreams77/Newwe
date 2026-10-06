@@ -68,7 +68,7 @@ export function openSavePassword(): WinHandle {
     render: (body, win) => {
       const out = h('textarea', { class: 'pw-box', attrs: { readonly: '', rows: 5, 'aria-label': 'Your save password' } });
       out.value = 'Generating…';
-      exportPassword(g.state).then((code) => (out.value = code));
+      exportPassword(g.state).then((code) => (out.value = code)).catch((e) => (out.value = (e as Error).message || 'Could not make a password. Your game still saves itself in this browser.'));
       const input = h('textarea', { class: 'pw-box', attrs: { rows: 4, placeholder: 'Paste a password here, e.g. 7F9K-11XQ-…', 'aria-label': 'Password to load' } });
       const err = h('p', { class: 'pw-err', attrs: { role: 'alert' } });
       body.append(

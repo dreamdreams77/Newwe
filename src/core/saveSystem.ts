@@ -129,6 +129,9 @@ export function fromBase32(str: string): Uint8Array {
   return Uint8Array.from(out);
 }
 
+export const passwordsSupported = (): boolean => typeof CompressionStream !== 'undefined' && typeof DecompressionStream !== 'undefined';
+const NO_PASSWORDS = 'This browser is too old to make or read save passwords (it needs a recent Chrome, Edge, Firefox or Safari). Your game still saves itself in this browser.';
+
 async function pipe(bytes: Uint8Array, stream: CompressionStream | DecompressionStream): Promise<Uint8Array> {
   const blob = new Blob([bytes as BlobPart]);
   const out = await new Response(blob.stream().pipeThrough(stream as unknown as ReadableWritablePair<Uint8Array, Uint8Array>)).arrayBuffer();
@@ -136,6 +139,7 @@ async function pipe(bytes: Uint8Array, stream: CompressionStream | Decompression
 }
 
 export async function exportPassword(state: GameState): Promise<string> {
+  if (!passwordsSupported()) throw new Error(NO_PASSWORDS);
   const json = new TextEncoder().encode(JSON.stringify(encodeState(state)));
   const z = await pipe(json, new CompressionStream('deflate-raw'));
   const sum = checksum(z);
@@ -153,6 +157,7 @@ export async function exportPassword(state: GameState): Promise<string> {
 }
 
 export async function importPassword(code: string): Promise<GameState> {
+  if (!passwordsSupported()) throw new Error(NO_PASSWORDS);
   const framed = fromBase32(code);
   if (framed.length < 9 || framed[0] !== 0x11) throw new Error('That password is not from this game.');
   // the trailing base-32 padding can leave a byte of slack; find the real end via checksum

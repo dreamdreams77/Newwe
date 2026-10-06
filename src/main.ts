@@ -14,10 +14,13 @@ import './styles/combat.css';
 import './styles/stages.css';
 import './styles/inspector.css';
 import { boot } from './app';
+import { installErrorReporter } from './ui/errorReport';
 
 // the game's script is running: the "it did not start" notice in index.html stays hidden
 document.documentElement.setAttribute('data-booted', '1');
+document.getElementById('boot-fallback')?.setAttribute('hidden', '');
 
+installErrorReporter();
 boot().catch((err) => {
   console.error(err);
   const el = document.getElementById('app');
