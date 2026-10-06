@@ -125,6 +125,8 @@ const rumour = await page.$eval('.dialogue-win .dlg-text', (e) => e.textContent)
 assert(/lowers voice/.test(rumour), 'the badge made Bob candid: ' + rumour.slice(0, 120));
 log('Wearing the Webmaster Badge, Bob lowered his voice and said whether his own rumour was true: "' + rumour.slice(-48) + '"');
 await page.click('.dialogue-win .win-x');
+await page.waitForSelector('.dialogue-win', { state: 'detached' });
+await wait(400); // let the dialogue's own refresh land before opening anything else
 
 // 8) terminal gear + status
 await page.fill('#address', 'about:terminal');
