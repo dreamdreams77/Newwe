@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
@@ -22,6 +22,17 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - name: Refresh play/ (a built copy, so a Pages-from-branch setup still serves the game)
+        run: |
+          rm -rf play && mkdir play && cp -r dist/. play/ && rm -f play/assets/*.map
+          if [ -n "$(git status --porcelain play)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add play
+            git commit -m "build: refresh play/ [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
       - uses: actions/configure-pages@v5
         with:
           enablement: true
@@ -45,6 +56,12 @@ jobs:
             html=$(curl -fsSL "${url}?smoke=$RANDOM" || true)
             if echo "$html" | grep -q '/assets/index-' && ! echo "$html" | grep -q '/src/main.ts'; then
               echo "The live site is serving the built game."
+              exit 0
+            fi
+            # Pages-from-branch publishes the raw index.html, which redirects to the committed build in play/
+            play=$(curl -fsSL "${url}play/?smoke=$RANDOM" || true)
+            if echo "$html" | grep -q '/src/main.ts' && echo "$play" | grep -q '/assets/index-'; then
+              echo "The raw page is live, but it redirects to the built copy in play/, so the game works."
               exit 0
             fi
           done
