@@ -3,6 +3,7 @@ import type { Game } from '../core/game';
 import type { StatId } from '../core/types';
 import { AILMENTS, type AilmentDef } from '../data/ailments';
 import { hasPerk } from './equipment';
+import { hasKnack } from './knacks';
 
 /** derived from the world right now (not stored) */
 function derived(g: Game): string[] {
@@ -74,6 +75,7 @@ export function timeMult(g: Game): number {
   const wired = coffee / coffeeMax >= BALANCE.coffee.wiredAbove && coffee < coffeeMax;
   if (wired) m *= BALANCE.coffee.wiredTimeMult;
   if (hasPerk(g, 'slow_time')) m *= 0.8;
+  if (hasKnack(g, 'night_owl')) m *= 0.9;
   return m;
 }
 

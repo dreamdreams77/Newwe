@@ -251,3 +251,31 @@ describe('relics', () => {
     expect(timeMult(g)).toBe(1);
   });
 });
+
+describe('knacks', () => {
+  it('unlock by growth, one pick per tier, and the effects are real', async () => {
+    const k = await import('../src/systems/knacks');
+    const { startEncounter, raiseFury, encDef, advancePhase } = await import('../src/systems/combat');
+    const g = newGame();
+    expect(k.pendingTier(g)).toBeNull();
+    expect(k.pickKnack(g, 'steady_hands')).toBe(false);
+    g.state.stats.courage += 4;
+    expect(k.pendingTier(g)).toBe(0);
+    expect(k.pickKnack(g, 'second_wind')).toBe(false); // wrong tier
+    expect(k.pickKnack(g, 'steady_hands')).toBe(true);
+    expect(k.pendingTier(g)).toBeNull();
+    const e = startEncounter(g, 'vm1111');
+    raiseFury(g, e, encDef('vm1111'));
+    expect(e.fury).toBe(0); // first mistake forgiven
+    raiseFury(g, e, encDef('vm1111'));
+    expect(e.fury).toBe(1);
+    g.state.stats.courage += 6;
+    k.pickKnack(g, 'second_wind');
+    g.state.vitals.hp = 3;
+    advancePhase(g, e);
+    expect(g.state.vitals.hp).toBe(5);
+    // survives a save round trip as a plain flag
+    const back = await importPassword(await exportPassword(g.state));
+    expect(back.flags.knacks).toBe('steady_hands,second_wind');
+  });
+});
