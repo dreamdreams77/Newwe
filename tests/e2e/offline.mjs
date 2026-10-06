@@ -17,7 +17,7 @@ await page.waitForSelector('text=ENTER SITE');
 await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
 // wait for the cache to actually hold the app (script, stylesheet and page), rather than guessing a delay
 await page.waitForFunction(async () => {
-  const keys = (await (await caches.open('eleven-eleven-v1')).keys()).map((r) => r.url);
+  const keys = (await (await caches.open('eleven-eleven-v2')).keys()).map((r) => r.url);
   return keys.some((u) => u.endsWith('.js')) && keys.some((u) => u.endsWith('.css')) && keys.some((u) => /\/$/.test(u));
 }, null, { timeout: 15000 });
 const manifest = await page.evaluate(() => fetch('manifest.webmanifest').then((r) => r.json()));
@@ -35,7 +35,8 @@ try {
     ready: document.readyState,
     body: document.body?.innerText?.slice(0, 120),
     controller: !!navigator.serviceWorker?.controller,
-    cache: (await (await caches.open('eleven-eleven-v1')).keys()).map((r) => r.url.replace(location.origin, '')),
+    cache: (await (await caches.open('eleven-eleven-v2')).keys()).map((r) => r.url.replace(location.origin, '')),
+    cachedAsset: await (async () => { const url = [...document.querySelectorAll('script[src],link[rel=stylesheet]')].map((e) => e.src || e.href)[0]; if (!url) return 'no asset tags in the document'; const hit = await caches.match(url, { ignoreVary: true }); let fetched = 'n/a'; try { fetched = String((await fetch(url)).status); } catch (err) { fetched = 'ERR ' + err; } return { url: url.replace(location.origin, ''), found: !!hit, type: hit?.type, status: hit?.status, contentType: hit?.headers.get('content-type'), vary: hit?.headers.get('vary'), fetchedViaSW: fetched }; })(),
   })).catch((err) => ({ evaluateFailed: String(err) }));
   console.log('OFFLINE DIAGNOSTICS', JSON.stringify(info, null, 1), 'FAILED REQUESTS', JSON.stringify(failed.slice(0, 12), null, 1));
   throw e;

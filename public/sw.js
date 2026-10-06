@@ -1,6 +1,8 @@
 // Offline support. Pages and the app shell: network first, falling back to the last copy.
 // Hashed assets (they never change under the same name): cache first.
-const CACHE = 'eleven-eleven-v1';
+const CACHE = 'eleven-eleven-v2';
+// match on URL alone: the cached copy was fetched by the worker, the request comes from the page, and their headers differ
+const MATCH = { ignoreVary: true, ignoreSearch: false };
 
 // On install, cache the shell and every script and stylesheet the page references, so the app works offline after one visit
 // (fonts and anything else the page already loaded arrive through the 'precache' message below).
@@ -33,8 +35,8 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
   const hashed = /\/assets\/.+-[A-Za-z0-9_-]{6,}\.(js|css|woff2?|ttf)$/.test(req.url);
   if (hashed) {
-    event.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); return res; })));
+    event.respondWith(caches.match(req, MATCH).then((hit) => hit || fetch(req).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); return res; })));
     return;
   }
-  event.respondWith(fetch(req).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); return res; }).catch(() => caches.match(req).then((hit) => hit || caches.match('./'))));
+  event.respondWith(fetch(req).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); return res; }).catch(() => caches.match(req, MATCH).then((hit) => hit || caches.match('./', MATCH))));
 });
