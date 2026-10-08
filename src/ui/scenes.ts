@@ -207,8 +207,14 @@ export function paintLake(c: Ctx, w: number, h: number, tod: TimeOfDay, willowSt
   r(c, 269, 96, 10, 5, '#2a4aa8');
   r(c, 271, 103, 2, 2, '#111');
   // swan boat
-  const bx = boatOut ? 130 : 232;
-  const by = boatOut ? 130 : 130;
+  // the boat lives at the dock whether or not you have ridden it (the hotspot and the page text say so); a ridden boat leaves a wake
+  const bx = 232;
+  const by = 130;
+  if (boatOut) {
+    r(c, bx - 16, by + 12, 12, 1, '#ffffffaa');
+    r(c, bx - 24, by + 15, 16, 1, '#ffffff77');
+    r(c, bx - 12, by + 18, 10, 1, '#ffffff55');
+  }
   r(c, bx, by + 6, 40, 8, '#fff');
   r(c, bx + 4, by + 12, 32, 4, '#cdd');
   r(c, bx + 28, by - 6, 8, 14, '#fff');
