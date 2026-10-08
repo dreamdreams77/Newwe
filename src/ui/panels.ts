@@ -9,6 +9,7 @@ import { coffeeState, dayNumber, formatClock } from '../core/timeSystem';
 import { baseStat, statValue } from '../systems/stats';
 import { activeAilments } from '../systems/ailments';
 import { identity, identityScores } from '../systems/identity';
+import { KNACKS, KNACK_TIERS, growth, hasKnack, pendingTier, pickKnack } from '../systems/knacks';
 import { SLOTS, equippedIn, unequip } from '../systems/equipment';
 import { currentStepIndex, questStatus } from '../systems/quests';
 import { activeCreature, careAction, personalityLabel, creatureMoodText } from '../systems/creatures';
@@ -47,6 +48,14 @@ export function openStats(): WinHandle {
       );
       const fx = activeAilments(g);
       const idn = identity(g);
+      const tier = pendingTier(g);
+      body.append(
+        h('section', { class: 'stat-group knack-group' }, h('h4', {}, 'Knacks'),
+          h('small', {}, `You have grown ${growth(g)} points since you started. Next pick at ${KNACK_TIERS.find((t) => t > growth(g)) ?? 'the end of the line'}.`),
+          h('ul', { class: 'fx-list' }, KNACKS.filter((k) => hasKnack(g, k.id)).map((k) => h('li', { class: 'good' }, h('b', {}, k.label), ` — ${k.text}`))),
+          tier !== null ? h('div', { class: 'knack-pick' }, h('p', {}, h('b', {}, 'Choose one:')), KNACKS.filter((k) => k.tier === tier).map((k) => btn(`${k.label}: ${k.text}`, () => { pickKnack(g, k.id); }, 'small', { dataset: { fk: `knack-${k.id}` } }))) : '',
+        ),
+      );
       body.append(
         h('section', { class: 'stat-group id-group' }, h('h4', {}, 'Playstyle'),
           idn ? h('p', {}, h('b', {}, idn.label), ` — ${idn.text} `, h('small', {}, `Perk: ${idn.perk}`)) : h('p', { class: 'empty' }, 'Drifter. You have not leaned any one way yet. (Raise a pair of stats past the rest.)'),

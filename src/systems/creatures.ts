@@ -54,7 +54,12 @@ export function creatureField(g: Game, id: string, field: 'trust' | 'mood' | 'en
 export function dominantTrait(c: CreatureState): string | null {
   let best: string | null = null;
   let score = 0;
-  for (const [k, v] of Object.entries(c.traits)) if (v > score) (best = k), (score = v);
+  for (const [k, v] of Object.entries(c.traits)) {
+    if (v > score) {
+      best = k;
+      score = v;
+    }
+  }
   return score >= 2 ? best : null;
 }
 

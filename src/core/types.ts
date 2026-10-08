@@ -27,7 +27,12 @@ export type ZoneId =
   | 'dungeon'
   | 'mypage'
   | 'dev'
-  | 'elevenRoom';
+  | 'elevenRoom'
+  | 'brokenHome'
+  | 'terminal'
+  | 'forest'
+  | 'tasmania'
+  | 'parent';
 
 export type FlagValue = boolean | number | string;
 
@@ -220,7 +225,7 @@ export interface ItemDef {
   equip?: EquipDef;
 }
 
-export type SlotId = 'head' | 'body' | 'hands' | 'accessory' | 'tool' | 'badge';
+export type SlotId = 'head' | 'body' | 'hands' | 'accessory' | 'tool' | 'badge' | 'companion' | 'relic';
 
 /** what wearing an item does: not just numbers, but things you can now DO */
 export interface EquipDef {

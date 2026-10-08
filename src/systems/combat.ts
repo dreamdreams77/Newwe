@@ -5,6 +5,7 @@ import { ENCOUNTERS, type EncounterDef } from '../data/encounters';
 import { changeVital } from './stats';
 import { applyAilment } from './ailments';
 import { isIdentity } from './identity';
+import { hasKnack } from './knacks';
 
 export interface EncState {
   phase: number;
@@ -29,6 +30,8 @@ export function startEncounter(g: Game, id: string): EncState {
   e.fury = 0;
   e.attempts++;
   e.data.negate = false;
+  e.data.glitched = false;
+  e.data.forgave = false;
   g.changed();
   return e;
 }
@@ -88,6 +91,10 @@ export interface FuryResult {
 export function raiseFury(g: Game, e: EncState, def: EncounterDef, n = 1): FuryResult {
   const attacks: Attack[] = [];
   for (let i = 0; i < n; i++) {
+    if (hasKnack(g, 'steady_hands') && !e.data.forgave) {
+      e.data.forgave = true; // the first mistake each fight is forgiven
+      continue;
+    }
     e.fury++;
     attacks.push(bossAttack(g, e, def));
   }
@@ -103,6 +110,7 @@ export function lowerFury(g: Game, e: EncState, n = 1): void {
 export function advancePhase(g: Game, e: EncState): void {
   e.phase++;
   e.fury = Math.max(0, e.fury - (isIdentity(g, 'tinkerer') ? 2 : 1)); // a solved phase calms the machine a little
+  if (hasKnack(g, 'second_wind')) changeVital(g, 'hp', 2);
   g.sfx('puzzle');
   g.changed();
 }

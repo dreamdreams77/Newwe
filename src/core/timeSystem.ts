@@ -53,7 +53,7 @@ export function coffeeState(g: Game): CoffeeState {
  * 11:11 crossings and HP regen. Returns the number of minutes actually spent.
  */
 export function advance(g: Game, minutes: number, _opts: { raw?: boolean } = {}): number {
-  let spend = Math.max(0, Math.round(minutes));
+  const spend = Math.max(0, Math.round(minutes));
   if (spend === 0) return 0;
   const s = g.state;
   const before = s.clock.minutes;

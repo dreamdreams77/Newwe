@@ -6,7 +6,7 @@ export interface Reveal {
   text: string;
 }
 
-export type PhaseKind = 'lights' | 'offer' | 'keypad' | 'final';
+export type PhaseKind = 'lights' | 'offer' | 'keypad' | 'final' | 'pattern' | 'forgery' | 'cipher' | 'sequence';
 
 export interface PhaseDef {
   id: string;
@@ -88,4 +88,55 @@ export const VM_1111: EncounterDef = {
   ],
 };
 
-export const ENCOUNTERS = { vm1111: VM_1111 };
+export const BROKEN_HOME: EncounterDef = {
+  id: 'broken_home',
+  name: 'The Broken Homepage',
+  intro: 'The 11:11 Room. Every page you have visited is here at once, stacked and flickering, held together by a banner that says UNDER CONSTRUCTION in a font that is giving up. It is not angry. It is, you realise, trying to remember itself, and getting it wrong.',
+  furyMax: 6,
+  attackLines: [
+    'A pop-up the size of a door slams shut on your fingers.',
+    'The page reloads you. Something is left behind.',
+    'A rainbow divider lashes out, a very straight line of bad news.',
+    'The marquee scrolls over you, and it hurts, a little, to be a headline.',
+  ],
+  tiltText: 'The page CRASHES. A grey dialog reads: THIS PAGE HAS PERFORMED AN ILLEGAL OPERATION. It is gentle about it. You wake on the 404 page.',
+  weakness: { know: 'bh_beloved', bonus: 1, text: 'WEAKNESS: it wants to be remembered, not fixed. Kindness hits harder than cleverness.' },
+  winText: 'The Broken Homepage settles. The flicker slows to a breath. Somewhere in the stack, one window shows a very small, very clear picture of someone waving.',
+  phases: [
+    {
+      id: 'pattern', kind: 'pattern', title: 'Phase 1 — The Visual Pattern',
+      text: 'The UNDER CONSTRUCTION banner flashes a pattern of squares, then hides it. Reproduce it.',
+      reveals: [{ know: 'bh_symmetry', text: 'Boss Knowledge: the banner is always symmetrical, left to right. Whatever is on the left is mirrored on the right.' }],
+      unknown: 'You do not know the rules of the banner. It will only show it for a moment. Look carefully, and more than once.',
+    },
+    {
+      id: 'forgery', kind: 'forgery', title: 'Phase 2 — The Corrupted Guestbook',
+      text: 'The guestbook has been overwritten. One entry was not written by a visitor. Find the forgery.',
+      reveals: [{ know: 'bh_counter', text: 'Boss Knowledge: a guestbook can only hold people who have already visited. Check every entry number against the counter.' }],
+      unknown: 'Which one does not belong? Read all five. The counter at the bottom is not decoration.',
+    },
+    {
+      id: 'cipher', kind: 'cipher', title: 'Phase 3 — The Cryptogram',
+      text: 'A word is scrawled across the page, shifted. Say what it really says.',
+      reveals: [
+        { know: 'bh_shift', text: 'Boss Knowledge: each letter has been pushed forward along the alphabet by the webmaster\u2019s favourite number.' },
+        { know: 'w_loved_eleven', text: 'Boss Knowledge: W\u2019s favourite number is on the homepage. It is a good number.' },
+      ],
+      unknown: 'A shifted word. By how much? Somebody on this website had a favourite number.',
+    },
+    {
+      id: 'sequence', kind: 'sequence', title: 'Phase 4 — The Memory Sequence',
+      text: 'Four glowing keys. Watch the order. Play it back.',
+      reveals: [{ know: 'bh_replay', text: 'Boss Knowledge: Memory lets you ask for the sequence again, once for every four points of it.' }],
+      unknown: 'The keys light up in an order. It only plays when you ask. A good memory asks for it less.',
+    },
+    {
+      id: 'choice', kind: 'final', title: 'Phase 5 — The Final Choice',
+      text: 'The whole page holds still. It is asking something, without words: what should it be?',
+      reveals: [{ know: 'bh_beloved', text: 'Boss Knowledge: it does not want to be fixed. It wants to be remembered.' }],
+      unknown: 'Three options hang in the air. None of them is labelled "correct".',
+    },
+  ],
+};
+
+export const ENCOUNTERS = { vm1111: VM_1111, broken_home: BROKEN_HOME };

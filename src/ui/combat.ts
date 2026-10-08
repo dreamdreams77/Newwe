@@ -11,6 +11,9 @@ import { addVisitors } from '../systems/hits';
 import { statValue, changeVital } from '../systems/stats';
 import { spendEleven } from '../systems/elevenEleven';
 import { isIdentity } from '../systems/identity';
+import { battleIntro } from './battleFx';
+import { hasPerk } from '../systems/equipment';
+import { applyAilment } from '../systems/ailments';
 import { passTime } from '../systems/actions';
 import { blueScreen } from '../systems/travel';
 import { isSuccess, type CheckDef } from '../systems/dice';
@@ -68,6 +71,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
   const g = game();
   const def = encDef(id);
   const e = startEncounter(g, id);
+  battleIntro();
   return new Promise((resolve) => {
     const log: string[] = [def.intro];
     let finished = false;
@@ -82,7 +86,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
     let digits = '';
     let wrong = 0;
     let hintItem: string | null = null;
-    let finalResult: string | null = null;
+    const finalResult: string | null = null;
     let locked = false;
     let phaseSeen = -1;
 
@@ -142,7 +146,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
       g.state.flags.boss_defeated = true;
       addVisitors(g, 150, 'defeated the Vending Machine of Judgment');
       learn(g, 'vm_beaten');
-      audio.sfx('questDone');
+      audio.sfx('fanfare');
       toast(def.winText, 'magic');
       g.changed();
       end('won');
@@ -211,6 +215,7 @@ export function runEncounter(id: string): Promise<EncounterResult> {
           h('div', { class: 'enc-log', attrs: { 'aria-live': 'polite', role: 'log' } }, log.slice(-5).map((l) => h('p', {}, l))),
           h('div', { class: 'win-actions' },
             pet && canAssist(pet) ? btn(`${pet.name}, help!`, () => assist(w), 'small', { disabled: locked, title: `Costs ${BALANCE.creature.assistEnergy} energy` }) : '',
+            hasPerk(g, 'glitch_sprite') ? btn('✦ Glitch it (Sprite)', () => glitch(w), 'small', { disabled: locked || !!e.data.glitched, title: 'Once per fight: the next hit passes through. The glitch splashes on you.', dataset: { fk: 'glitch' } }) : '',
             btn('Retreat', () => {
               log.push('You back away. The machine hums, unbothered. Progress is kept.');
               end('left');
@@ -416,6 +421,16 @@ export function runEncounter(id: string): Promise<EncounterResult> {
       }
       if (r.peek) log.push(`You recall: ${r.peek}`);
       if (r.assist) assist(w);
+      w.refresh();
+    }
+
+    function glitch(w: { refresh(): void }) {
+      e.data.glitched = true;
+      e.data.negate = true;
+      audio.sfx('eleven');
+      log.push('The Sprite flickers and the machine misses a frame. The next hit will pass straight through.');
+      if (applyAilment(g, 'corrupted', 60)) log.push('The glitch splashes onto you. CORRUPTED. (Goggles would have caught that.)');
+      else log.push('The goggles catch the splash. The Sprite looks quietly impressed.');
       w.refresh();
     }
 

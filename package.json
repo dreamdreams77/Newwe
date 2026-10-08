@@ -3,16 +3,29 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "11:11 — The Lost Homepage. A browser RPG disguised as an abandoned 2001 personal website.",
+  "description": "11:11 \u2014 The Lost Homepage. A browser RPG disguised as an abandoned 2001 personal website.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint .",
+    "e2e": "node scripts/e2e.mjs",
+    "size": "node scripts/size.mjs",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build && npm run size",
+    "graph": "esbuild scripts/content-graph.ts --bundle --platform=node --format=esm --outfile=.graph.mjs --log-level=error && node .graph.mjs && rm .graph.mjs"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^26.6.4",
+    "axe-core": "^4.14.0",
+    "eslint": "^9.39.5",
+    "fast-check": "^4.10.2",
+    "globals": "^17.13.0",
+    "playwright": "^1.63.0",
     "typescript": "^5.6.0",
+    "typescript-eslint": "^8.71.1",
     "vite": "^5.4.0",
     "vitest": "^2.1.0"
   },

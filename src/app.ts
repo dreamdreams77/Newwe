@@ -1,4 +1,5 @@
 import { Game, createInitialState } from './core/game';
+import { runEncounter } from './ui/combat';
 import { installProgression, evaluate } from './core/progression';
 import { installAutosave, loadFromStorage, saveToStorage } from './core/saveSystem';
 import { setGame, game } from './core/runtime';
@@ -14,6 +15,7 @@ import { announce, h } from './ui/dom';
 import { applySettings } from './ui/appearance';
 import { held, onHeldChange, setHeld } from './ui/held';
 import { mountToasts, toast } from './ui/notifications';
+import { raiseStat } from './systems/stats';
 import { goBack, goForward, initRouter, navigate, refreshView, showCurrent } from './ui/router';
 import { showSplash } from './ui/splash';
 import { closeAllWindows, mountWindows, refreshLive } from './ui/windows';
@@ -45,6 +47,11 @@ import './world/e404';
 import './world/dungeon';
 import './world/mypage';
 import './world/finale';
+import './world/room';
+import './world/forest';
+import './world/tasmania';
+import './world/parent';
+import './world/terminalPage';
 import './world/dev';
 import './world/ticket';
 
@@ -70,7 +77,7 @@ export async function boot(): Promise<void> {
   setGame(g);
   installProgression(g);
   evaluate(g);
-  if (params.has('debug')) (window as unknown as { __game: unknown }).__game = { g, navigate, audio, setHeld, saveToStorage, passTime: (m: number) => passTime(g, m, { raw: true }), refresh: refreshView };
+  if (params.has('debug')) (window as unknown as { __game: unknown }).__game = { runEncounter, g, navigate, audio, setHeld, saveToStorage, passTime: (m: number) => passTime(g, m, { raw: true }), refresh: refreshView };
 
   const app = document.getElementById('app')!;
   document.body.append(h('div', { class: 'desktop-bg' }));
@@ -90,9 +97,11 @@ export async function boot(): Promise<void> {
 
   installAutosave(g, 250); // only once the player has chosen: a stray load must never overwrite a save
 
+  document.querySelector('.skip-link')?.removeAttribute('hidden'); // there is a #content to skip to now
   // ---- frame
   const menus: MenuDef[] = buildMenus(g);
-  let frame!: FrameRefs;
+  let frame!: FrameRefs; // the handlers below close over it before buildFrame returns
+  // eslint-disable-next-line prefer-const
   frame = buildFrame(g, {
     back: goBack,
     forward: goForward,
@@ -154,8 +163,24 @@ export async function boot(): Promise<void> {
       ...(id ? [h('span', {}, `Holding: ${ITEMS[id].name}. Click something on the page. Esc to put it away.`), h('button', { type: 'button', class: 'btn small', onclick: () => setHeld(null) }, 'Put away')] : []),
     );
   });
+  const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  let konamiAt = 0;
   document.addEventListener('keydown', (ev) => {
     if (ev.key === 'Escape' && held()) setHeld(null);
+    const t = ev.target as HTMLElement | null;
+    if (t && /^(input|textarea|select)$/i.test(t.tagName)) return;
+    konamiAt = ev.key.toLowerCase() === KONAMI[konamiAt].toLowerCase() ? konamiAt + 1 : ev.key === 'ArrowUp' ? 1 : 0;
+    if (konamiAt === KONAMI.length) {
+      konamiAt = 0;
+      if (g.has('konami')) return void toast('You already have the thirty lives. They are all still there.', 'funny');
+      g.state.flags.konami = true;
+      raiseStat(g, 'courage', 1);
+      raiseStat(g, 'luck', 1);
+      g.state.eleven.charges += 1;
+      g.sfx('eleven');
+      toast('↑ ↑ ↓ ↓ ← → ← → B A. THIRTY LIVES. (There is no lives system. You feel braver anyway: Courage +1, Luck +1, and one spare 11:11.)', 'magic');
+      g.changed();
+    }
   });
 
   // real-world 11:11 is a gift
@@ -214,6 +239,7 @@ function goAddress(text: string): void {
     if (page === 'version') return void openVersions();
     if (page === 'terminal') return void openTerminal();
     if (page === 'handbook') return void openHandbook();
+    if (page === 'parent') return void navigate('parent');
     if (page === 'status') {
       if (g.has('finale_ready')) return void alertWindow('about:status', h('pre', { class: 'term-out' }, statusLines(g).join('\n')));
       return void toast('about:status — 403. Not yet. Nothing is finished running.', 'info');

@@ -50,6 +50,32 @@ export const QUESTS: QuestDef[] = [
     doneText: 'The swans are wound up. The lake is a little less lonely.',
   },
   {
+    id: 'q_forest',
+    title: 'The Foxfire Trail',
+    blurb: 'A nature fan page, three forks, and something that has been counting.',
+    start: { flag: 'visited_forest' },
+    steps: [
+      { text: 'Say hello to whoever lives in the woods.', done: { flag: 'fern_met' }, hint: 'Look for the lantern near the stump.' },
+      { text: 'Follow the trail to the clearing.', done: { flag: 'oak_found' }, hint: 'The foxfire only shows the way after dark.' },
+      { text: 'Count the rings of the Old Oak.', done: { flag: 'tree_ring_taken' }, hint: 'Observation, patience, or just ask the tree.' },
+    ],
+    reward: [{ t: 'card', id: 'old_oak' }, { t: 'hits', by: 70, why: 'forest quest' }],
+    doneText: 'The woods know your name now. They are not going to say it.',
+  },
+  {
+    id: 'q_tas',
+    title: 'Greetings from the Bottom of the World',
+    blurb: 'Two photographs, five changes, and a sky that only answers after dark.',
+    start: { flag: 'visited_tasmania' },
+    steps: [
+      { text: 'Meet whoever lives on the rocks.', done: { flag: 'devil_met' }, hint: 'Small, furious, near the noticeboard.' },
+      { text: 'Find the five changes between the photographs.', done: { flag: 'tas_diffs' }, hint: 'Click on the right-hand photograph where something is new.' },
+      { text: 'Tell the sky what it wants to hear.', done: { flag: 'tas_aurora' }, hint: 'The five letters, left to right. After dark.' },
+    ],
+    reward: [{ t: 'card', id: 'aurora' }, { t: 'hits', by: 80, why: 'bottom of the world' }],
+    doneText: 'The sky answered, in capitals. It is a good sky.',
+  },
+  {
     id: 'q_peep',
     title: 'Something in the Reeds',
     blurb: 'It is peeping. It is tiny. It is absolutely a hero.',

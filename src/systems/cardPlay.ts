@@ -61,7 +61,7 @@ export function playCard(g: Game, uid: number, ctx: PlayCtx): PlayResult {
   const inst = findInHand(g, uid)!;
   const def = CARDS[inst.cardId];
   out.ok = true;
-  let effects: CardEffect[] = def.effects;
+  const effects: CardEffect[] = def.effects;
   const expanded: CardEffect[] = [];
   for (const e of effects) {
     if (e.t === 'wild') {

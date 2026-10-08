@@ -2,6 +2,18 @@
 // encounters reveal extra detail when the matching entry is known.
 
 export const KNOWLEDGE: Record<string, string> = {
+  vm_beaten: 'You judged the Vending Machine, and it judged you back. It chimed. It was, you suspect, relieved.',
+  tas_south: 'The five changes between the two Tasmania photographs spell SOUTH. The sky wants to hear it after dark.',
+  tas_photos: 'Two photographs are pinned to the Tasmania noticeboard, 2001 and 2003. Five things changed.',
+  forest_foxfire: 'In the Whispering Woods the foxfire drifts toward the right path, but only at dusk and at night.',
+  forest_eleven: 'The Old Oak has eleven rings, and someone carved the number beside it.',
+  bh_symmetry: 'The Broken Homepage’s banner pattern is always symmetrical, left to right.',
+  bh_counter: 'A guestbook can only hold visitors who have already arrived. An entry number higher than the counter is a forgery.',
+  bh_shift: 'The cipher on the Broken Homepage shifts each letter forward by the webmaster’s favourite number.',
+  w_loved_eleven: 'W’s favourite number, from the homepage, is 11.',
+  bh_replay: 'Memory lets you replay the Broken Homepage’s key sequence, once for every four points.',
+  bh_beloved: 'The Broken Homepage does not want to be fixed. It wants to be remembered.',
+  bh_beaten: 'You helped the Broken Homepage remember itself.',
   vm_exact_change: 'The machine at the end of the 404 wants EXACT CHANGE. A whole token, not a broken one.',
   vm_pattern: 'The Vending Machine’s panel lights flip their neighbours too. Turn every light off.',
   vm_code_hour: 'The keypad wants "the hour that makes a wish". Four digits.',
