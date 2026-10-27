@@ -38,6 +38,7 @@ function render(): HTMLElement {
     '',
     'Something is running this website. It is not finished.',
     'FINAL.HTML has been written. (File → Save Files…)',
+    ...(g.has('bh_defeated') ? ['', `The 11:11 Room: remembered (${String(g.state.flags.bh_choice ?? 'restored')}).`] : []),
     ...(GIFT ? ['', GIFT.note ? `"${GIFT.note}"` : '', GIFT.from ? `   — ${GIFT.from}` : ''].filter(Boolean) : []),
   ];
   const pre = h('pre', { class: 'render-pre', attrs: { 'aria-live': 'polite' } }, typed.join('\n') + (typed.length ? '\n' : ''));

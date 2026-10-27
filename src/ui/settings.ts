@@ -28,7 +28,7 @@ export function openSettings(): WinHandle {
         row('Mute everything', h('input', { type: 'checkbox', checked: s.muted, on: { change: (e) => ((s.muted = (e.target as HTMLInputElement).checked), upd(), audio.sfx('click')) } })),
         row('Chiptune music', h('input', { type: 'checkbox', checked: s.music, on: { change: (e) => ((s.music = (e.target as HTMLInputElement).checked), audio.init(), upd()) } }), 'Off by default. Browsers do not like surprise noise either.'),
         h('h3', {}, 'Looks'),
-        row('Reduce motion', h('input', { type: 'checkbox', checked: s.reducedMotion, on: { change: (e) => ((s.reducedMotion = (e.target as HTMLInputElement).checked), upd()) } }), 'Stops blinking, marquees, wobble and tumbling dice.'),
+        row('Reduce motion', h('input', { type: 'checkbox', checked: s.reducedMotion || (!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches && !g.state.flags.motion_override), on: { change: (e) => { const on = (e.target as HTMLInputElement).checked; s.reducedMotion = on; g.state.flags.motion_override = !on; upd(); } } }), 'Stops blinking, marquees, wobble and tumbling dice.'),
         row('Text size', h('input', { type: 'range', min: 0.9, max: 1.5, step: 0.05, value: String(s.textScale), on: { input: (e) => ((s.textScale = Number((e.target as HTMLInputElement).value)), upd()) } })),
         row('Always outline hotspots', h('input', { type: 'checkbox', checked: s.showHotspots, on: { change: (e) => ((s.showHotspots = (e.target as HTMLInputElement).checked), upd()) } }), 'Shows dotted outlines around everything you can click.'),
         row('Sparkle cursor', h('input', { type: 'checkbox', checked: s.sparkleCursor, on: { change: (e) => ((s.sparkleCursor = (e.target as HTMLInputElement).checked), upd()) } }), 'A trail of sparkles. Authentic. Mildly distracting.'),
@@ -68,7 +68,7 @@ export function openSavePassword(): WinHandle {
     render: (body, win) => {
       const out = h('textarea', { class: 'pw-box', attrs: { readonly: '', rows: 5, 'aria-label': 'Your save password' } });
       out.value = 'Generating…';
-      exportPassword(g.state).then((code) => (out.value = code));
+      exportPassword(g.state).then((code) => (out.value = code)).catch((e) => (out.value = (e as Error).message || 'Could not make a password. Your game still saves itself in this browser.'));
       const input = h('textarea', { class: 'pw-box', attrs: { rows: 4, placeholder: 'Paste a password here, e.g. 7F9K-11XQ-…', 'aria-label': 'Password to load' } });
       const err = h('p', { class: 'pw-err', attrs: { role: 'alert' } });
       body.append(

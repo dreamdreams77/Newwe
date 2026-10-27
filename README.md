@@ -106,6 +106,62 @@ CORRUPTED, the Inspector sees deeper), Duct-Tape Gloves (from Bob, but only if y
 admit whether their own rumours are true), the Broken Mouse (clicks things the page considers inaccessible, including a
 second way past the `/dev/` gate) and a junk Receipt for Nothing that turns out to be lucky.
 
+## Playstyle identity and weaknesses
+
+Your playstyle is derived from how far you have grown stats past the start, never picked from a menu and never saved. Tinkerer (Creativity + Puzzle Sense), Gambler (Luck + Chaos), Daredevil (Courage + Dad Energy), Scholar (Curiosity + Observation) and Keeper (Nurture + Memory) each carry one small perk that plugs into an existing system (boss fury, crafting odds, hit damage, Inspector depth, companion energy). Until one pair clearly leads you are a Drifter. Bosses can have a weakness you only get by learning it in the world: VM-1111 cannot bear a pun, and once you know that, calming cards hit harder.
+
+## The Dead Link Salesman and the Glitch Sprite
+
+Once the 404 page is open, a man stands in the link. He deals only in things that no longer work: a Glitch Sprite in a jar for a Floppy Disk and a Receipt (or just the Floppy, if you can haggle with Luck), and VM-1111's weakness for a Suspicious Snack. The Sprite is not a pet. It lives in the new Familiar equipment slot, and once per boss fight it makes the machine miss a frame (the next hit passes through). The glitch splashes CORRUPTED on you, unless you are wearing the CRT goggles. Relics (the Edge Coin, the Stopped Clock, the Chain Letter) sit in their own slot, and each one trades a strength for a weakness: the coin gives Luck and takes Courage, the clock slows time and dulls Observation, the letter makes rare crafting results (and disasters) likelier. A merchant, a status effect, equipment and the fight system all meet in one choice.
+
+## Knacks
+
+There is no XP bar and no level number. How far you have grown since the start (total stat points gained) earns you a pick at 2, 5 and 9: choose one of two permanent Knacks from the Status window. Steady Hands forgives the first mistake of every boss fight, Quick Study counts as one more thing known about the boss, Second Wind heals on a solved phase, Night Owl shaves a tenth off all time, Lucky Streak gives +2 Luck, Archivist makes Inspector probes free. They are stored as one flag, so saves and passwords carry them with no format change.
+
+## The second boss, the Terminal, and a few throwbacks
+
+Beating the Vending Machine opens **The 11:11 Room** on the web ring: *The Broken Homepage*, a five-phase puzzle boss that matches the original brief. A banner pattern to memorise (always left-right symmetrical), a corrupted guestbook with one entry from the future, a cryptogram shifted by W's favourite number, a four-key memory sequence, and a final choice that is not labelled correct (restore it, rebuild it, or leave it broken on purpose; each changes a stat, an item and the finale text). Observation buys extra looks at the banner, Memory buys extra replays of the keys, Puzzle Sense rules things out, and everything the room teaches you shows up in Boss Knowledge. Its weakness is kindness, not cleverness.
+
+**The Terminal** is a retro-RPG menu page on the ring: a strategy guide that only fills in what you have actually learned (everything else is `???`), and a crossword whose answers it will only accept if the world has already told you. And there is a Konami code.
+
+Retro polish: fights open with the classic flash-and-bars battle wipe (skipped under reduced motion) and a falling-beeps sound, a boss win plays a da-da-da-DAAA fanfare, the ▶ menu cursor appears on every choice, fights and the Terminal get a faint CRT scanline sheen, and toasts get out of the way (and click-through) while a fight is open.
+
+Note for anyone with an old save password: zones and items are part of the compact save codec's flag dictionary, so passwords from before these additions will not decode. Autosave in the same browser is unaffected.
+
+## The Whispering Woods
+
+The web ring's Forest (it unlocks when the lake is solved) is a nature fan page by a hermit called Fern. It has an ecosystem (a mushroom ring that shrinks when you pick and regrows with the clock), a hermit with rumours you can verify, a quest, a memory, a card, and a puzzle that uses the game clock: the trail has three forks, the right way is a fair coin flip from your world seed, and the foxfire only shows it at dusk and at night. By day, a sharp eye (Observation) can read the moss one fork at a time. Guess wrong and you are LOST, back at the first fork, which the Ring of the Old Oak (the reward at the end, counted one ring at a time) cures for good. Mushrooms nibbled raw make you INSPIRED, and Foxfire Tea (mushroom plus coffee) is a crafting discovery.
+
+## Pacing notes (measured, not guessed)
+
+A natural full run of the original slice (no shortcuts for stats) ends around 14:48 on day 1 with about 1,350 visitors, so the 1,111 finale gate arrives without grinding, and all the extras (second boss, Forest, crossword) are surplus. Total stat growth over that run is only about 5 points, which is why Knack tiers sit at 2, 5 and 9 (they were 4, 10 and 18, and the last two were out of reach). The Forest's foxfire needs dusk, so the stump by Fern's lantern lets you wait for it (costing the time and the coffee that goes with it) instead of leaving you stuck at midday.
+
+## Tasmania: Greetings from the Bottom of the World
+
+Unlocked by decoding the lighthouse postcard. A coast with a noticeboard, a very small furious Tasmanian devil called Mr. Gnarl (he screams when he likes you, which is always), and a sky. The board holds two photographs, 2001 and 2003: click on the 2003 one wherever something is new (five changes, painted by one function with a variant flag, so the pictures can never drift apart). Observation lets you squint at one, and a coffee buys a description in plain words for anyone who cannot see the pictures well. The five changes carry letters that, read left to right, spell the word the sky wants to hear after dark. By day it stays silent; the rocks let you wait for night (costing time and coffee). Say it right and the aurora answers, hands you a jar of itself (+1 Creativity, +1 Memory, and Observation +2 at night, an accessory that competes with the Forest ring for the slot), and the back of the postcard can be read.
+
+## Act III, the trophy room, and accessibility
+
+**The parent process.** The finale's SYSTEM STATUS has always said `PARENT PROCESS: UNKNOWN (not yet found)`. Finishing the Terminal crossword (seven answers, so every zone, including the Forest, Tasmania and the 11:11 Room) and having seen the finale makes a new process appear in the table: PID 1. `ATTACH` (or `about:parent`, or the `ps` command) asks five questions about what the website told you, with a nudge back into the world for a wrong answer and no penalty. The answer to the last one is the point of the whole game, and the dedication is the last thing on the screen.
+
+**My Page is a trophy room.** Awards appear on it by themselves (the toast has always said they would), plus a journey strip (playstyle, Knacks, gear, places, bosses and how you ended them, Act III), earned wallpapers (Woods, Southern Lights, Stacked Pages, Green on Black), earned decorations you can switch on and off (marquee, hit counter, construction tape, sparkles, the lit lamp, the web-ring banner), places and Knacks and awards as things to put on the shelf, and "copy my page as text".
+
+**Accessibility, measured.** `tests/e2e/a11y.mjs` runs axe-core over 20 screens and windows (including both boss fights) and fails on serious or critical findings. The first run found a menubar with the wrong child roles, an empty list, a missing skip-link target, content outside landmarks, a heading skip, and a scrollable window with nothing focusable; all fixed, now zero. The spot-the-change picture has a keyboard route (arrow keys move a crosshair, Enter looks, a Hot/Warm/Cold read-out is announced) alongside the coffee-for-a-description button, and an old bug (white text on white in the page-title field) is fixed.
+
+## For developers
+
+```bash
+npm install
+npm run dev            # vite dev server
+npm run check          # lint + typecheck + unit/property tests + build + size budget
+npm run e2e            # every browser suite against a fresh build (or: npm run e2e -- forest a11y)
+npm run graph          # regenerate docs/content-graph.md from the data tables
+```
+
+`docs/ARCHITECTURE.md` has the diagrams and the decision log. Highlights: 96 unit and property tests, 13 real-click
+browser suites, an axe accessibility audit and a seeded monkey test in CI, a content-graph lint, ESLint, a gzipped bundle
+budget (137 of 160 kB), an offline-capable installable PWA, and save passwords that refuse to load into the wrong build.
+
 ## Design rules this build follows
 
 - **Everything connects.** A yoghurt is a quest item, creature food, a card, a clue, a memory trigger, a joke, and it perishes in game time. A guestbook entry can start a quest, hand you an item, reveal a web-ring site, carry a deduction "tell", or change after you do something.

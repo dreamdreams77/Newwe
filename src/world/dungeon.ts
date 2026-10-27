@@ -114,10 +114,11 @@ function wireKeys(): void {
     const t = ev.target as HTMLElement;
     if (t && /input|textarea|select/i.test(t.tagName)) return;
     const k = ev.key.toLowerCase();
-    if (k === 'arrowup' || k === 'w') (ev.preventDefault(), move(0, -1, N));
-    else if (k === 'arrowdown' || k === 's') (ev.preventDefault(), move(0, 1, S));
-    else if (k === 'arrowleft' || k === 'a') (ev.preventDefault(), move(-1, 0, W));
-    else if (k === 'arrowright' || k === 'd') (ev.preventDefault(), move(1, 0, E));
+    const dir = k === 'arrowup' || k === 'w' ? ([0, -1, N] as const) : k === 'arrowdown' || k === 's' ? ([0, 1, S] as const) : k === 'arrowleft' || k === 'a' ? ([-1, 0, W] as const) : k === 'arrowright' || k === 'd' ? ([1, 0, E] as const) : null;
+    if (dir) {
+      ev.preventDefault();
+      move(dir[0], dir[1], dir[2]);
+    }
   });
 }
 

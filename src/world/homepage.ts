@@ -70,6 +70,8 @@ function newsItems(): Array<{ date: string; text: string; cls?: string }> {
   if (s.stage >= 2) items.push({ date: '11/11/2003 11:11', text: 'ThIs pAge wAs nOt uPdAtEd tOdAy', cls: 'glitchy' });
   items.push({ date: '06/2003', text: 'Gone fishing. Back soon!! :)' });
   items.push({ date: '03/2001', text: 'NEW!! Guestbook! Please sign it!' });
+  items.push({ date: '06/1999', text: 'Moved hosts AGAIN. Update ur bookmarks!! (the old address says it forwards. it does not.)' });
+  items.push({ date: '03/1998', text: 'My first page!! Made in Notepad. Please be kind. The counter starts at 73 (long story).' });
   return items;
 }
 

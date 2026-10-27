@@ -61,6 +61,9 @@ export function runCommand(g: Game, raw: string): TermResult {
     }
     case 'links':
       return { lines: WEBRING.map((t) => `  ${(!t.future && test(g, t.unlock) ? t.label : t.alt).padEnd(34)} ${t.future ? '[under construction]' : test(g, t.unlock) ? '[up]' : '[broken image]'}`) };
+    case 'parent':
+    case 'ps':
+      return { lines: s.flags.act3_done ? ['PID 1  visitor_73  RUNNING', 'parent of everything on this page. that is you.'] : g.has('finale_seen') ? ['PID 1  ???  RUNNING', 'a process has no name until someone finishes the strategy guide. (it is on the web ring.)', 'then: about:parent'] : ['ps: nothing is running yet that you could attach to.'] };
     case 'whoami':
       if (args.includes('--verbose') || args.includes('-v')) return { lines: s.visitors >= 1111 ? ['PLAYER: UNKNOWN', 'VISITOR: 1111', 'STATUS: EXPECTED'] : ['PLAYER: UNKNOWN', `VISITOR: ${s.visitors}`, 'STATUS: PENDING'] };
       return { lines: ['PLAYER: UNKNOWN'] };

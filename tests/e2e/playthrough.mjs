@@ -8,7 +8,7 @@
 
 const pw = await import(process.env.PLAYWRIGHT_PATH ?? 'playwright');
 const { chromium } = pw;
-const URL = process.env.URL ?? 'http://127.0.0.1:4173/?fresh&seed=' + (process.env.SEED ?? '1') + '&debug';
+const URL = process.env.URL ?? (process.env.E2E_BASE ?? 'http://127.0.0.1:4173/') + '?fresh&seed=' + (process.env.SEED ?? '1') + '&debug';
 const SHOTS = process.env.SHOTS ?? '';
 
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });

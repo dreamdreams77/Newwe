@@ -9,6 +9,8 @@ export const SLOTS: Array<{ id: SlotId; label: string; hint: string }> = [
   { id: 'accessory', label: 'Accessory', hint: 'A small, strange advantage.' },
   { id: 'tool', label: 'Tool', hint: 'Something to click with.' },
   { id: 'badge', label: 'Website Badge', hint: 'A thing the page recognises.' },
+  { id: 'relic', label: 'Relic', hint: 'Powerful. Never free.' },
+  { id: 'companion', label: 'Familiar', hint: 'Something small that glitches.' },
 ];
 
 /** perks are named effects other systems look for; gear changes what you can DO, not just a percent */

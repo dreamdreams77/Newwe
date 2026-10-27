@@ -111,7 +111,7 @@ p { margin: 0 0 .7em; }
   95% { transform: translate(3px, -1px); filter: hue-rotate(-90deg); }
   97% { transform: translate(-1px, 0); }
 }
-.blink { animation: blink 1s steps(2, jump-none) infinite; }
+.blink { animation: blink 1s steps(2, jump-none) 5; } /* blinks for 5 seconds, then stops (WCAG 2.2.2) */
 
 #content:focus, #content:focus-visible { outline: none; box-shadow: none; }
 

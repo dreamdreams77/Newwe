@@ -339,4 +339,93 @@ export const MARL: DTree = {
   },
 };
 
-export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL };
+const SAL = { who: 'The Dead Link Salesman', };
+
+/** A merchant who only deals in things that no longer work. Prices are odd on purpose. */
+export const SALESMAN: DTree = {
+  id: 'salesman',
+  start: (g) => (g.has('sal_met') ? 'back' : 'greet'),
+  nodes: {
+    greet: { id: 'greet', ...SAL, text: "Ah. A click. A real one. Nobody has clicked me since the page was archived. Welcome to the stall. Everything here is guaranteed to be exactly as broken as advertised.", effects: [{ t: 'flag', key: 'sal_met' }], next: 'menu' },
+    back: { id: 'back', ...SAL, text: 'You came back! A repeat visit. I will note it in the log. I do not have a log.', next: 'menu' },
+    menu: {
+      id: 'menu', ...SAL, text: 'Browse. Nothing refundable, everything haunted.',
+      choices: [
+        { text: 'A jar with something flickering in it (Floppy + Receipt)', when: { all: [{ not: { has: 'glitch_sprite' } }, { has: 'floppy' }, { has: 'receipt' }] }, next: 'sprite_deal', once: 'sal_sprite_bought' },
+        { text: 'A jar with something flickering in it (haggle)', when: { all: [{ not: { has: 'glitch_sprite' } }, { has: 'floppy' }, { not: { has: 'receipt' } }] }, check: { def: { id: 'haggle', title: 'Haggling', stat: 'luck', dc: 11, text: 'You have the floppy. He wants a receipt. You have a face.' }, ok: 'sprite_cheap', fail: 'sprite_no' } },
+        { text: 'The Coin That Landed On Its Edge (a Broken Token)', when: { all: [{ has: 'token_broken' }, { not: { has: 'edge_coin' } }] }, next: 'coin_deal' },
+        { text: 'The Stopped Clock (a Good Coffee)', when: { all: [{ has: 'good_coffee' }, { not: { has: 'stopped_clock' } }] }, next: 'clock_deal' },
+        { text: 'The Chain Letter That Never Ended (a Willow Leaf)', when: { all: [{ has: 'willow_leaf' }, { not: { has: 'chain_letter' } }] }, next: 'letter_deal' },
+        { text: 'Sell me what the machine hates (a Suspicious Snack)', when: { all: [{ has: 'snack_711' }, { not: { know: 'vm_dad_jokes' } }] }, next: 'rumour_deal' },
+        { text: 'What is the jar, exactly?', when: { not: { has: 'glitch_sprite' } }, next: 'sprite_info' },
+        { text: 'Goodbye.', end: true },
+      ],
+    },
+    coin_deal: { id: 'coin_deal', ...SAL, text: 'It will make you lucky and a little afraid of everything. A fair price for a luck that works. Mind the edge.', effects: [{ t: 'item', id: 'edge_coin' }], run: (g) => removeItem(g, 'token_broken', 1), next: 'menu' },
+    clock_deal: { id: 'clock_deal', ...SAL, text: 'Slows everything down around you. You will get so much done and see so little of it. Good coffee, though. Worth it, I think. I have not tasted it. I cannot taste.', effects: [{ t: 'item', id: 'stopped_clock' }], run: (g) => removeItem(g, 'good_coffee', 1), next: 'menu' },
+    letter_deal: { id: 'letter_deal', ...SAL, text: 'You are not the eleventh. You are the twelfth. That is worse. Take it, quickly, before it forwards itself.', effects: [{ t: 'item', id: 'chain_letter' }], run: (g) => removeItem(g, 'willow_leaf', 1), next: 'menu' },
+    sprite_info: { id: 'sprite_info', ...SAL, text: "A Glitch Sprite. A bug that got ideas. Hold it in a fight and it will skip one hit for you. It also bleeds corruption onto you, unless you have good goggles. Floppy and a receipt. I like old things that never lead anywhere.", next: 'menu' },
+    sprite_deal: { id: 'sprite_deal', ...SAL, text: 'Sold! Do not open the lid. (Open the lid. Wear it, it is happier near people.)', effects: [{ t: 'item', id: 'glitch_sprite' }, { t: 'flag', key: 'sal_sprite_bought' }], run: (g) => { removeItem(g, 'floppy', 1); removeItem(g, 'receipt', 1); }, next: 'menu' },
+    sprite_cheap: { id: 'sprite_cheap', ...SAL, text: 'The floppy alone? ...Fine. You haggle like a dead link, relentless and pointless. Take it.', effects: [{ t: 'item', id: 'glitch_sprite' }, { t: 'flag', key: 'sal_sprite_bought' }], run: (g) => removeItem(g, 'floppy', 1), next: 'menu' },
+    sprite_no: { id: 'sprite_no', ...SAL, text: 'No. A receipt or nothing. This is a respectable stall, in a way.', next: 'menu' },
+    rumour_deal: { id: 'rumour_deal', ...SAL, text: 'A snack! The machine at the end of the dark hates one thing above all: puns. Make it groan and it will wince for you. There. Now you know. Nothing is free except being wrong.', effects: [{ t: 'know', id: 'vm_dad_jokes' }], run: (g) => removeItem(g, 'snack_711', 1), next: 'menu' },
+  },
+};
+
+const FERN_W = { who: 'Fern (hermit, webmaster of this page)' };
+
+/** The hermit of the Whispering Woods. Hand-coded the page herself, in 2002, in the dark. */
+export const FERN: DTree = {
+  id: 'fern',
+  start: (g) => (g.has('fern_met') ? 'back' : 'greet'),
+  nodes: {
+    greet: { id: 'greet', ...FERN_W, text: 'Oh! A visitor who clicked past the guestbook. I wrote this whole page by lantern. The counter says four. Three of those are me.', effects: [{ t: 'flag', key: 'fern_met' }], next: 'menu' },
+    back: { id: 'back', ...FERN_W, text: 'Back again. The woods said you might be. Mind the moss, it has opinions.', next: 'menu' },
+    menu: {
+      id: 'menu', ...FERN_W, text: 'What can I do you for? (I cannot do anything. I can talk.)',
+      choices: [
+        { text: 'What is this place?', next: 'place' },
+        { text: 'How do I get through the trail?', next: 'trail' },
+        { text: 'Heard anything lately?', next: 'rumor' },
+        { text: '(Trade a Coffee for two Speckled Mushrooms)', when: { has: 'coffee' }, next: 'trade', action: (g) => removeItem(g, 'coffee', 1), effects: [{ t: 'item', id: 'forest_mushroom', qty: 2 }] },
+        { text: 'Who carved the number in the oak?', when: { flag: 'oak_found' }, next: 'oak' },
+        { text: 'Bye.', end: true },
+      ],
+    },
+    place: { id: 'place', ...FERN_W, text: 'A nature fan page. Trees, mostly. There is a webring. It is not as exciting as it sounds. But the woods are older than the webring, and they remember everyone who ever clicked.', next: 'menu' },
+    trail: { id: 'trail', ...FERN_W, text: 'Three forks. In daylight the signs are just my handwriting, which is wrong. After dark the foxfire wakes up and drifts toward the right way. Follow the glow. Keep your head, or you will get lost, and lost is a state of mind that comes with a timer.', effects: [{ t: 'know', id: 'forest_foxfire' }], next: 'menu' },
+    rumor: { id: 'rumor', ...FERN_W, run: (g) => { const r = nextRumor(g, 'fern'); if (r) { hearRumor(g, r); g.state.flags.rumor_last = r.id; } }, text: (g) => rumorText(g), next: 'menu' },
+    trade: { id: 'trade', ...FERN_W, text: 'Coffee! I have not had coffee since the dial-up era. Here. They are fine. I labelled them. (The labels are not reliable.)', next: 'menu' },
+    oak: { id: 'oak', ...FERN_W, text: 'It was there when I got here. I have always assumed it was the Webmaster. W liked a good round number. Say it to the tree, it listens better than I do.', next: 'menu' },
+  },
+};
+
+const DEV_W = { who: 'Mr. Gnarl (Tasmanian devil)' };
+
+/** The small furious resident of the southern rocks. Screams at things he likes. Screams at everything. */
+export const DEVIL: DTree = {
+  id: 'devil',
+  start: (g) => (g.has('devil_met') ? 'back' : 'greet'),
+  nodes: {
+    greet: { id: 'greet', ...DEV_W, text: 'AAAAAAH. (That is hello. I am very pleased to see you.) Visitors! Do you know how long it has been? The counter says nine. Eight are gulls.', effects: [{ t: 'flag', key: 'devil_met' }], next: 'menu' },
+    back: { id: 'back', ...DEV_W, text: 'AAAAH! (Welcome back.) Mind the penguins. They are not on the guest list.', next: 'menu' },
+    menu: {
+      id: 'menu', ...DEV_W, text: 'What do you want? (I have no idea what I can do for you. Ask.)',
+      choices: [
+        { text: 'Where am I?', next: 'place' },
+        { text: 'What are those photographs on the board?', next: 'photos' },
+        { text: 'Anything about the sky?', when: { flag: 'tas_diffs' }, next: 'sky' },
+        { text: 'Heard anything lately?', next: 'rumor' },
+        { text: '(Offer a Suspicious Snack)', when: { all: [{ has: 'snack_711' }, { notFlag: 'devil_fed' }] }, next: 'fed', action: (g) => removeItem(g, 'snack_711', 1), effects: [{ t: 'flag', key: 'devil_fed' }, { t: 'stat', stat: 'courage', by: 1 }] },
+        { text: 'Bye.', end: true },
+      ],
+    },
+    place: { id: 'place', ...DEV_W, text: 'The bottom of the world. Postcards come from here. Nobody reads the back. AAH. The back is the good part.', next: 'menu' },
+    photos: { id: 'photos', ...DEV_W, text: 'One from 2001 and one from 2003. Same coast, same cliff. Somebody keeps moving things in the second one, to see who notices. Click on the one on the right, where something is new. There are five.', effects: [{ t: 'know', id: 'tas_photos' }], next: 'menu' },
+    sky: { id: 'sky', ...DEV_W, text: 'The sky answers anyone who asks nicely. In capitals. Only after dark, though, and only if you say the word the photographs said. Left to right. Do not mumble.', next: 'menu' },
+    rumor: { id: 'rumor', ...DEV_W, run: (g) => { const r = nextRumor(g, 'devil'); if (r) { hearRumor(g, r); g.state.flags.rumor_last = r.id; } }, text: (g) => rumorText(g), next: 'menu' },
+    fed: { id: 'fed', ...DEV_W, text: 'AAAAAAAAAH! (That is the best thing anyone has ever done.) Here. Have some courage. It is mostly screaming. It works.', next: 'menu' },
+  },
+};
+
+export const TREES: Record<string, DTree> = { bob: BOB, gus: GUS, gus_gift: GUS_GIFT, marl: MARL, salesman: SALESMAN, fern: FERN, devil: DEVIL };

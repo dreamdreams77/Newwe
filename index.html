@@ -4,12 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="11:11 — The Lost Homepage. A browser RPG disguised as an abandoned 2001 personal website." />
+    <meta name="theme-color" content="#12125a" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
     <title>~*~ Welcome 2 My World ~*~</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23102'/%3E%3Cpath d='M3 3h3v10H3zM10 3h3v10h-3z' fill='%23ff0'/%3E%3C/svg%3E" />
   </head>
   <body>
-    <a class="skip-link" href="#content">Skip to content</a>
+    <a class="skip-link" href="#content" hidden>Skip to content</a>
     <div id="app"></div>
+    <noscript><p style="font:16px sans-serif;padding:2em;color:#fff;background:#102">11:11 is a game that runs in the browser, so it needs JavaScript switched on.</p></noscript>
+    <div id="boot-fallback" hidden style="font:16px/1.5 system-ui,sans-serif;max-width:34em;margin:10vh auto;padding:1.5em;background:#102;color:#fff;border:3px solid #ff0">
+      <h1 style="font-size:1.3em;margin:0 0 .5em">11:11 &mdash; The Lost Homepage</h1>
+      <p>The game did not start. Try reloading the page. It needs JavaScript and a reasonably recent browser (Chrome, Edge, Firefox or Safari).</p>
+      <p style="font-size:.85em;opacity:.8">If you published this yourself and only ever see this message: GitHub Pages is probably serving the unbuilt source. Open Settings &rarr; Pages &rarr; Build and deployment, and set Source to <b>GitHub Actions</b>.</p>
+    </div>
+    <script>
+      // never leave a blank white page: if the game's script fails to load, or still has not run after a long wait, say so.
+      // (main.ts sets data-booted and hides this notice as soon as the game script runs, so a slow connection never shows it for long.)
+      (function () {
+        var show = function () {
+          if (!document.documentElement.getAttribute('data-booted')) document.getElementById('boot-fallback').hidden = false;
+        };
+        document.addEventListener('error', function (e) {
+          var t = e.target;
+          if (!t || t.tagName !== 'SCRIPT') return;
+          // the unbuilt source is being served (a host that publishes the repository as-is): the built copy lives in play/
+          if (/\/src\/main\.ts/.test(t.src || '')) {
+            fetch('play/index.html', { method: 'HEAD' }).then(function (r) {
+              if (r.ok) location.replace('play/' + location.search + location.hash); else show();
+            }, show);
+            return;
+          }
+          show();
+        }, true);
+        setTimeout(show, 20000);
+      })();
+    </script>
     <div id="sr-live" class="sr-only" aria-live="polite" role="status"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

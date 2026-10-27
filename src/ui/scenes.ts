@@ -207,8 +207,14 @@ export function paintLake(c: Ctx, w: number, h: number, tod: TimeOfDay, willowSt
   r(c, 269, 96, 10, 5, '#2a4aa8');
   r(c, 271, 103, 2, 2, '#111');
   // swan boat
-  const bx = boatOut ? 130 : 232;
-  const by = boatOut ? 130 : 130;
+  // the boat lives at the dock whether or not you have ridden it (the hotspot and the page text say so); a ridden boat leaves a wake
+  const bx = 232;
+  const by = 130;
+  if (boatOut) {
+    r(c, bx - 16, by + 12, 12, 1, '#ffffffaa');
+    r(c, bx - 24, by + 15, 16, 1, '#ffffff77');
+    r(c, bx - 12, by + 18, 10, 1, '#ffffff55');
+  }
   r(c, bx, by + 6, 40, 8, '#fff');
   r(c, bx + 4, by + 12, 32, 4, '#cdd');
   r(c, bx + 28, by - 6, 8, 14, '#fff');
@@ -342,4 +348,125 @@ export function paintMyPageSky(c: Ctx, w: number, h: number): void {
   grad(c, 0, h, w, '#0b0630', '#3a1a7a', 10);
   const rng = seeded(4);
   for (let i = 0; i < 40; i++) r(c, rng.int(0, w), rng.int(0, h), 1, 1, '#fff');
+}
+
+/** the Whispering Woods: layered pines, a path, a mushroom ring, a signpost, Fern's lantern, and (after dark) foxfire */
+export function paintForest(c: Ctx, w: number, h: number, tod: TimeOfDay, mushStock: number, mushMax: number, foxfire: boolean, oakFound: boolean): void {
+  const hor = 78;
+  sky(c, w, hor, tod, 9);
+  const dim = tod === 'night' ? 0.55 : tod === 'dusk' || tod === 'dawn' ? 0.8 : 1;
+  const tint = (n: number) => Math.round(n * dim);
+  const green = (rr: number, gg: number, bb: number) => `rgb(${tint(rr)},${tint(gg)},${tint(bb)})`;
+  const rng = seeded(31);
+  // far ridge and pines, two layers
+  for (let x = 0; x < w; x += 2) r(c, x, hor - 14 - Math.sin(x / 23) * 6, 2, 22, green(40, 96, 70));
+  for (let layer = 0; layer < 2; layer++) {
+    for (let x = -6 + layer * 9; x < w + 10; x += 19) {
+      const top = hor - 34 + rng.int(-4, 6) + layer * 8;
+      const colr = layer ? green(30, 110, 58) : green(26, 84, 52);
+      for (let i = 0; i < 6; i++) r(c, x + 10 - (i + 2) * 2, top + i * 5, (i + 2) * 4, 6, colr);
+      r(c, x + 9, top + 30, 3, 10, green(104, 70, 38));
+    }
+  }
+  // ground
+  grad(c, hor + 6, h, w, tod === 'night' ? '#0d2a16' : '#2f7a3a', tod === 'night' ? '#08160d' : '#1c4f26', 10);
+  for (let i = 0; i < 90; i++) r(c, rng.int(0, w), rng.int(hor + 8, h - 2), rng.int(1, 3), 1, green(70, 150, 70));
+  // the path: a wedge that opens toward the viewer
+  for (let y = hor + 10; y < h; y++) {
+    const t = (y - hor - 10) / (h - hor - 10);
+    r(c, 150 - t * 34, y, 22 + t * 68, 1, green(150, 112, 70));
+  }
+  // the old oak (centre-right), bigger once you have found it
+  const ox = 240;
+  r(c, ox, 58, 18, 66, green(88, 58, 30));
+  r(c, ox - 8, 114, 34, 10, green(88, 58, 30));
+  disc(c, ox + 9, 44, 26, green(36, 120, 54));
+  disc(c, ox - 12, 54, 16, green(44, 138, 62));
+  disc(c, ox + 30, 52, 17, green(40, 128, 58));
+  if (oakFound) {
+    r(c, ox + 5, 92, 8, 14, green(30, 20, 10)); // a hollow
+    r(c, ox + 6, 84, 2, 6, '#e8d8a0');
+    r(c, ox + 10, 84, 2, 6, '#e8d8a0');
+  }
+  // mushroom ring (left)
+  const n = Math.max(0, Math.min(mushMax, mushStock));
+  for (let i = 0; i < mushMax; i++) {
+    const mx = 34 + i * 12 + (i % 2) * 4;
+    const my = 142 + (i % 2) * 6;
+    r(c, mx + 2, my, 3, 6, '#f1e8d2');
+    if (i < n) {
+      disc(c, mx + 3, my, 5, '#d8302c');
+      r(c, mx, my - 2, 2, 2, '#fff');
+      r(c, mx + 4, my - 3, 2, 2, '#fff');
+    } else r(c, mx + 1, my + 4, 5, 2, green(60, 90, 50));
+  }
+  // signpost (mid-left)
+  r(c, 120, 96, 4, 46, green(110, 74, 40));
+  r(c, 106, 100, 28, 8, green(160, 120, 70));
+  r(c, 112, 112, 26, 8, green(160, 120, 70));
+  // Fern's lantern and tent (bottom right)
+  r(c, 268, 128, 36, 24, green(190, 160, 90));
+  r(c, 274, 118, 24, 12, green(170, 140, 80));
+  r(c, 302, 132, 2, 12, '#444');
+  disc(c, 303, 130, 4, tod === 'day' ? '#f7e08a' : '#ffd24a');
+  if (tod !== 'day') disc(c, 303, 130, 9, '#ffd24a33');
+  // foxfire: pale green sparks drifting up the path
+  if (foxfire) {
+    const rf = seeded(77);
+    for (let i = 0; i < 18; i++) {
+      const t = rf.next();
+      const x = 150 + (rf.next() - 0.5) * 70 * (1 - t * 0.4);
+      const y = hor + 14 + (h - hor - 30) * t;
+      disc(c, x, y, 2, '#aaffd8cc');
+      disc(c, x, y, 5, '#7fffc022');
+    }
+  }
+}
+
+/**
+ * The bottom of the world. One painter, two photographs: variant 'A' (2001) and 'B' (2003). B differs in exactly
+ * the five places listed in data/tasmania.ts. The aurora flag paints the southern lights over the sky.
+ */
+export function paintTasmania(c: Ctx, w: number, h: number, tod: TimeOfDay, variant: 'A' | 'B', aurora = false): void {
+  const hor = 88;
+  const s = sky(c, w, hor, tod, 14);
+  // distant swell
+  grad(c, hor, h, w, s.water[0], s.water[1], 10);
+  const rng = seeded(52);
+  for (let i = 0; i < 60; i++) r(c, rng.int(0, w), rng.int(hor + 3, h - 3), rng.int(6, 14), 1, tod === 'night' ? '#3a5acc' : '#ffffff66');
+  // the cliff and the lighthouse on it (right)
+  for (let x = 236; x < w; x += 2) r(c, x, 74 + (x - 236) * 0.05, 2, h - 74, '#5a4a3a');
+  r(c, 250, 74, 70, 6, '#6b5a46');
+  r(c, 262, 36, 12, 40, '#f2f2f2');
+  r(c, 262, 48, 12, 6, '#d8302c');
+  r(c, 262, 60, 12, 6, '#d8302c');
+  r(c, 259, 30, 18, 6, '#333');
+  disc(c, 268, 26, 4, tod === 'day' ? '#fff2a0' : '#ffd24a');
+  // the beach and a rock (right foreground)
+  r(c, 236, 134, 84, 46, tod === 'night' ? '#4a4a5a' : '#e8d8a8');
+  disc(c, 300, 150, 9, '#4a4a54');
+  // a rocky headland (left)
+  for (let x = 0; x < 80; x += 2) r(c, x, 112 + Math.sin(x / 9) * 4 - x * 0.2, 2, h - 112, '#4a4048');
+  // seabird dots, same in both photographs
+  r(c, 190, 30, 3, 1, '#fff'); r(c, 194, 29, 3, 1, '#fff');
+  if (aurora && tod === 'night') {
+    for (let band = 0; band < 3; band++) {
+      for (let x = 0; x < w; x += 2) {
+        const y = 14 + band * 12 + Math.sin(x / 17 + band) * 7;
+        r(c, x, y, 2, 22, band === 1 ? '#c07aff40' : '#58ffb040');
+      }
+    }
+  }
+  if (variant === 'B') {
+    // 1: a red buoy
+    disc(c, 40, 124, 3, '#e03030'); r(c, 39, 118, 2, 4, '#e03030'); r(c, 36, 127, 8, 1, '#ffffff88');
+    // 2: a gull
+    r(c, 96, 40, 4, 1, '#fff'); r(c, 100, 39, 4, 1, '#fff'); r(c, 104, 40, 4, 1, '#fff'); r(c, 99, 38, 2, 1, '#fff');
+    // 3: a sailboat
+    r(c, 150, 104, 20, 3, '#6b4a2a'); r(c, 159, 90, 2, 14, '#ddd'); for (let i = 0; i < 12; i++) r(c, 160, 92 + i, Math.max(1, 12 - i), 1, '#fff7e0');
+    // 4: a kite over the cliff
+    r(c, 214, 52, 8, 8, '#ffd23a'); r(c, 216, 54, 4, 4, '#e03030'); r(c, 218, 60, 1, 14, '#eee'); r(c, 216, 66, 4, 1, '#38a0ff');
+    // 5: a penguin on the beach
+    r(c, 272, 124, 8, 14, '#222'); r(c, 274, 128, 4, 9, '#f2f2f2'); r(c, 273, 136, 6, 2, '#f0a020'); r(c, 273, 126, 1, 1, '#fff');
+  }
 }

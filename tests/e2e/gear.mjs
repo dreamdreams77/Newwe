@@ -1,6 +1,6 @@
 // Status effects and equipment, through the real UI.
 const pw = await import(process.env.PLAYWRIGHT_PATH ?? 'playwright');
-const URL = process.env.URL ?? 'http://127.0.0.1:4173/?fresh&seed=' + (process.env.SEED ?? '11') + '&debug';
+const URL = process.env.URL ?? (process.env.E2E_BASE ?? 'http://127.0.0.1:4173/') + '?fresh&seed=' + (process.env.SEED ?? '11') + '&debug';
 const browser = await pw.chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
 const errors = [];
@@ -125,6 +125,8 @@ const rumour = await page.$eval('.dialogue-win .dlg-text', (e) => e.textContent)
 assert(/lowers voice/.test(rumour), 'the badge made Bob candid: ' + rumour.slice(0, 120));
 log('Wearing the Webmaster Badge, Bob lowered his voice and said whether his own rumour was true: "' + rumour.slice(-48) + '"');
 await page.click('.dialogue-win .win-x');
+await page.waitForSelector('.dialogue-win', { state: 'detached' });
+await wait(400); // let the dialogue's own refresh land before opening anything else
 
 // 8) terminal gear + status
 await page.fill('#address', 'about:terminal');

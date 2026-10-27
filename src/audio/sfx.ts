@@ -4,7 +4,7 @@ type A = typeof audio;
 
 export const SFX_NAMES = [
   'click', 'tick', 'page', 'pickup', 'card', 'craft', 'success', 'fail', 'fumble', 'crit', 'eleven', 'wish', 'memory', 'quest', 'questDone',
-  'puzzle', 'error', 'threshold', 'roll', 'open', 'close', 'door', 'step', 'hit', 'chirp', 'zap', 'dial',
+  'battle', 'fanfare', 'puzzle', 'error', 'threshold', 'roll', 'open', 'close', 'door', 'step', 'hit', 'chirp', 'zap', 'dial',
 ] as const;
 
 /** every sound the game makes is a recipe of beeps and noise */
@@ -67,6 +67,14 @@ export function playSfx(a: A, name: string): void {
       break;
     case 'questDone':
       [523, 523, 523, 659, 784, 1046].forEach((f, i) => a.tone(f, 0.13, 'square', 0.1, i * 0.09));
+      break;
+    case 'battle': // the swirl: a falling run of beeps over a noise sweep
+      for (let i = 0; i < 10; i++) a.tone(1400 - i * 110, 0.07, 'square', 0.08, i * 0.045);
+      a.noise(0.5, 0.07, 0, 200, 4000);
+      break;
+    case 'fanfare': // da da da DAAA
+      [[523, 0], [523, 0.11], [523, 0.22], [415, 0.33], [466, 0.5], [523, 0.62], [466, 0.74], [523, 0.86]].forEach(([f, t], i) => a.tone(f, i === 7 ? 0.7 : 0.12, 'square', 0.1, t));
+      [262, 262, 262, 207, 233, 262, 233, 262].forEach((f, i) => a.tone(f, i === 7 ? 0.7 : 0.12, 'triangle', 0.09, [0, 0.11, 0.22, 0.33, 0.5, 0.62, 0.74, 0.86][i]));
       break;
     case 'puzzle':
       [659, 784, 988, 1318].forEach((f, i) => a.tone(f, 0.12, 'triangle', 0.14, i * 0.07));

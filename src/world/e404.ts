@@ -10,6 +10,9 @@ import { hasItem } from '../systems/inventory';
 import { addVisitors } from '../systems/hits';
 import { isSuccess, type CheckDef } from '../systems/dice';
 import { openCheck } from '../ui/dice';
+import { runDialogue } from '../ui/dialogue';
+import { SALESMAN } from '../data/dialogue';
+import { refreshView } from '../ui/router';
 
 function face(): string {
   const v = game().state.visitors;
@@ -100,6 +103,7 @@ function render(): HTMLElement {
       ),
       h('p', {}, open ? 'It is open. It has always been open. It was waiting for someone to say so.' : 'There is a lock. It is small. It was made for something small, and probably useless.'),
       open ? btn('▶ ENTER', () => navigate('dungeon'), 'go big', { dataset: { fk: 'enter' } }) : btn(hasItem(g, 'key') ? 'Try the key' : 'Try the lock', () => openDoor(), 'small', { dataset: { fk: 'trykey' } }),
+      open ? btn('A man is standing in the link. Talk to him.', () => { void runDialogue(SALESMAN).then(refreshView); }, 'small', { dataset: { fk: 'salesman' } }) : '',
       h('div', { class: 'back-link' }, btn('◄ Back to the homepage', () => navigate('home'), 'small')),
     ),
   );

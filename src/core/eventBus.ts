@@ -16,6 +16,7 @@ export interface BusEvents {
 type Handler<T> = (payload: T) => void;
 
 export class EventBus {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- handlers of different event types share one map
   private handlers = new Map<string, Set<Handler<any>>>();
   on<K extends keyof BusEvents>(name: K, fn: Handler<BusEvents[K]>): () => void {
     let set = this.handlers.get(name as string);

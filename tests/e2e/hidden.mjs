@@ -2,7 +2,7 @@
 // pokes, the corrupted save, the pseudo-code gate (XOR), the /dev/ room, the terminal,
 // controlled bugs, version history and New Game+.
 const pw = await import(process.env.PLAYWRIGHT_PATH ?? 'playwright');
-const URL = process.env.URL ?? 'http://127.0.0.1:4173/?fresh&seed=' + (process.env.SEED ?? '7') + '&debug';
+const URL = process.env.URL ?? (process.env.E2E_BASE ?? 'http://127.0.0.1:4173/') + '?fresh&seed=' + (process.env.SEED ?? '7') + '&debug';
 const browser = await pw.chromium.launch({ executablePath: process.env.CHROME_PATH || undefined });
 const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
 const errors = [];
@@ -136,7 +136,7 @@ log('Poked a traffic cone five times: a note under it explains XOR ("exactly ONE
 await mut(() => { const g = window.__game.g; g.state.visitors = 640; g.state.creatures.chocobo = { id: 'chocobo', species: 'chocobo', name: 'Peep', met: true, fullness: 60, mood: 80, trust: 30, energy: 60, traits: {}, learned: [], fedLog: [], lastCareAt: 0 }; g.state.activeCreature = 'chocobo'; g.state.flags.lamp_lit = true; g.state.flags.yoghurt_delivered = true; g.changed(); });
 await address('http://www.cybercities.com/AreaFiftyOne/Vault/1111/dev/');
 await page.waitForSelector('.gate-win');
-let code = await page.$eval('.gate-win .code', (e) => e.textContent);
+const code = await page.$eval('.gate-win .code', (e) => e.textContent);
 assert(/IF /.test(code) && /OPEN\("\/dev\/"\)/.test(code), 'the gate is pseudo-code');
 assert(/lamp_lit XOR yoghurt_delivered/.test(code), 'the cone gave away the name of the XOR clause');
 await page.click('[data-fk="trygate"]');
@@ -235,7 +235,7 @@ await wait(300);
 await mut(() => window.__game.navigate('elevenRoom', { free: true }));
 await page.waitForSelector('.finale button:has-text("Return")', { timeout: 20000 });
 const fin = await page.$eval('.render-pre', (e) => e.textContent);
-assert(/PARENT PROCESS/.test(fin) && /homepage\.exe/.test(fin) && /ERRORS:   0/.test(fin), 'the finale shows SYSTEM STATUS');
+assert(/PARENT PROCESS/.test(fin) && /homepage\.exe/.test(fin) && /ERRORS: {3}0/.test(fin), 'the finale shows SYSTEM STATUS');
 log('The finale: SYSTEM STATUS (processes, uptime, memory, errors: 0, parent process: not yet found)');
 await menu('File', 'Save Files');
 await page.click('[data-fk="slot2"]');

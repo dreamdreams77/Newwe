@@ -83,6 +83,27 @@ export const RECIPES: RecipeDef[] = [
       { weight: 1, tier: 'disaster', label: 'Smoke', text: 'A tiny, offended puff of smoke. Your eyebrows are fine. Your dignity is not.', effects: [{ t: 'vital', v: 'hp', by: -2 }, { t: 'stat', stat: 'chaos', by: 1 }] },
     ],
   },
+  {
+    id: 'foxfire_tea',
+    name: 'Foxfire Tea',
+    category: 'logical',
+    inputs: ['forest_mushroom', 'coffee'],
+    minutes: 5,
+    nearMiss: 'Something from the woods, and something from the mug. They want to be one thing, a warm one.',
+    outcomes: [
+      {
+        weight: 1,
+        label: 'Foxfire Tea',
+        tier: 'good',
+        text: 'It glows, faintly, green. You drink it before you can think better of it. Warmth, and a very good idea, and a distant sense of being watched fondly by trees.',
+        effects: [
+          { t: 'vital', v: 'coffee', by: 3 },
+          { t: 'ailment', id: 'inspired', minutes: 180 },
+          { t: 'stat', stat: 'curiosity', by: 1 },
+        ],
+      },
+    ],
+  },
 ];
 
 export const RECIPE_BY_ID = Object.fromEntries(RECIPES.map((r) => [r.id, r]));

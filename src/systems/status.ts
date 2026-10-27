@@ -30,7 +30,7 @@ export function statusLines(g: Game): string[] {
     proc('???', done, done ? 'RUNNING' : '...'),
     '',
     'PARENT PROCESS:',
-    done ? '  UNKNOWN (not yet found)' : '  ???',
+    g.has('act3_done') ? '  visitor_73 (you). pid 1. started: the first click.' : done ? '  UNKNOWN (not yet found)' : '  ???',
     '',
     'STATUS: ' + (done ? 'RUNNING' : 'STARTING'),
   ];
